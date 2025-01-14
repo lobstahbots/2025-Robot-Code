@@ -5,13 +5,9 @@
 package frc.robot;
 
 import static edu.wpi.first.units.Units.KilogramSquareMeters;
-import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.Pounds;
-import static edu.wpi.first.units.Units.Volts;
 
 import org.ironmaple.simulation.drivesims.COTS;
-import org.ironmaple.simulation.drivesims.GyroSimulation;
-import org.ironmaple.simulation.drivesims.SwerveModuleSimulation;
 import org.ironmaple.simulation.drivesims.configs.DriveTrainSimulationConfig;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 
@@ -22,8 +18,6 @@ import com.pathplanner.lib.path.PathConstraints;
 
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.Vector;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -47,16 +41,8 @@ import frc.robot.subsystems.drive.SwerveKinematicLimits;
  */
 public final class Constants {
   public static class PathConstants {
-    public static final Pose2d TARGET_POSE = new Pose2d(16, 7, Rotation2d.fromDegrees(180));
-    public static final Pose2d INITIAL_POSE = new Pose2d(0, 0, Rotation2d.fromDegrees(0));
     public static final PathConstraints CONSTRAINTS = new PathConstraints(1, 1, Units.degreesToRadians(540),
         Units.degreesToRadians(720));
-
-    public static final Pose2d STATION_1 = new Pose2d(0.4119143784046173, 7.161474227905273,
-        Rotation2d.fromRotations(0));
-    public static final Pose2d STATION_2 = new Pose2d(0.5068893432617188, 3.710716009140014,
-        Rotation2d.fromRotations(0));
-    public static final Pose2d STATION_3 = new Pose2d(0.44357267022132874, 2.3525, Rotation2d.fromRotations(0));
   }
 
   public static class IOConstants {
@@ -114,10 +100,6 @@ public final class Constants {
 
     public static final double PATH_MAX_ACCEL = 3;
     public static final double PATH_MAX_VELOCITY = 3;
-
-    public static final double TURN_KP = 2;
-    public static final double TURN_KI = 0;
-    public static final double TURN_KD = 0;
 
     public static final double TURN_DEADBAND = Units.degreesToRadians(5);
 
@@ -179,10 +161,6 @@ public final class Constants {
     public static final double KA = 0.1;
     public static final double KV = 0.1;
 
-    public static final double ANGLE_KS = 0.1;
-    public static final double ANGLE_KA = 0.1;
-    public static final double ANGLE_KV = 0.1;
-
     public static final double DRIVING_ENCODER_POSITION_CONVERSION_FACTOR = 1 / RobotConstants.DRIVE_GEAR_RATIO;
     public static final double DRIVING_ENCODER_VELOCITY_CONVERSION_FACTOR = DRIVING_ENCODER_POSITION_CONVERSION_FACTOR
         / 60.0;
@@ -206,8 +184,6 @@ public final class Constants {
     public static final double TURN_PID_I = 0;
     public static final double TURN_PID_D = 0;
     public static final double TURN_PID_FF = 0;
-
-    public static final double AIM_VELOCITY_COMPENSATION_DEADBAND = 0.3;
   }
 
   public static class SimConstants {
