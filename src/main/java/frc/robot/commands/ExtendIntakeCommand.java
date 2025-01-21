@@ -3,11 +3,11 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.algaeIntake.AlgaeIntake;
 
-public class ExtendIntakeCommand extends Command{
+public class ExtendIntakeCommand extends Command {
     private final AlgaeIntake algaeIntake;
     private final double speed;
     
-    public ExtendIntake(AlgaeIntake algaeIntake, double speed) {
+    public ExtendIntakeCommand(AlgaeIntake algaeIntake, double speed) {
         this.algaeIntake = algaeIntake;
         this.speed = speed;
         addRequirements(algaeIntake);

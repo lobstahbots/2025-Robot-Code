@@ -3,11 +3,11 @@ package frc.robot.commands;
 import frc.robot.subsystems.algaeIntake.AlgaeIntake;
 import edu.wpi.first.wpilibj2.command.Command;
 
-public class SpinRollerCommand extends Command{
+public class SpinRollerCommand extends Command {
     private final AlgaeIntake algaeIntake;
     private final double speed;
     
-    public SpinRoller(AlgaeIntake algaeIntake, double speed) {
+    public SpinRollerCommand(AlgaeIntake algaeIntake, double speed) {
         this.algaeIntake = algaeIntake;
         this.speed = speed;
         addRequirements(algaeIntake);
