@@ -28,6 +28,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Mass;
 import edu.wpi.first.units.measure.MomentOfInertia;
 import frc.robot.subsystems.drive.SwerveKinematicLimits;
+import stl.choreo.ChoreoVariables;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide
@@ -62,8 +63,8 @@ public final class Constants {
   }
 
   public static class RobotConstants {
-    public static final double WHEELBASE = Units.inchesToMeters(20);
-    public static final double TRACK_WIDTH = Units.inchesToMeters(20);
+    public static final double WHEELBASE = ChoreoVariables.get("ROBOT_SIZE");
+    public static final double TRACK_WIDTH = ChoreoVariables.get("ROBOT_SIZE");
     public static final double EDGE_TO_MODULE_CENTER = Units.inchesToMeters(1.75);
     // Distance from robot center to module center
     public static final double RADIUS = Math.sqrt(2 * Math.pow(WHEELBASE / 2 - EDGE_TO_MODULE_CENTER, 2));

@@ -16,9 +16,9 @@ import java.io.File;
 import java.io.FileReader;
 import java.util.HashMap;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -54,8 +54,7 @@ public class ChoreoVariables {
             var reader = new BufferedReader(new FileReader(choreoFile));
             String str = reader.lines().reduce("", (a, b) -> a + b);
             reader.close();
-            Gson GSON = new Gson();
-            JsonObject wholeChor = GSON.fromJson(str, JsonObject.class);
+            JsonObject wholeChor = new JsonParser().parse(str).getAsJsonObject();
             JsonObject variables = wholeChor.get("variables").getAsJsonObject();
             JsonObject expressions = variables.get("expressions").getAsJsonObject();
             for (var entry : expressions.entrySet()) {
@@ -68,6 +67,7 @@ public class ChoreoVariables {
                         Rotation2d.fromRadians(getVal(val.get("heading")))));
             }
         } catch (Exception e) {
+            System.err.println(e);
             return;
         }
         INITIALIZED = true;

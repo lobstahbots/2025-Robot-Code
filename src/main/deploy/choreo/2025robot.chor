@@ -4,46 +4,11 @@
  "type":"Swerve",
  "variables":{
   "expressions":{
-   "REEF_WIDTH":{
-    "dimension":"Length",
-    "var":{
-     "exp":"5 ft + 5.5 in",
-     "val":1.6637
-    }
-   },
-   "ANGLE_AB":{
-    "dimension":"Angle",
-    "var":{
-     "exp":"pi rad",
-     "val":3.141592653589793
-    }
-   },
-   "ANGLE_GH":{
-    "dimension":"Angle",
-    "var":{
-     "exp":"0 rad",
-     "val":0.0
-    }
-   },
-   "REEF_DISTANCE":{
-    "dimension":"Length",
-    "var":{
-     "exp":"12 ft",
-     "val":3.6576
-    }
-   },
    "FIELD_LENGTH":{
     "dimension":"Length",
     "var":{
      "exp":"26 ft + 6.875 in",
      "val":8.099425
-    }
-   },
-   "RADIUS":{
-    "dimension":"Length",
-    "var":{
-     "exp":"REEF_WIDTH / 2 + ROBOT_HALF_WIDTH",
-     "val":1.23825
     }
    },
    "FIELD_HEIGHT":{
@@ -53,6 +18,62 @@
      "val":8.0518
     }
    },
+   "TO_PIPE":{
+    "dimension":"Length",
+    "var":{
+     "exp":"(1 ft + 1 in) / 2",
+     "val":0.1651
+    }
+   },
+   "ANGLE_AB":{
+    "dimension":"Angle",
+    "var":{
+     "exp":"pi rad",
+     "val":3.141592653589793
+    }
+   },
+   "REEF_WIDTH":{
+    "dimension":"Length",
+    "var":{
+     "exp":"5 ft + 5.5 in",
+     "val":1.6637
+    }
+   },
+   "ROBOT_SIZE":{
+    "dimension":"Length",
+    "var":{
+     "exp":"29 in",
+     "val":0.7365999999999999
+    }
+   },
+   "BUMPER_THICKNESS":{
+    "dimension":"Length",
+    "var":{
+     "exp":"2 in",
+     "val":0.0508
+    }
+   },
+   "ROBOT_HALF_WIDTH":{
+    "dimension":"Length",
+    "var":{
+     "exp":"ROBOT_SIZE / 2 + BUMPER_THICKNESS",
+     "val":0.4191
+    }
+   },
+   "RADIUS":{
+    "dimension":"Length",
+    "var":{
+     "exp":"REEF_WIDTH / 2 + ROBOT_HALF_WIDTH",
+     "val":1.2509499999999998
+    }
+   },
+   "REEF_DISTANCE":{
+    "dimension":"Length",
+    "var":{
+     "exp":"12 ft",
+     "val":3.6576
+    }
+   },
    "ANGLE_CD":{
     "dimension":"Angle",
     "var":{
@@ -60,25 +81,11 @@
      "val":4.1887902047863905
     }
    },
-   "ANGLE_KL":{
+   "ANGLE_EF":{
     "dimension":"Angle",
     "var":{
-     "exp":"(2 / 3 pi) rad",
-     "val":2.0943951023931953
-    }
-   },
-   "ROBOT_HALF_WIDTH":{
-    "dimension":"Length",
-    "var":{
-     "exp":"16 in",
-     "val":0.4064
-    }
-   },
-   "TO_PIPE":{
-    "dimension":"Length",
-    "var":{
-     "exp":"(1 ft + 1 in) / 2",
-     "val":0.1651
+     "exp":"(5 / 3 pi) rad",
+     "val":5.235987755982989
     }
    },
    "ANGLE_IJ":{
@@ -88,75 +95,26 @@
      "val":1.0471975511965976
     }
    },
-   "ANGLE_EF":{
+   "ANGLE_GH":{
     "dimension":"Angle",
     "var":{
-     "exp":"(5 / 3 pi) rad",
-     "val":5.235987755982989
+     "exp":"0 rad",
+     "val":0.0
+    }
+   },
+   "ANGLE_KL":{
+    "dimension":"Angle",
+    "var":{
+     "exp":"(2 / 3 pi) rad",
+     "val":2.0943951023931953
     }
    }
   },
   "poses":{
-   "SIDE_EF":{
-    "x":{
-     "exp":"REEF_CENTER.x + RADIUS * cos(ANGLE_EF)",
-     "val":5.108575000000001
-    },
-    "y":{
-     "exp":"REEF_CENTER.y + RADIUS * sin(ANGLE_EF)",
-     "val":2.9535440437639195
-    },
-    "heading":{
-     "exp":"pi rad + ANGLE_EF",
-     "val":8.377580409572783
-    }
-   },
-   "SIDE_GH":{
-    "x":{
-     "exp":"REEF_CENTER.x + RADIUS * cos(ANGLE_GH)",
-     "val":5.7277000000000005
-    },
-    "y":{
-     "exp":"REEF_CENTER.y + RADIUS * sin(ANGLE_GH)",
-     "val":4.0259
-    },
-    "heading":{
-     "exp":"pi rad + ANGLE_GH",
-     "val":3.141592653589793
-    }
-   },
-   "SIDE_KL":{
-    "x":{
-     "exp":"REEF_CENTER.x + RADIUS * cos(ANGLE_KL)",
-     "val":3.870325000000001
-    },
-    "y":{
-     "exp":"REEF_CENTER.y + RADIUS * sin(ANGLE_KL)",
-     "val":5.098255956236081
-    },
-    "heading":{
-     "exp":"pi rad + ANGLE_KL",
-     "val":5.235987755982988
-    }
-   },
-   "E":{
-    "x":{
-     "exp":"SIDE_EF.x + TO_PIPE * cos(SIDE_EF.heading + (1 / 2 pi) rad)",
-     "val":4.96559420583519
-    },
-    "y":{
-     "exp":"SIDE_EF.y + TO_PIPE * sin(SIDE_EF.heading + (1 / 2 pi) rad)",
-     "val":2.870994043763919
-    },
-    "heading":{
-     "exp":"SIDE_EF.heading",
-     "val":8.377580409572783
-    }
-   },
    "SIDE_AB":{
     "x":{
      "exp":"REEF_CENTER.x + RADIUS * cos(ANGLE_AB)",
-     "val":3.2512000000000003
+     "val":3.2385000000000006
     },
     "y":{
      "exp":"REEF_CENTER.y + RADIUS * sin(ANGLE_AB)",
@@ -167,38 +125,10 @@
      "val":6.283185307179586
     }
    },
-   "B":{
-    "x":{
-     "exp":"SIDE_AB.x + TO_PIPE * cos(SIDE_AB.heading - (1 / 2 pi) rad)",
-     "val":3.2512000000000003
-    },
-    "y":{
-     "exp":"SIDE_AB.y + TO_PIPE * sin(SIDE_AB.heading - (1 / 2 pi) rad)",
-     "val":3.8608
-    },
-    "heading":{
-     "exp":"SIDE_AB.heading",
-     "val":6.283185307179586
-    }
-   },
-   "F":{
-    "x":{
-     "exp":"SIDE_EF.x + TO_PIPE * cos(SIDE_EF.heading - (1 / 2 pi) rad)",
-     "val":5.251555794164812
-    },
-    "y":{
-     "exp":"SIDE_EF.y + TO_PIPE * sin(SIDE_EF.heading - (1 / 2 pi) rad)",
-     "val":3.036094043763919
-    },
-    "heading":{
-     "exp":"SIDE_EF.heading",
-     "val":8.377580409572783
-    }
-   },
    "A":{
     "x":{
      "exp":"SIDE_AB.x + TO_PIPE * cos(SIDE_AB.heading + (1 / 2 pi) rad)",
-     "val":3.2512000000000003
+     "val":3.2385000000000006
     },
     "y":{
      "exp":"SIDE_AB.y + TO_PIPE * sin(SIDE_AB.heading + (1 / 2 pi) rad)",
@@ -207,20 +137,6 @@
     "heading":{
      "exp":"SIDE_AB.heading",
      "val":6.283185307179586
-    }
-   },
-   "SIDE_IJ":{
-    "x":{
-     "exp":"REEF_CENTER.x + RADIUS * cos(ANGLE_IJ)",
-     "val":5.108575000000001
-    },
-    "y":{
-     "exp":"REEF_CENTER.y + RADIUS * sin(ANGLE_IJ)",
-     "val":5.0982559562360805
-    },
-    "heading":{
-     "exp":"pi rad + ANGLE_IJ",
-     "val":4.1887902047863905
     }
    },
    "REEF_CENTER":{
@@ -237,32 +153,214 @@
      "val":0.0
     }
    },
+   "L":{
+    "x":{
+     "exp":"SIDE_KL.x + TO_PIPE * cos(SIDE_KL.heading - (1 / 2 pi) rad)",
+     "val":3.72099420583519
+    },
+    "y":{
+     "exp":"SIDE_KL.y + TO_PIPE * sin(SIDE_KL.heading - (1 / 2 pi) rad)",
+     "val":5.0267044788641435
+    },
+    "heading":{
+     "exp":"SIDE_KL.heading",
+     "val":5.235987755982988
+    }
+   },
+   "E":{
+    "x":{
+     "exp":"SIDE_EF.x + TO_PIPE * cos(SIDE_EF.heading + (1 / 2 pi) rad)",
+     "val":4.9719442058351895
+    },
+    "y":{
+     "exp":"SIDE_EF.y + TO_PIPE * sin(SIDE_EF.heading + (1 / 2 pi) rad)",
+     "val":2.8599955211358568
+    },
+    "heading":{
+     "exp":"SIDE_EF.heading",
+     "val":8.377580409572783
+    }
+   },
+   "SIDE_CD":{
+    "x":{
+     "exp":"REEF_CENTER.x + RADIUS * cos(ANGLE_CD)",
+     "val":3.863975
+    },
+    "y":{
+     "exp":"REEF_CENTER.y + RADIUS * sin(ANGLE_CD)",
+     "val":2.942545521135857
+    },
+    "heading":{
+     "exp":"pi rad + ANGLE_CD",
+     "val":7.330382858376184
+    }
+   },
+   "B":{
+    "x":{
+     "exp":"SIDE_AB.x + TO_PIPE * cos(SIDE_AB.heading - (1 / 2 pi) rad)",
+     "val":3.2385000000000006
+    },
+    "y":{
+     "exp":"SIDE_AB.y + TO_PIPE * sin(SIDE_AB.heading - (1 / 2 pi) rad)",
+     "val":3.8608
+    },
+    "heading":{
+     "exp":"SIDE_AB.heading",
+     "val":6.283185307179586
+    }
+   },
+   "SIDE_GH":{
+    "x":{
+     "exp":"REEF_CENTER.x + RADIUS * cos(ANGLE_GH)",
+     "val":5.740400000000001
+    },
+    "y":{
+     "exp":"REEF_CENTER.y + RADIUS * sin(ANGLE_GH)",
+     "val":4.0259
+    },
+    "heading":{
+     "exp":"pi rad + ANGLE_GH",
+     "val":3.141592653589793
+    }
+   },
+   "I":{
+    "x":{
+     "exp":"SIDE_IJ.x + TO_PIPE * cos(SIDE_IJ.heading + (1 / 2 pi) rad)",
+     "val":5.25790579416481
+    },
+    "y":{
+     "exp":"SIDE_IJ.y + TO_PIPE * sin(SIDE_IJ.heading + (1 / 2 pi) rad)",
+     "val":5.026704478864143
+    },
+    "heading":{
+     "exp":"SIDE_IJ.heading",
+     "val":4.1887902047863905
+    }
+   },
+   "K":{
+    "x":{
+     "exp":"SIDE_KL.x + TO_PIPE * cos(SIDE_KL.heading + (1 / 2 pi) rad)",
+     "val":4.006955794164812
+    },
+    "y":{
+     "exp":"SIDE_KL.y + TO_PIPE * sin(SIDE_KL.heading + (1 / 2 pi) rad)",
+     "val":5.191804478864142
+    },
+    "heading":{
+     "exp":"SIDE_KL.heading",
+     "val":5.235987755982988
+    }
+   },
    "C":{
     "x":{
      "exp":"SIDE_CD.x + TO_PIPE * cos(SIDE_CD.heading + (1 / 2 pi) rad)",
-     "val":3.7273442058351898
+     "val":3.720994205835189
     },
     "y":{
      "exp":"SIDE_CD.y + TO_PIPE * sin(SIDE_CD.heading + (1 / 2 pi) rad)",
-     "val":3.036094043763919
+     "val":3.025095521135857
     },
     "heading":{
      "exp":"SIDE_CD.heading",
      "val":7.330382858376184
     }
    },
-   "SIDE_CD":{
+   "J":{
     "x":{
-     "exp":"REEF_CENTER.x + RADIUS * cos(ANGLE_CD)",
-     "val":3.870325
+     "exp":"SIDE_IJ.x + TO_PIPE * cos(SIDE_IJ.heading - (1 / 2 pi) rad)",
+     "val":4.9719442058351895
     },
     "y":{
-     "exp":"REEF_CENTER.y + RADIUS * sin(ANGLE_CD)",
-     "val":2.9535440437639195
+     "exp":"SIDE_IJ.y + TO_PIPE * sin(SIDE_IJ.heading - (1 / 2 pi) rad)",
+     "val":5.191804478864142
     },
     "heading":{
-     "exp":"pi rad + ANGLE_CD",
-     "val":7.330382858376184
+     "exp":"SIDE_IJ.heading",
+     "val":4.1887902047863905
+    }
+   },
+   "G":{
+    "x":{
+     "exp":"SIDE_GH.x + TO_PIPE * cos(SIDE_GH.heading + (1 / 2 pi) rad)",
+     "val":5.740400000000001
+    },
+    "y":{
+     "exp":"SIDE_GH.y + TO_PIPE * sin(SIDE_GH.heading + (1 / 2 pi) rad)",
+     "val":3.8608
+    },
+    "heading":{
+     "exp":"SIDE_GH.heading",
+     "val":3.141592653589793
+    }
+   },
+   "SIDE_IJ":{
+    "x":{
+     "exp":"REEF_CENTER.x + RADIUS * cos(ANGLE_IJ)",
+     "val":5.114925
+    },
+    "y":{
+     "exp":"REEF_CENTER.y + RADIUS * sin(ANGLE_IJ)",
+     "val":5.109254478864143
+    },
+    "heading":{
+     "exp":"pi rad + ANGLE_IJ",
+     "val":4.1887902047863905
+    }
+   },
+   "F":{
+    "x":{
+     "exp":"SIDE_EF.x + TO_PIPE * cos(SIDE_EF.heading - (1 / 2 pi) rad)",
+     "val":5.25790579416481
+    },
+    "y":{
+     "exp":"SIDE_EF.y + TO_PIPE * sin(SIDE_EF.heading - (1 / 2 pi) rad)",
+     "val":3.025095521135857
+    },
+    "heading":{
+     "exp":"SIDE_EF.heading",
+     "val":8.377580409572783
+    }
+   },
+   "SIDE_KL":{
+    "x":{
+     "exp":"REEF_CENTER.x + RADIUS * cos(ANGLE_KL)",
+     "val":3.863975000000001
+    },
+    "y":{
+     "exp":"REEF_CENTER.y + RADIUS * sin(ANGLE_KL)",
+     "val":5.109254478864144
+    },
+    "heading":{
+     "exp":"pi rad + ANGLE_KL",
+     "val":5.235987755982988
+    }
+   },
+   "H":{
+    "x":{
+     "exp":"SIDE_GH.x + TO_PIPE * cos(SIDE_GH.heading - (1 / 2 pi) rad)",
+     "val":5.740400000000001
+    },
+    "y":{
+     "exp":"SIDE_GH.y + TO_PIPE * sin(SIDE_GH.heading - (1 / 2 pi) rad)",
+     "val":4.191
+    },
+    "heading":{
+     "exp":"SIDE_GH.heading",
+     "val":3.141592653589793
+    }
+   },
+   "SIDE_EF":{
+    "x":{
+     "exp":"REEF_CENTER.x + RADIUS * cos(ANGLE_EF)",
+     "val":5.114925
+    },
+    "y":{
+     "exp":"REEF_CENTER.y + RADIUS * sin(ANGLE_EF)",
+     "val":2.9425455211358567
+    },
+    "heading":{
+     "exp":"pi rad + ANGLE_EF",
+     "val":8.377580409572783
     }
    }
   }
@@ -319,15 +417,15 @@
   "bumper":{
    "front":{
     "exp":"ROBOT_HALF_WIDTH",
-    "val":0.4064
+    "val":0.4191
    },
    "side":{
     "exp":"ROBOT_HALF_WIDTH",
-    "val":0.4064
+    "val":0.4191
    },
    "back":{
     "exp":"ROBOT_HALF_WIDTH",
-    "val":0.4064
+    "val":0.4191
    }
   },
   "differentialTrackWidth":{
