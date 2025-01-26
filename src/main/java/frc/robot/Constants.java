@@ -246,4 +246,11 @@ public final class Constants {
   public static class LoggingConstants {
     public static final double LOG_ALERT_INTERVAL = 5; // Interval (in s) between logs of an alert if its text doesn't change
   }
+
+  public static class EndEffectorConstants {
+    public static final int MOTOR_SPEED = 0;
+    public static final int endEffectorMotorID = 0;
+  }
+
+
 }
