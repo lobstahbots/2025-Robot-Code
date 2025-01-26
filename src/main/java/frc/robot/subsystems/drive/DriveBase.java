@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems.drive;
 
+import java.util.List;
+
 import org.littletonrobotics.junction.Logger;
 
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
@@ -31,8 +33,8 @@ import frc.robot.Constants.DriveConstants.BackLeftModuleConstants;
 import frc.robot.Constants.DriveConstants.BackRightModuleConstants;
 import frc.robot.Constants.DriveConstants.FrontLeftModuleConstants;
 import frc.robot.Constants.DriveConstants.FrontRightModuleConstants;
-import frc.robot.subsystems.vision.Vision;
-import frc.robot.subsystems.vision.Vision.Poses;
+import frc.robot.subsystems.vision.Camera;
+import frc.robot.subsystems.vision.Camera.Pose;
 import stl.math.LobstahMath;
 import stl.sysId.CharacterizableSubsystem;
 
@@ -49,7 +51,7 @@ public class DriveBase extends CharacterizableSubsystem {
   private final GyroIOInputsAutoLogged gyroInputs = new GyroIOInputsAutoLogged();
   private boolean isOpenLoop;
   private Rotation2d simRotation = new Rotation2d();
-  private final Vision photonVision;
+  private final List<Camera> cameras;
   private boolean hasSeenTag = false;
 
   private Field2d field;
@@ -57,16 +59,15 @@ public class DriveBase extends CharacterizableSubsystem {
   /**
    * Create a new serve drivebase.
    * 
-   * @param gyroIO       The {@link GyroIO}.
-   * @param photonVision The {@link Vision} instance for odometry and note
-   *                     detection.
+   * @param gyroIO     The {@link GyroIO}.
+   * @param cameras    a list of {@link Camera}s on the robot
    * @param frontLeft
    * @param frontRight
    * @param backLeft
    * @param backRight
-   * @param isOpenLoop   If true, skip closed-loop (PID) control.
+   * @param isOpenLoop If true, skip closed-loop (PID) control.
    */
-  public DriveBase(GyroIO gyroIO, Vision photonVision, SwerveModuleIO frontLeft, SwerveModuleIO frontRight,
+  public DriveBase(GyroIO gyroIO, List<Camera> cameras, SwerveModuleIO frontLeft, SwerveModuleIO frontRight,
       SwerveModuleIO backLeft, SwerveModuleIO backRight, boolean isOpenLoop) {
     this.modules = new SwerveModule[] { new SwerveModule(frontLeft, FrontLeftModuleConstants.moduleID),
         new SwerveModule(frontRight, FrontRightModuleConstants.moduleID),
@@ -76,7 +77,7 @@ public class DriveBase extends CharacterizableSubsystem {
     this.gyro = gyroIO;
 
     gyro.zeroGyro();
-    this.photonVision = photonVision;
+    this.cameras = cameras;
     swerveOdometry = new SwerveDrivePoseEstimator(DriveConstants.KINEMATICS, gyroInputs.yawPosition, getPositions(),
         new Pose2d());
     visionLessOdometry = new SwerveDrivePoseEstimator(DriveConstants.KINEMATICS, gyroInputs.yawPosition, getPositions(),
@@ -154,7 +155,8 @@ public class DriveBase extends CharacterizableSubsystem {
   public void driveRobotRelative(ChassisSpeeds chassisSpeeds) {
     Logger.recordOutput("Unoptimized:", DriveConstants.KINEMATICS.toSwerveModuleStates(chassisSpeeds));
     swerveSetpoint = setpointGenerator.generateSetpoint(DriveConstants.MODULE_LIMITS,
-        new SwerveSetpoint(getRobotRelativeSpeeds(), getStates()), ChassisSpeeds.discretize(chassisSpeeds, 0.02), SimConstants.LOOP_TIME);
+        new SwerveSetpoint(getRobotRelativeSpeeds(), getStates()), ChassisSpeeds.discretize(chassisSpeeds, 0.02),
+        SimConstants.LOOP_TIME);
     SwerveDriveKinematics.desaturateWheelSpeeds(swerveSetpoint.moduleStates, DriveConstants.MAX_DRIVE_SPEED);
     setModuleStates(swerveSetpoint.moduleStates);
   }
@@ -262,36 +264,22 @@ public class DriveBase extends CharacterizableSubsystem {
       SmartDashboard.putNumber("Twist Theta", twist.dtheta);
       swerveOdometry.update(simRotation, getPositions());
       visionLessOdometry.update(simRotation, getPositions());
-      photonVision.update(getPose());
     } else {
       swerveOdometry.updateWithTime(Timer.getFPGATimestamp(), gyroInputs.yawPosition, getPositions());
       visionLessOdometry.updateWithTime(Timer.getFPGATimestamp(), gyroInputs.yawPosition, getPositions());
     }
     SmartDashboard.putBoolean("Has seen tag", hasSeenTag);
-    Poses estimatedPoses = photonVision.getEstimatedPose(getPose());
-    if (estimatedPoses.frontPose().isPresent() && (hasSeenTag == false
-        || LobstahMath.getDistBetweenPoses(estimatedPoses.frontPose().get().toPose2d(), getPose()) <= 1)) {
-      if (hasSeenTag == false) {
-        resetPose(new Pose2d(estimatedPoses.frontPose().get().getX(), estimatedPoses.frontPose().get().getY(),
-            getGyroAngle()));
-        hasSeenTag = true;
+    for (Camera camera : cameras) {
+      Pose estimatedPose = camera.getEstimatedPose(getPose());
+      if (estimatedPose.pose().isPresent() && (hasSeenTag == false
+          || LobstahMath.getDistBetweenPoses(estimatedPose.pose().get().toPose2d(), getPose()) <= 1)) {
+        if (hasSeenTag == false) {
+          resetPose(new Pose2d(estimatedPose.pose().get().getX(), estimatedPose.pose().get().getY(), getGyroAngle()));
+          hasSeenTag = true;
+        }
+        swerveOdometry.addVisionMeasurement(estimatedPose.pose().get().toPose2d(), Timer.getFPGATimestamp(),
+            estimatedPose.stdev().get());
       }
-      Logger.recordOutput("Front Pose", estimatedPoses.frontPose().get());
-      Logger.recordOutput("Front Stdev", estimatedPoses.frontStdev().toString());
-      swerveOdometry.addVisionMeasurement(estimatedPoses.frontPose().get().toPose2d(), Timer.getFPGATimestamp(),
-          estimatedPoses.frontStdev().get());
-    }
-    if (estimatedPoses.rearPose().isPresent() && (hasSeenTag == false
-        || LobstahMath.getDistBetweenPoses(estimatedPoses.rearPose().get().toPose2d(), getPose()) <= 1)) {
-      if (hasSeenTag == false) {
-        resetPose(
-            new Pose2d(estimatedPoses.rearPose().get().getX(), estimatedPoses.rearPose().get().getY(), getGyroAngle()));
-        hasSeenTag = true;
-      }
-      Logger.recordOutput("Rear Pose", estimatedPoses.rearPose().get());
-      Logger.recordOutput("Rear Stdev", estimatedPoses.rearStdev().toString());
-      swerveOdometry.addVisionMeasurement(estimatedPoses.rearPose().get().toPose2d(), Timer.getFPGATimestamp(),
-          estimatedPoses.rearStdev().get());
     }
     resetPose(new Pose2d(
         MathUtil.clamp(getPose().getX(), RobotConstants.TRACK_WIDTH / 2, 16.5 - RobotConstants.TRACK_WIDTH / 2),
@@ -325,13 +313,17 @@ public class DriveBase extends CharacterizableSubsystem {
           .exp(new Twist3d(0.0, 0.0, Math.abs(gyroInputs.rollPosition.getRadians()) * RobotConstants.TRACK_WIDTH / 2.0,
               gyroInputs.rollPosition.getRadians(), 0.0, 0.0));
 
-      Pose3d frontLeftPose3d = new Pose3d(getPose()).plus(VisionConstants.ROBOT_TO_FRONT_CAMERA);
-      Pose3d backRightPose3d = new Pose3d(getPose()).plus(VisionConstants.ROBOT_TO_REAR_CAMERA);
+      Pose3d frontLeftPose3d = new Pose3d(getPose())
+          .plus(VisionConstants.CAMERA_TRANSFORMS.get(VisionConstants.FRONT_CAMERA_NAME));
+      Pose3d backRightPose3d = new Pose3d(getPose())
+          .plus(VisionConstants.CAMERA_TRANSFORMS.get(VisionConstants.REAR_CAMERA_NAME));
 
       Logger.recordOutput("Back Right", backRightPose3d);
       Logger.recordOutput("Front Left", frontLeftPose3d);
-      Logger.recordOutput("Front Left Pose", robotPose3d.plus(VisionConstants.ROBOT_TO_FRONT_CAMERA));
-      Logger.recordOutput("Back Right Pose", robotPose3d.plus(VisionConstants.ROBOT_TO_REAR_CAMERA));
+      Logger.recordOutput("Front Left Pose",
+          robotPose3d.plus(VisionConstants.CAMERA_TRANSFORMS.get(VisionConstants.FRONT_CAMERA_NAME)));
+      Logger.recordOutput("Back Right Pose",
+          robotPose3d.plus(VisionConstants.CAMERA_TRANSFORMS.get(VisionConstants.REAR_CAMERA_NAME)));
 
       Logger.recordOutput("Odometry/Robot3d", robotPose3d);
     }
