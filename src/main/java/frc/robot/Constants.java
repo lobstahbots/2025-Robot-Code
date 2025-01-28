@@ -28,6 +28,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Mass;
 import edu.wpi.first.units.measure.MomentOfInertia;
 import frc.robot.subsystems.drive.SwerveKinematicLimits;
+import stl.choreo.ChoreoVariables;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide
@@ -62,13 +63,13 @@ public final class Constants {
   }
 
   public static class RobotConstants {
-    public static final double WHEELBASE = Units.inchesToMeters(20);
-    public static final double TRACK_WIDTH = Units.inchesToMeters(20);
-    public static final double EDGE_TO_MODULE_CENTER = Units.inchesToMeters(1.75);
+    public static final double WHEELBASE = ChoreoVariables.get("ROBOT_SIZE");
+    public static final double TRACK_WIDTH = ChoreoVariables.get("ROBOT_SIZE");
+    public static final double EDGE_TO_MODULE_CENTER = ChoreoVariables.get("EDGE_TO_MODULE_CENTER");
     // Distance from robot center to module center
     public static final double RADIUS = Math.sqrt(2 * Math.pow(WHEELBASE / 2 - EDGE_TO_MODULE_CENTER, 2));
-    public static final double WHEEL_DIAMETER = Units.inchesToMeters(3);
-    public static final double DRIVE_GEAR_RATIO = 4.71;
+    public static final double WHEEL_DIAMETER = ChoreoVariables.get("WHEEL_DIAMETER");
+    public static final double DRIVE_GEAR_RATIO = ChoreoVariables.get("DRIVE_GEAR_RATIO");
     public static final double ANGLE_GEAR_RATIO = 9424 / 203;
     public static final double MAX_DRIVE_SPEED = 5.23; // from https://www.reca.lc/drive
     public static final Mass WEIGHT = Pounds.of(40);
