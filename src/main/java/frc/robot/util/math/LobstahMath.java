@@ -6,6 +6,7 @@ package frc.robot.util.math;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -31,8 +32,7 @@ public class LobstahMath {
     double inputRange = inputMax - inputMin;
     double outputRange = outputMax - outputMin;
 
-    if (inputRange == 0)
-      throw new IllegalArgumentException("Input range cannot be 0");
+    if (inputRange == 0) throw new IllegalArgumentException("Input range cannot be 0");
 
     return ((x - inputMin) / inputRange * outputRange) + outputMin;
 
@@ -64,8 +64,7 @@ public class LobstahMath {
   public static double calculateTurningOutput(double currentAngle, double desiredAngle) {
     double output = currentAngle - desiredAngle;
     output %= 360;
-    if (Math.abs(output) > 180)
-      output -= Math.signum(output) * 360;
+    if (Math.abs(output) > 180) output -= Math.signum(output) * 360;
     return output;
   }
 
@@ -83,9 +82,7 @@ public class LobstahMath {
         value += range;
       }
     }
-    if (value > highThreshold) {
-      value %= range;
-    }
+    if (value > highThreshold) { value %= range; }
 
     return value;
   }
@@ -107,7 +104,7 @@ public class LobstahMath {
       return angle;
     }
   }
-  
+
   /**
    * Obtains a Rotation2d that points in the opposite direction from this
    * rotation.
@@ -131,13 +128,35 @@ public class LobstahMath {
   }
 
   /**
-   * Gets the distance between two {@link Pose2d}s. 
+   * Gets the distance between two {@link Pose2d}s.
+   * 
    * @param initialPose The first pose
-   * @param endingPose The second pose
+   * @param endingPose  The second pose
    * @return The distance in meters
    */
   public static double getDistBetweenPoses(Pose2d firstPose, Pose2d secondPose) {
     return firstPose.minus(secondPose).getTranslation().getNorm();
   }
 
+  /**
+   * Gets the 2D distance between a {@link Pose3d} and a {@link Pose2d}.
+   * 
+   * @param firstPose  The first pose
+   * @param secondPose The second pose
+   * @return The distance in meters
+   */
+  public static double getDistBetweenPoses(Pose3d firstPose, Pose2d secondPose) {
+    return getDistBetweenPoses(firstPose.toPose2d(), secondPose);
+  }
+
+  /**
+   * Gets the 2D distance between a {@link Pose2d} and a {@link Pose3d}.
+   * 
+   * @param firstPose The first pose
+   * @param secondPose The second pose
+   * @return The distance in meters
+   */
+  public static double getDistBetweenPoses(Pose2d firstPose, Pose3d secondPose) {
+    return getDistBetweenPoses(secondPose, firstPose);
+  }
 }
