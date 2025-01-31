@@ -1,6 +1,6 @@
 // Adapted from 6328 Mechanical Advantage's 2023 Robot Code
 
-package stl.led;
+package frc.robot.util.led;
 
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.util.Color;

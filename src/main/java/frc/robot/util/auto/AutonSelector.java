@@ -1,6 +1,6 @@
 // Custom implementation incorporating pair key-value mapping of 6328 Mechanical Advantage for on-the-fly updating auton selection code.
 
-package stl.auto;
+package frc.robot.util.auto;
 
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StringPublisher;

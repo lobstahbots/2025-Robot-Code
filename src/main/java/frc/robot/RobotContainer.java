@@ -22,8 +22,8 @@ import frc.robot.subsystems.drive.SwerveModuleIOSparkMax;
 import frc.robot.subsystems.vision.Camera;
 import frc.robot.subsystems.vision.CameraIOPhoton;
 import frc.robot.subsystems.vision.CameraIOSim;
-import stl.auto.AutonSelector;
-import stl.auto.AutonSelector.AutoQuestion;
+import frc.robot.util.auto.AutonSelector;
+import frc.robot.util.auto.AutonSelector.AutoQuestion;
 
 import java.util.ArrayList;
 import java.util.List;
