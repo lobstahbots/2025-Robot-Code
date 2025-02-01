@@ -270,6 +270,7 @@ public class DriveBase extends CharacterizableSubsystem {
     }
     SmartDashboard.putBoolean("Has seen tag", hasSeenTag);
     for (Camera camera : cameras) {
+      camera.periodic();
       Pose estimatedPose = camera.getEstimatedPose(getPose());
       if (estimatedPose.pose().isPresent() && (hasSeenTag == false
           || LobstahMath.getDistBetweenPoses(estimatedPose.pose().get().toPose2d(), getPose()) <= 1)) {
