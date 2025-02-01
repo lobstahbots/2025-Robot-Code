@@ -246,4 +246,10 @@ public final class Constants {
   public static class LoggingConstants {
     public static final double LOG_ALERT_INTERVAL = 5; // Interval (in s) between logs of an alert if its text doesn't change
   }
+
+  public static class ElevatorConstants {
+    public static final double GEAR_RATIO = 2; // TODO: Find actual gear ratio
+    public static final double PITCH_DIAMETER = 0.5; // TODO: Find actual pitch diameter
+  }
 }
+
