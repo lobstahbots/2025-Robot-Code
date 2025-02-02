@@ -2,11 +2,11 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package stl.tempControl;
+package frc.robot.util.tempControl;
 
 import com.ctre.phoenix6.hardware.TalonFX;
 
-import stl.tempControl.TemperatureMonitor.Monitorable;
+import frc.robot.util.tempControl.TemperatureMonitor.Monitorable;
 
 /** A temperature-controlled Talon FX motor controller. */
 public class MonitoredTalonFX extends TalonFX implements Monitorable {
@@ -24,7 +24,7 @@ public class MonitoredTalonFX extends TalonFX implements Monitorable {
      * </ul>
      *
      * @param deviceId ID of the device, as configured in Phoenix Tuner.
-     * @param label label The label associated with this motor, for use in {@link stl.networkalerts.Alert NetworkAlerts}.
+     * @param label label The label associated with this motor, for use in {@link frc.robot.util.networkalerts.Alert NetworkAlerts}.
      */
     public MonitoredTalonFX(int deviceId, String label) {
         super(deviceId);

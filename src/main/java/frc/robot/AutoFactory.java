@@ -23,7 +23,7 @@ import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.PathConstants;
 import frc.robot.commands.SwerveDriveStopCommand;
 import frc.robot.subsystems.drive.DriveBase;
-import stl.sysId.CharacterizableSubsystem;
+import frc.robot.util.sysId.CharacterizableSubsystem;
 
 public class AutoFactory {
     private final Supplier<List<Object>> responses;
@@ -34,7 +34,7 @@ public class AutoFactory {
      * 
      * @param driveBase         {@link DriveBase} to drive.
      * @param responsesSupplier Responses to auto chooser questions.
-     * @see stl.auto.AutonSelector
+     * @see frc.robot.util.auto.AutonSelector
      */
     public AutoFactory(DriveBase driveBase, Supplier<List<Object>> responsesSupplier) {
         this.responses = responsesSupplier;

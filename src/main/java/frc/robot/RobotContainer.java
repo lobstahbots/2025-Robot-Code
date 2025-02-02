@@ -6,6 +6,7 @@ package frc.robot;
 
 import frc.robot.AutoFactory.CharacterizationRoutine;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.VisionConstants;
 import frc.robot.Constants.DriveConstants.BackLeftModuleConstants;
 import frc.robot.Constants.DriveConstants.BackRightModuleConstants;
 import frc.robot.Constants.DriveConstants.FrontLeftModuleConstants;
@@ -18,12 +19,13 @@ import frc.robot.subsystems.drive.GyroIONavX;
 import frc.robot.subsystems.drive.GyroIOSim;
 import frc.robot.subsystems.drive.SwerveModuleIOSim;
 import frc.robot.subsystems.drive.SwerveModuleIOSparkMax;
-import frc.robot.subsystems.vision.Vision;
-import frc.robot.subsystems.vision.VisionIOPhoton;
-import frc.robot.subsystems.vision.VisionIOSim;
-import stl.auto.AutonSelector;
-import stl.auto.AutonSelector.AutoQuestion;
+import frc.robot.subsystems.vision.Camera;
+import frc.robot.subsystems.vision.CameraIOPhoton;
+import frc.robot.subsystems.vision.CameraIOSim;
+import frc.robot.util.auto.AutonSelector;
+import frc.robot.util.auto.AutonSelector.AutoQuestion;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -69,7 +71,10 @@ public class RobotContainer {
                     "Back right", BackRightModuleConstants.angleID, BackRightModuleConstants.driveID,
                     BackRightModuleConstants.angleOffset, BackRightModuleConstants.inverted);
 
-            driveBase = new DriveBase(new GyroIONavX(), new Vision(new VisionIOPhoton()), frontLeft, frontRight,
+            List<Camera> cameras = new ArrayList<>();
+            cameras.add(new Camera(new CameraIOPhoton(VisionConstants.FRONT_CAMERA_NAME)));
+            cameras.add(new Camera(new CameraIOPhoton(VisionConstants.REAR_CAMERA_NAME)));
+            driveBase = new DriveBase(new GyroIONavX(), cameras, frontLeft, frontRight,
                     backLeft, backRight, false);
         } else {
             driveSimulation = new SwerveDriveSimulation(DriveConstants.MAPLE_SIM_CONFIG, new Pose2d(3, 3, new Rotation2d()));
@@ -81,7 +86,10 @@ public class RobotContainer {
             SwerveModuleIOSim backLeft = new SwerveModuleIOSim(BackLeftModuleConstants.angleOffset, modules[2]);
             SwerveModuleIOSim backRight = new SwerveModuleIOSim(BackRightModuleConstants.angleOffset, modules[3]);
 
-            driveBase = new DriveBase(new GyroIOSim(driveSimulation.getGyroSimulation()) {}, new Vision(new VisionIOSim()), frontLeft, frontRight, backLeft,
+            List<Camera> cameras = new ArrayList<>();
+            cameras.add(new Camera(new CameraIOSim(VisionConstants.FRONT_CAMERA_NAME)));
+            cameras.add(new Camera(new CameraIOSim(VisionConstants.REAR_CAMERA_NAME)));
+            driveBase = new DriveBase(new GyroIOSim(driveSimulation.getGyroSimulation()) {}, cameras, frontLeft, frontRight, backLeft,
                     backRight, false);
         }
 

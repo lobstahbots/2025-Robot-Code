@@ -7,6 +7,9 @@ package frc.robot;
 import static edu.wpi.first.units.Units.KilogramSquareMeters;
 import static edu.wpi.first.units.Units.Pounds;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.ironmaple.simulation.drivesims.COTS;
 import org.ironmaple.simulation.drivesims.configs.DriveTrainSimulationConfig;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
@@ -195,11 +198,17 @@ public final class Constants {
 
   public static class VisionConstants {
     public static final PoseStrategy POSE_STRATEGY = PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR;
-    public static final Transform3d ROBOT_TO_FRONT_CAMERA = new Transform3d(Units.inchesToMeters(13.916),
-        Units.inchesToMeters(3.102475), Units.inchesToMeters(7.820), new Rotation3d(0, Units.degreesToRadians(-35), 0));
-    public static final Transform3d ROBOT_TO_REAR_CAMERA = new Transform3d(Units.inchesToMeters(-13.193037),
-        Units.inchesToMeters(-9.543), Units.inchesToMeters(7.820),
-        new Rotation3d(0, Units.degreesToRadians(-35), Units.degreesToRadians(180)));
+    public static final String FRONT_CAMERA_NAME = "photonvision2";
+    public static final String REAR_CAMERA_NAME = "photonvision1";
+    public static final Map<String, Transform3d> CAMERA_TRANSFORMS = new HashMap<>();
+    static {
+      CAMERA_TRANSFORMS.put(REAR_CAMERA_NAME,
+          new Transform3d(Units.inchesToMeters(-13.193037), Units.inchesToMeters(-9.543), Units.inchesToMeters(7.820),
+              new Rotation3d(0, Units.degreesToRadians(-35), Units.degreesToRadians(180))));
+      CAMERA_TRANSFORMS.put(FRONT_CAMERA_NAME,
+          new Transform3d(Units.inchesToMeters(13.916), Units.inchesToMeters(3.102475), Units.inchesToMeters(7.820),
+              new Rotation3d(0, Units.degreesToRadians(-35), 0)));
+    }
     public static final double VISION_ODOMETRY_DIFFERENCE_FILTER_THRESHOLD = 5;
     public static final int CAMERA_RES_WIDTH = 1280;
     public static final int CAMERA_RES_HEIGHT = 960;
@@ -218,10 +227,11 @@ public final class Constants {
                                                                       // AprilTags
                                                                       // See https://www.desmos.com/calculator/i5z7ddbjy4
 
-    public static final double AMBIGUITY_TO_STDEV_EXP = 1;
+    public static final double REPROJ_TO_STDEV_EXP = 1;
     public static final Vector<N3> BASE_STDEV = VecBuilder.fill(0.1, 0.1, 1000.0); // x, y, angle
     public static final double AMBIGUITY_ACCEPTANCE_THRESHOLD = 0.2;
-    public static final double REPROJECTION_ERROR_REJECTION_THRESHOLD = 0.4;
+    public static final double REPROJECTION_ERROR_REJECTION_THRESHOLD = 0.8;
+    public static final double SIM_BUFFER_LENGTH = 1.5;
   }
 
   public static class TempConstants {
@@ -252,6 +262,4 @@ public final class Constants {
     public static final int MOTOR_SPEED = 0;
     public static final int endEffectorMotorID = 0;
   }
-
-
 }

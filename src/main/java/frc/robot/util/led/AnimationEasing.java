@@ -1,4 +1,4 @@
-package stl.led;
+package frc.robot.util.led;
 
 public class AnimationEasing {
     /** @deprecated Work in progress */

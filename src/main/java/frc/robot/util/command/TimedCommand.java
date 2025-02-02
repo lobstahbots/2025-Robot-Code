@@ -1,5 +1,5 @@
 
-package stl.command;
+package frc.robot.util.command;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
