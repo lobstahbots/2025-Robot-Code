@@ -61,10 +61,8 @@ public class Camera {
                         / Math.log(inputs.totalArea + 1) // Multiply by the scaling for the area of the AprilTags
                 );
 
-        Logger.recordOutput("Vision/" + cameraName + "/BestPose", inputs.bestEstimatedPose);
-        Logger.recordOutput("Vision/" + cameraName + "/AltPose", inputs.altEstimatedPose);
         Logger.recordOutput("Vision/" + cameraName + "/ResolvedPose", resolvedPose);
-        Logger.recordOutput("Vsion/" + cameraName + "/stdev", stdev);
+        Logger.recordOutput("Vision/" + cameraName + "/stdev", stdev.toString());
 
         if (resolvedPose != null && resolvedPose.getX() == 0 && resolvedPose.getY() == 0) resolvedPose = null;
 
