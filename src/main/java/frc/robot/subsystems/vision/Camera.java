@@ -9,6 +9,7 @@ import org.photonvision.targeting.PhotonTrackedTarget;
 import edu.wpi.first.math.Vector;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.numbers.N3;
 import frc.robot.Constants.VisionConstants;
 import frc.robot.util.math.LobstahMath;
@@ -24,6 +25,13 @@ public class Camera {
         this.cameraName = io.getCameraName();
     }
 
+    /**
+     * Get the estimated pose from this camera.
+     * 
+     * @param odometryPose The current odometry pose
+     * @return a {@link Pose} object representing the estimated pose, standard
+     *         deviation, and timestamp
+     */
     public Pose getEstimatedPose(Pose2d odometryPose) {
         robotPose = odometryPose;
         if (inputs.visibleFiducialIDs.length == 0) return Pose.empty();
@@ -64,7 +72,8 @@ public class Camera {
 
         if (resolvedPose != null && resolvedPose.getX() == 0 && resolvedPose.getY() == 0) resolvedPose = null;
 
-        return new Pose(Optional.ofNullable(resolvedPose), Optional.ofNullable(stdev));
+        return new Pose(Optional.ofNullable(resolvedPose), Optional.ofNullable(stdev),
+                Optional.of(inputs.estimatedPoseTimestamp));
     }
 
     /**
@@ -100,18 +109,42 @@ public class Camera {
     }
 
     /**
-     * Contains a pose and a stdev estimated from a camera.
+     * Get this camera's name
+     * 
+     * @return The camera name, as set by the {@link CameraIO} passed into the
+     *         constructor of this lassF
+     */
+    public String getName() {
+        return cameraName;
+    }
+
+    /**
+     * Get the robot-to-camera transform for this camera.
+     * 
+     * @return The robot-to-camera transform for this camera, as a
+     *         {@link Transform3d}.
+     */
+    public Transform3d getRobotToCamera() {
+        return VisionConstants.CAMERA_TRANSFORMS.get(cameraName);
+    }
+
+    /**
+     * Contains a pose, a timestamp, and a stdev estimated from a camera.
      */
     public static record Pose(
             /**
              * The estimated robot pose.
              */
-            Optional<Pose3d> pose, /**
-                                    * The stdev for the estimated robot pose.
-                                    */
-            Optional<Vector<N3>> stdev) {
+            Optional<Pose3d> pose,
+            /**
+             * The stdev for the estimated robot pose.
+             */
+            Optional<Vector<N3>> stdev, /**
+                                         * The timestamp of the estimated pose
+                                         */
+            Optional<Double> timestamp) {
         public static Pose empty() {
-            return new Pose(Optional.empty(), Optional.empty());
+            return new Pose(Optional.empty(), Optional.empty(), Optional.empty());
         }
     };
 }

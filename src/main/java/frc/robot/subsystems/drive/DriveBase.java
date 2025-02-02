@@ -28,7 +28,6 @@ import frc.robot.Robot;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.RobotConstants;
 import frc.robot.Constants.SimConstants;
-import frc.robot.Constants.VisionConstants;
 import frc.robot.Constants.DriveConstants.BackLeftModuleConstants;
 import frc.robot.Constants.DriveConstants.BackRightModuleConstants;
 import frc.robot.Constants.DriveConstants.FrontLeftModuleConstants;
@@ -278,7 +277,7 @@ public class DriveBase extends CharacterizableSubsystem {
           resetPose(new Pose2d(estimatedPose.pose().get().getX(), estimatedPose.pose().get().getY(), getGyroAngle()));
           hasSeenTag = true;
         }
-        swerveOdometry.addVisionMeasurement(estimatedPose.pose().get().toPose2d(), Timer.getFPGATimestamp(),
+        swerveOdometry.addVisionMeasurement(estimatedPose.pose().get().toPose2d(), estimatedPose.timestamp().get(),
             estimatedPose.stdev().get());
       }
     }
@@ -291,6 +290,18 @@ public class DriveBase extends CharacterizableSubsystem {
     Logger.recordOutput("Vision Less", visionLessOdometry.getEstimatedPosition());
     gyro.updateInputs(gyroInputs);
     Logger.processInputs("Drive/Gyro", gyroInputs);
+    // Log 3D odometry pose
+    Pose3d robotPose3d = new Pose3d(getPose());
+    robotPose3d = robotPose3d
+        .exp(new Twist3d(0.0, 0.0, Math.abs(gyroInputs.pitchPosition.getRadians()) * RobotConstants.TRACK_WIDTH / 2.0,
+            0.0, gyroInputs.pitchPosition.getRadians(), 0.0))
+        .exp(new Twist3d(0.0, 0.0, Math.abs(gyroInputs.rollPosition.getRadians()) * RobotConstants.TRACK_WIDTH / 2.0,
+            gyroInputs.rollPosition.getRadians(), 0.0, 0.0));
+
+    Logger.recordOutput("Odometry/Robot3d", robotPose3d);
+    for (Camera camera : cameras) {
+      Logger.recordOutput("Vision/" + camera.getName() + "/Pose3d", robotPose3d.plus(camera.getRobotToCamera()));
+    }
     SmartDashboard.putBoolean("Field Centric", DriveConstants.FIELD_CENTRIC);
     for (var module : modules) {
       module.periodic();
@@ -302,31 +313,6 @@ public class DriveBase extends CharacterizableSubsystem {
       }
     }
 
-    else {
-      Logger.recordOutput("SwerveStates/Measured", getStates());
-      Logger.recordOutput("Odometry/Robot", getPose());
-
-      // Log 3D odometry pose
-      Pose3d robotPose3d = new Pose3d(getPose());
-      robotPose3d = robotPose3d
-          .exp(new Twist3d(0.0, 0.0, Math.abs(gyroInputs.pitchPosition.getRadians()) * RobotConstants.TRACK_WIDTH / 2.0,
-              0.0, gyroInputs.pitchPosition.getRadians(), 0.0))
-          .exp(new Twist3d(0.0, 0.0, Math.abs(gyroInputs.rollPosition.getRadians()) * RobotConstants.TRACK_WIDTH / 2.0,
-              gyroInputs.rollPosition.getRadians(), 0.0, 0.0));
-
-      Pose3d frontLeftPose3d = new Pose3d(getPose())
-          .plus(VisionConstants.CAMERA_TRANSFORMS.get(VisionConstants.FRONT_CAMERA_NAME));
-      Pose3d backRightPose3d = new Pose3d(getPose())
-          .plus(VisionConstants.CAMERA_TRANSFORMS.get(VisionConstants.REAR_CAMERA_NAME));
-
-      Logger.recordOutput("Back Right", backRightPose3d);
-      Logger.recordOutput("Front Left", frontLeftPose3d);
-      Logger.recordOutput("Front Left Pose",
-          robotPose3d.plus(VisionConstants.CAMERA_TRANSFORMS.get(VisionConstants.FRONT_CAMERA_NAME)));
-      Logger.recordOutput("Back Right Pose",
-          robotPose3d.plus(VisionConstants.CAMERA_TRANSFORMS.get(VisionConstants.REAR_CAMERA_NAME)));
-
-      Logger.recordOutput("Odometry/Robot3d", robotPose3d);
-    }
+    Logger.recordOutput("SwerveStates/Measured", getStates());
   }
 }
