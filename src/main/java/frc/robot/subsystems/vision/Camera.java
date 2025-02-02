@@ -38,9 +38,7 @@ public class Camera {
                 .abs(inputs.altEstimatedPose.toPose2d().getRotation().minus(odometryPose.getRotation()).getRotations());
 
         // Select pose if closest to robot pose or better rotation, reject if reprojection error > 0.4 * alternative pose reprojection error
-        if ((bestDistanceToCurrPose <= altDistanceToCurrPose || bestRotationDiff <= altRotationDiff)
-                && inputs.bestReprojErr <= VisionConstants.REPROJECTION_ERROR_REJECTION_THRESHOLD
-                        * inputs.altReprojErr) {
+        if (bestDistanceToCurrPose <= altDistanceToCurrPose || bestRotationDiff <= altRotationDiff) {
             resolvedPose = inputs.bestEstimatedPose;
             resolvedReprojErr = inputs.bestReprojErr;
         }
