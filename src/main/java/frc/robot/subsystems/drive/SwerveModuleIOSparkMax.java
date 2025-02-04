@@ -22,8 +22,8 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.SwerveConstants;
-import stl.tempControl.MonitoredSparkMax;
-import stl.tempControl.TemperatureMonitor;
+import frc.robot.util.tempControl.MonitoredSparkMax;
+import frc.robot.util.tempControl.TemperatureMonitor;
 
 public class SwerveModuleIOSparkMax implements SwerveModuleIO {
   private final MonitoredSparkMax angleMotor;
