@@ -26,7 +26,7 @@ public class EndEffector extends SubsystemBase {
     endEffectorMotor.stopMotor();
   }
 
-  public void runMotor() {
-    endEffectorMotor.set(EndEffectorConstants.MOTOR_SPEED);
+  public void runMotor(double speed) {
+    endEffectorMotor.set(speed);
   }
 }
