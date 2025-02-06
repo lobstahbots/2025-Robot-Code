@@ -9,7 +9,6 @@ import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
-import com.ctre.phoenix6.controls.NeutralOut;
 import com.ctre.phoenix6.controls.VoltageOut;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
@@ -38,7 +37,6 @@ public class ElevatorIOTalonFX implements ElevatorIO {
   private final StatusSignal<Temperature> leftTempCelsius;
   private final MotionMagicVoltage positionVoltage = new MotionMagicVoltage(ElevatorConstants.MOTION_MAGIC_POSITION_VOLTAGE);
   private final VoltageOut voltageOut = new VoltageOut(ElevatorConstants.VOLTAGE_OUTPUT).withEnableFOC(true);
-  private final NeutralOut neutralOut = new NeutralOut();
 
 
   public ElevatorIOTalonFX(int leftElevatorID, int rightElevatorID) {
@@ -124,6 +122,6 @@ public class ElevatorIOTalonFX implements ElevatorIO {
 
   @Override
   public void stop() {
-    rightElevatorMotor.setControl(neutralOut); // TODO: Is this the right way to stop the motor? Should I stop w/ voltage? Should I stop w/ .stopMotor()?
+    rightElevatorMotor.stopMotor();
   }
 }
