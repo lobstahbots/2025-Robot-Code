@@ -9,18 +9,25 @@ public interface ElevatorIO {
         double rightVelocity;
         double rightAppliedVoltage;
         double rightSupplyCurrent;
+        double rightStatorCurrent;
         double rightTorqueCurrent;
         double rightTempCelsius;
         double leftPosition;
         double leftVelocity;
         double leftAppliedVoltage;
         double leftSupplyCurrent;
+        double leftStatorCurrent;
         double leftTorqueCurrent;
         double leftTempCelsius;
     }
 
-    default void updateInputs(ElevatorIOInputs inputs) {}
+    public default void updateInputs(ElevatorIOInputs inputs) {}
 
-    default void stop() {}
+    public default void setVoltage(double voltage) {};
+
+    public default void setPosition(double position) {}; 
+  
+    public default void stop() {};
     
-}
+    public default void resetEncoder(double position) {};
+  }
