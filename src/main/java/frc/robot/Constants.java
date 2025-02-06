@@ -275,6 +275,9 @@ public final class Constants {
     public static final double STATOR_CURRENT_LIMIT = 40; // TODO: Find actual current limit
 
     public static final double VOLTAGE_OUTPUT = 0; // TODO: Find actual voltage
+    public static final double DUTY_CYCLE_OUTPUT = 0; // TODO: Find actual duty cycle
+    public static final double DUTY_CYCLE_OUTPUT_LIMIT = 0.5; // TODO: Find actual duty cycle limit
+
     public static final double MOTION_MAGIC_POSITION_VOLTAGE = 0; // TODO: Find actual voltage
     public static final double MOTION_MAGIC_ACCELERATION = 0.5; // TODO: Find actual acceleration
     public static final double MOTION_MAGIC_CRUISE_VELOCITY = 0.5; // TODO: Find actual cruise velocity
@@ -283,6 +286,7 @@ public final class Constants {
 
     public static final int LEFT_ELEVATOR_ID = 0; // TODO: Find actual motor ID
     public static final int RIGHT_ELEVATOR_ID = 1; // TODO: Find actual motor ID
+    public static final int LIMIT_SWITCH_CHANNEL = 0;
   }
 
   public static class EndEffectorConstants {
