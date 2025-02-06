@@ -23,6 +23,8 @@ public interface ElevatorIO {
 
     public default void updateInputs(ElevatorIOInputs inputs) {}
 
+    public default void setLimitSwitches() {};
+
     public default void setVoltage(double voltage) {};
 
     public default void setPosition(double position) {}; 

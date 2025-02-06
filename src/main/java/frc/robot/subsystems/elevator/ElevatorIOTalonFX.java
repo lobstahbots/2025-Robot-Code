@@ -52,7 +52,7 @@ public class ElevatorIOTalonFX implements ElevatorIO {
     config.CurrentLimits.StatorCurrentLimitEnable = true;
     config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     config.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
-    config.Feedback.SensorToMechanismRatio = ElevatorConstants.GEAR_RATIO;
+    config.Feedback.SensorToMechanismRatio = ElevatorConstants.GEAR_RATIO * ElevatorConstants.PITCH_DIAMETER * Math.PI;
     config.Slot0.kP = ElevatorConstants.PID_P;
     config.Slot0.kI = ElevatorConstants.PID_I;
     config.Slot0.kD = ElevatorConstants.PID_D;
