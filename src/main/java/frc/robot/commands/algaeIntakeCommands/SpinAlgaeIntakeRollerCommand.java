@@ -1,7 +1,7 @@
-package frc.robot.commands;
+package frc.robot.commands.algaeIntakeCommands;
 
-import frc.robot.subsystems.algaeIntake.AlgaeIntake;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.algaeIntake.AlgaeIntake;
 
 public class SpinAlgaeIntakeRollerCommand extends Command {
     private final AlgaeIntake algaeIntake;
