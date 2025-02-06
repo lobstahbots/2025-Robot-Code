@@ -9,7 +9,7 @@ import frc.robot.subsystems.elevator.ElevatorIO.ElevatorIOInputs;
 public class Elevator extends SubsystemBase {
 
   private final ElevatorIO io;
-  private final ElevatorIOInputs inputs = new ElevatorIOInputsAutoLogged();
+  private final ElevatorIOInputsAutoLogged inputs = new ElevatorIOInputsAutoLogged();
   // private final LinearFilter currentFilter = LinearFilter.movingAverage(5);
   // public double currentFilterValue = 0.0;
   // public boolean hasZeroed = false;
