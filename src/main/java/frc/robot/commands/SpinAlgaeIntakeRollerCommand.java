@@ -1,13 +1,13 @@
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.algaeIntake.AlgaeIntake;
+import edu.wpi.first.wpilibj2.command.Command;
 
-public class ExtendIntakeCommand extends Command {
+public class SpinAlgaeIntakeRollerCommand extends Command {
     private final AlgaeIntake algaeIntake;
     private final double speed;
     
-    public ExtendIntakeCommand(AlgaeIntake algaeIntake, double speed) {
+    public SpinAlgaeIntakeRollerCommand(AlgaeIntake algaeIntake, double speed) {
         this.algaeIntake = algaeIntake;
         this.speed = speed;
         addRequirements(algaeIntake);
@@ -15,7 +15,7 @@ public class ExtendIntakeCommand extends Command {
 
     @Override
     public void initialize() {
-        algaeIntake.setIntakePivotSpeed(speed);
+        algaeIntake.setIntakeRollerSpeed(speed);
     }
 
     @Override
@@ -25,7 +25,7 @@ public class ExtendIntakeCommand extends Command {
 
     @Override
     public void end(boolean interupted){
-        algaeIntake.stopIntakePivot();
+        algaeIntake.stopIntakeRoller();
     }
 
     @Override
@@ -33,4 +33,5 @@ public class ExtendIntakeCommand extends Command {
         return false;
     }
 }
+
 
