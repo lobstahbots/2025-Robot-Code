@@ -286,7 +286,7 @@ public final class Constants {
 
     public static final int LEFT_ELEVATOR_ID = 0; // TODO: Find actual motor ID
     public static final int RIGHT_ELEVATOR_ID = 1; // TODO: Find actual motor ID
-    public static final int LIMIT_SWITCH_CHANNEL = 0;
+    public static final int LIMIT_SWITCH_CHANNEL = 0; // TODO: Find actual channel
   }
 
   public static class EndEffectorConstants {
