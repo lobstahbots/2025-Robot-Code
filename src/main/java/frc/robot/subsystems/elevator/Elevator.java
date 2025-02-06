@@ -17,10 +17,6 @@ public class Elevator extends SubsystemBase {
 
   private final DigitalInput limitSwitch = new DigitalInput(ElevatorConstants.LIMIT_SWITCH_CHANNEL);
 
-  // private final LinearFilter currentFilter = LinearFilter.movingAverage(5);
-  // public double currentFilterValue = 0.0;
-  // public boolean hasZeroed = false;
-
   public Elevator(ElevatorIO io) {
     this.io = io;
   }
