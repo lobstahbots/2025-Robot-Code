@@ -31,7 +31,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Mass;
 import edu.wpi.first.units.measure.MomentOfInertia;
 import frc.robot.subsystems.drive.SwerveKinematicLimits;
-import stl.choreo.ChoreoVariables;
+import frc.robot.util.choreo.ChoreoVariables;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide
