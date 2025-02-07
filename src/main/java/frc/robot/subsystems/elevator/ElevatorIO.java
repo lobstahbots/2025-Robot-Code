@@ -21,15 +21,13 @@ public interface ElevatorIO {
         double leftTempCelsius;
     }
 
-    public default void updateInputs(ElevatorIOInputs inputs) {}
+    public void updateInputs(ElevatorIOInputs inputs);
 
-    public default void setLimitSwitches() {};
+    public void setVoltage(double voltage);
 
-    public default void setVoltage(double voltage) {};
-
-    public default void setPosition(double position) {}; 
+    public void setPosition(double position); 
   
-    public default void stop() {};
+    public void stop();
     
-    public default void resetEncoder(double position) {};
+    public void resetEncoder(double position);
   }

@@ -1,8 +1,8 @@
 package frc.robot.subsystems.elevator;
 
-
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
+import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
@@ -35,24 +35,25 @@ public class ElevatorIOTalonFX implements ElevatorIO {
   private final StatusSignal<Current> leftStatorCurrent;
   private final StatusSignal<Current> leftTorqueCurrent;
   private final StatusSignal<Temperature> leftTempCelsius;
-  private final MotionMagicVoltage positionVoltage = new MotionMagicVoltage(ElevatorConstants.MOTION_MAGIC_POSITION_VOLTAGE);
+  private final MotionMagicVoltage positionVoltage = new MotionMagicVoltage(
+      ElevatorConstants.MOTION_MAGIC_POSITION_VOLTAGE);
   private final VoltageOut voltageOut = new VoltageOut(ElevatorConstants.VOLTAGE_OUTPUT).withEnableFOC(true);
 
-
   public ElevatorIOTalonFX(int leftElevatorID, int rightElevatorID) {
-
     leftElevatorMotor = new TalonFX(leftElevatorID);
     rightElevatorMotor = new TalonFX(rightElevatorID);
 
-    
     TalonFXConfiguration config = new TalonFXConfiguration();
+
     config.CurrentLimits.SupplyCurrentLimit = ElevatorConstants.SUPPLY_CURRENT_LIMIT;
     config.CurrentLimits.SupplyCurrentLimitEnable = true;
     config.CurrentLimits.StatorCurrentLimit = ElevatorConstants.STATOR_CURRENT_LIMIT;
     config.CurrentLimits.StatorCurrentLimitEnable = true;
+
     config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     config.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
     config.Feedback.SensorToMechanismRatio = ElevatorConstants.GEAR_RATIO * ElevatorConstants.PITCH_DIAMETER * Math.PI;
+
     config.Slot0.kP = ElevatorConstants.PID_P;
     config.Slot0.kI = ElevatorConstants.PID_I;
     config.Slot0.kD = ElevatorConstants.PID_D;
@@ -62,8 +63,11 @@ public class ElevatorIOTalonFX implements ElevatorIO {
     config.Slot0.kG = ElevatorConstants.KG;
     config.MotionMagic.MotionMagicAcceleration = ElevatorConstants.MOTION_MAGIC_ACCELERATION;
     config.MotionMagic.MotionMagicCruiseVelocity = ElevatorConstants.MOTION_MAGIC_CRUISE_VELOCITY;
+    config.Slot0.GravityType = GravityTypeValue.Elevator_Static;
+
     leftElevatorMotor.getConfigurator().apply(config);
     rightElevatorMotor.getConfigurator().apply(config);
+
     leftElevatorMotor.setControl(new Follower(rightElevatorID, true));
 
     rightPosition = rightElevatorMotor.getPosition();
@@ -81,14 +85,18 @@ public class ElevatorIOTalonFX implements ElevatorIO {
     leftTorqueCurrent = leftElevatorMotor.getTorqueCurrent();
     leftTempCelsius = leftElevatorMotor.getDeviceTemp();
 
-    BaseStatusSignal.setUpdateFrequencyForAll(ElevatorConstants.BASE_STATUS_SIGNAL_FREQUENCY, rightPosition, rightVelocity, rightAppliedVoltage, rightSupplyCurrent, rightTorqueCurrent, rightTempCelsius, leftPosition, leftVelocity, leftAppliedVoltage, leftSupplyCurrent, leftTorqueCurrent, leftTempCelsius);
+    BaseStatusSignal.setUpdateFrequencyForAll(ElevatorConstants.BASE_STATUS_SIGNAL_FREQUENCY, rightPosition,
+        rightVelocity, rightAppliedVoltage, rightSupplyCurrent, rightTorqueCurrent, rightTempCelsius, leftPosition,
+        leftVelocity, leftAppliedVoltage, leftSupplyCurrent, leftTorqueCurrent, leftTempCelsius);
     rightElevatorMotor.optimizeBusUtilization();
     leftElevatorMotor.optimizeBusUtilization();
   }
 
   @Override
   public void updateInputs(ElevatorIOInputs inputs) {
-    BaseStatusSignal.refreshAll(rightPosition, rightVelocity, rightAppliedVoltage, rightSupplyCurrent, rightStatorCurrent, rightTorqueCurrent, rightTempCelsius, leftPosition, leftVelocity, leftAppliedVoltage, leftSupplyCurrent, leftStatorCurrent, leftTorqueCurrent, leftTempCelsius);
+    BaseStatusSignal.refreshAll(rightPosition, rightVelocity, rightAppliedVoltage, rightSupplyCurrent,
+        rightStatorCurrent, rightTorqueCurrent, rightTempCelsius, leftPosition, leftVelocity, leftAppliedVoltage,
+        leftSupplyCurrent, leftStatorCurrent, leftTorqueCurrent, leftTempCelsius);
     inputs.rightPosition = rightPosition.getValueAsDouble();
     inputs.rightVelocity = rightVelocity.getValueAsDouble();
     inputs.rightAppliedVoltage = rightAppliedVoltage.getValueAsDouble();
@@ -105,22 +113,18 @@ public class ElevatorIOTalonFX implements ElevatorIO {
     inputs.leftTempCelsius = leftTempCelsius.getValueAsDouble();
   }
 
-  @Override
   public void setPosition(double position) {
     rightElevatorMotor.setControl(positionVoltage.withPosition(position));
   }
 
-  @Override
   public void setVoltage(double voltage) {
     rightElevatorMotor.setControl(voltageOut.withOutput(voltage));
   }
 
-  @Override
   public void resetEncoder(double position) {
-    rightElevatorMotor.setPosition(0);
+    rightElevatorMotor.setPosition(position);
   }
 
-  @Override
   public void stop() {
     rightElevatorMotor.stopMotor();
   }
