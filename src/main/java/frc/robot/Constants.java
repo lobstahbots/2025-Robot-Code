@@ -31,7 +31,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Mass;
 import edu.wpi.first.units.measure.MomentOfInertia;
 import frc.robot.subsystems.drive.SwerveKinematicLimits;
-import stl.choreo.ChoreoVariables;
+import frc.robot.util.choreo.ChoreoVariables;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide
@@ -258,8 +258,40 @@ public final class Constants {
     public static final double LOG_ALERT_INTERVAL = 5; // Interval (in s) between logs of an alert if its text doesn't change
   }
 
+  public static class ElevatorConstants {
+    public static final double GEAR_RATIO = 2; // TODO: Find actual gear ratio
+    public static final double PITCH_DIAMETER = 0.5; // TODO: Find actual pitch diameter
+
+    public static final double PID_P = 0.05; // TODO: Find actual value
+    public static final double PID_I = 0; // TODO: Find actual value
+    public static final double PID_D = 0; // TODO: Find actual value
+
+    public static final double KS = 0; // TODO: Find actual value
+    public static final double KV = 0; // TODO: Find actual value
+    public static final double KA = 0; // TODO: Find actual value
+    public static final double KG = 0; // TODO: Find actual value
+
+    public static final double SUPPLY_CURRENT_LIMIT = 40; // TODO: Find actual current limit
+    public static final double STATOR_CURRENT_LIMIT = 40; // TODO: Find actual current limit
+
+    public static final double VOLTAGE_OUTPUT = 0; // TODO: Find actual voltage
+    public static final double DUTY_CYCLE_OUTPUT = 0; // TODO: Find actual duty cycle
+    public static final double DUTY_CYCLE_OUTPUT_LIMIT = 0.5; // TODO: Find actual duty cycle limit
+
+    public static final double MOTION_MAGIC_POSITION_VOLTAGE = 0; // TODO: Find actual voltage
+    public static final double MOTION_MAGIC_ACCELERATION = 0.5; // TODO: Find actual acceleration
+    public static final double MOTION_MAGIC_CRUISE_VELOCITY = 0.5; // TODO: Find actual cruise velocity
+
+    public static final double BASE_STATUS_SIGNAL_FREQUENCY = 50.0; // TODO: Find actual frequency in Hz
+
+    public static final int LEFT_ELEVATOR_ID = 0; // TODO: Find actual motor ID
+    public static final int RIGHT_ELEVATOR_ID = 1; // TODO: Find actual motor ID
+    public static final int LIMIT_SWITCH_CHANNEL = 0; // TODO: Find actual channel
+  }
+
   public static class EndEffectorConstants {
     public static final int MOTOR_SPEED = 0;
     public static final int endEffectorMotorID = 0;
   }
 }
+
