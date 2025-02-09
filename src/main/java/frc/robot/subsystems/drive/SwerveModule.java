@@ -86,7 +86,7 @@ public class SwerveModule {
    * @return The optimized SwerveModuleState.
    */
   public SwerveModuleState setDesiredState(SwerveModuleState desiredState, boolean isOpenLoop) {
-    desiredState.optimize(inputs.turnPosition);
+    desiredState.optimize(inputs.turnAbsolutePosition);
     io.setTurnVoltage(angleController.calculate(getAngle().getRadians(), desiredState.angle.getRadians()));
 
     // Update velocity based on turn error
@@ -114,7 +114,7 @@ public class SwerveModule {
    * @return The current turn angle of the module.
    */
   public Rotation2d getAngle() {
-    return new Rotation2d(inputs.turnPosition.getRadians());
+    return new Rotation2d(inputs.turnAbsolutePosition.getRadians());
   }
 
   /**
@@ -142,13 +142,13 @@ public class SwerveModule {
    * @returns The module position (turn angle and drive position).
    */
   public SwerveModulePosition getPosition() {
-    return new SwerveModulePosition(getPositionMeters(), getAngle());
+    return new SwerveModulePosition(getPositionMeters(), getAbsoluteAngle());
   }
 
   /**
    * @returns The module state (turn angle and drive velocity).
    */
   public SwerveModuleState getState() {
-    return new SwerveModuleState(getVelocityMetersPerSec(), getAngle());
+    return new SwerveModuleState(getVelocityMetersPerSec(), getAbsoluteAngle());
   }
 }

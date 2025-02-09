@@ -50,7 +50,7 @@ public class SwerveModuleIOSim implements SwerveModuleIO {
     }
 
     inputs.turnAbsolutePosition = moduleSimulation.getSteerAbsoluteFacing().plus(angularOffset);
-    inputs.turnPosition = new Rotation2d(moduleSimulation.getSteerRelativeEncoderPosition());
+    inputs.turnPosition = inputs.turnAbsolutePosition;
     inputs.drivePosition = new Rotation2d(moduleSimulation.getDriveWheelFinalPosition()
         .plus(moduleSimulation.getDriveWheelFinalSpeed().times(Seconds.of(SimConstants.LOOP_TIME))));
     inputs.driveVelocityRadPerSec = moduleSimulation.getDriveWheelFinalSpeed().in(RadiansPerSecond);
