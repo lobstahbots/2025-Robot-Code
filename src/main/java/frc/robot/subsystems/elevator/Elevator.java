@@ -1,9 +1,16 @@
 package frc.robot.subsystems.elevator;
+
 import org.littletonrobotics.junction.Logger;
 
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
+import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
+import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ElevatorConstants;
+import frc.robot.Constants.RobotConstants;
 
 public class Elevator extends SubsystemBase {
 
@@ -12,6 +19,13 @@ public class Elevator extends SubsystemBase {
 
   private final DigitalInput limitSwitch = new DigitalInput(ElevatorConstants.LIMIT_SWITCH_CHANNEL);
 
+  private final Mechanism2d mechanism = new Mechanism2d(RobotConstants.TRACK_WIDTH + Units.feetToMeters(3),
+      ElevatorConstants.TOP_HEIGHT + Units.feetToMeters(3));
+  private final MechanismRoot2d root = mechanism.getRoot("superstructure",
+      RobotConstants.TRACK_WIDTH + Units.feetToMeters(1.5), 0);
+  private final MechanismLigament2d elevatorLigament = root
+      .append(new MechanismLigament2d("elevator", getExtension(), 90));
+
   public Elevator(ElevatorIO io) {
     this.io = io;
   }
@@ -19,8 +33,7 @@ public class Elevator extends SubsystemBase {
   public boolean limitSwitch() {
     return !limitSwitch.get();
   }
-  
-  
+
   public void setExtension(double position) {
     io.setPosition(position);
     Logger.recordOutput("Elevator/Setpoint", position);
@@ -38,8 +51,8 @@ public class Elevator extends SubsystemBase {
   public void periodic() {
     io.updateInputs(inputs);
     Logger.processInputs("Elevator", inputs);
-    if (limitSwitch()) {
-      io.resetEncoder(0);
-    }
+    elevatorLigament.setLength(getExtension());
+    SmartDashboard.putData("Superstructure", mechanism);
+    if (limitSwitch()) { io.resetEncoder(0); }
   }
 }

@@ -110,7 +110,7 @@ public class ElevatorIOSim implements ElevatorIO {
         leftMotorSim.setSupplyVoltage(RobotController.getBatteryVoltage());
         rightMotorSim.setSupplyVoltage(RobotController.getBatteryVoltage());
 
-        elevatorSim.setInput(leftMotorSim.getMotorVoltage(), rightMotorSim.getMotorVoltage());
+        elevatorSim.setInputVoltage(leftMotorSim.getMotorVoltage());
         elevatorSim.update(SimConstants.LOOP_TIME);
         rightMotorSim.setRawRotorPosition(elevatorSim.getPositionMeters()
                 / (ElevatorConstants.GEAR_RATIO * ElevatorConstants.PITCH_DIAMETER * Math.PI));

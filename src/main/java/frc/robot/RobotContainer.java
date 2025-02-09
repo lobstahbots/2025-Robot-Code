@@ -6,6 +6,7 @@ package frc.robot;
 
 import frc.robot.AutoFactory.CharacterizationRoutine;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.SimConstants;
 import frc.robot.Constants.VisionConstants;
 import frc.robot.Constants.DriveConstants.BackLeftModuleConstants;
@@ -20,6 +21,9 @@ import frc.robot.subsystems.drive.GyroIONavX;
 import frc.robot.subsystems.drive.GyroIOSim;
 import frc.robot.subsystems.drive.SwerveModuleIOSim;
 import frc.robot.subsystems.drive.SwerveModuleIOSparkMax;
+import frc.robot.subsystems.elevator.Elevator;
+import frc.robot.subsystems.elevator.ElevatorIOSim;
+import frc.robot.subsystems.elevator.ElevatorIOTalonFX;
 import frc.robot.subsystems.vision.Camera;
 import frc.robot.subsystems.vision.CameraIOPhoton;
 import frc.robot.subsystems.vision.CameraIOSim;
@@ -52,6 +56,8 @@ public class RobotContainer {
             () -> Commands.none());
     private final AutoFactory autoFactory;
 
+    private final Elevator elevator;
+
     private SwerveDriveSimulation driveSimulation = null;
 
     /**
@@ -76,6 +82,9 @@ public class RobotContainer {
             cameras.add(new Camera(new CameraIOPhoton(VisionConstants.FRONT_CAMERA_NAME)));
             cameras.add(new Camera(new CameraIOPhoton(VisionConstants.REAR_CAMERA_NAME)));
             driveBase = new DriveBase(new GyroIONavX(), cameras, frontLeft, frontRight, backLeft, backRight, false);
+
+            elevator = new Elevator(
+                    new ElevatorIOTalonFX(ElevatorConstants.LEFT_ELEVATOR_ID, ElevatorConstants.RIGHT_ELEVATOR_ID));
         } else {
             driveSimulation = new SwerveDriveSimulation(DriveConstants.MAPLE_SIM_CONFIG,
                     new Pose2d(3, 3, new Rotation2d()));
@@ -94,6 +103,8 @@ public class RobotContainer {
             }
             driveBase = new DriveBase(new GyroIOSim(driveSimulation.getGyroSimulation()) {}, cameras, frontLeft,
                     frontRight, backLeft, backRight, false);
+
+            elevator = new Elevator(new ElevatorIOSim());
         }
 
         this.autoFactory = new AutoFactory(driveBase, autoChooser::getResponses);
@@ -117,12 +128,13 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
-        try {
-            return AutoBuilder.followPath(PathPlannerPath.fromPathFile("New New Path"));
-        } catch (Exception exception) {
-            return new RunCommand(() -> {
-            });
-        }
+        return new RunCommand(() -> elevator.setExtension(1.5), elevator);
+        // try {
+        //     return AutoBuilder.followPath(PathPlannerPath.fromPathFile("New New Path"));
+        // } catch (Exception exception) {
+        //     return new RunCommand(() -> {
+        //     });
+        // }
     }
 
     public void configureButtonBindings() {}
