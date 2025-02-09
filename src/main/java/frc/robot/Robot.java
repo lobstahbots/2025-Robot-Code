@@ -77,6 +77,7 @@ public class Robot extends LoggedRobot {
                 setUseTiming(false); // Run as fast as possible
             } else {
                 Logger.addDataReceiver(new WPILOGWriter(logPath)); // Save outputs to a new log
+                Logger.addDataReceiver(new NT4Publisher());
             }
         }
         DataLogManager.start();

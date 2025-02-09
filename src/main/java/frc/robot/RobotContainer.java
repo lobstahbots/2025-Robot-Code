@@ -6,6 +6,7 @@ package frc.robot;
 
 import frc.robot.AutoFactory.CharacterizationRoutine;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.SimConstants;
 import frc.robot.Constants.VisionConstants;
 import frc.robot.Constants.DriveConstants.BackLeftModuleConstants;
 import frc.robot.Constants.DriveConstants.BackRightModuleConstants;
@@ -74,10 +75,10 @@ public class RobotContainer {
             List<Camera> cameras = new ArrayList<>();
             cameras.add(new Camera(new CameraIOPhoton(VisionConstants.FRONT_CAMERA_NAME)));
             cameras.add(new Camera(new CameraIOPhoton(VisionConstants.REAR_CAMERA_NAME)));
-            driveBase = new DriveBase(new GyroIONavX(), cameras, frontLeft, frontRight,
-                    backLeft, backRight, false);
+            driveBase = new DriveBase(new GyroIONavX(), cameras, frontLeft, frontRight, backLeft, backRight, false);
         } else {
-            driveSimulation = new SwerveDriveSimulation(DriveConstants.MAPLE_SIM_CONFIG, new Pose2d(3, 3, new Rotation2d()));
+            driveSimulation = new SwerveDriveSimulation(DriveConstants.MAPLE_SIM_CONFIG,
+                    new Pose2d(3, 3, new Rotation2d()));
             SimulatedArena.getInstance().addDriveTrainSimulation(driveSimulation);
 
             var modules = driveSimulation.getModules();
@@ -87,10 +88,12 @@ public class RobotContainer {
             SwerveModuleIOSim backRight = new SwerveModuleIOSim(BackRightModuleConstants.angleOffset, modules[3], 3);
 
             List<Camera> cameras = new ArrayList<>();
-            cameras.add(new Camera(new CameraIOSim(VisionConstants.FRONT_CAMERA_NAME)));
-            cameras.add(new Camera(new CameraIOSim(VisionConstants.REAR_CAMERA_NAME)));
-            driveBase = new DriveBase(new GyroIOSim(driveSimulation.getGyroSimulation()) {}, cameras, frontLeft, frontRight, backLeft,
-                    backRight, false);
+            if (SimConstants.VISION_SIM) {
+                cameras.add(new Camera(new CameraIOSim(VisionConstants.FRONT_CAMERA_NAME)));
+                cameras.add(new Camera(new CameraIOSim(VisionConstants.REAR_CAMERA_NAME)));
+            }
+            driveBase = new DriveBase(new GyroIOSim(driveSimulation.getGyroSimulation()) {}, cameras, frontLeft,
+                    frontRight, backLeft, backRight, false);
         }
 
         this.autoFactory = new AutoFactory(driveBase, autoChooser::getResponses);
@@ -101,10 +104,11 @@ public class RobotContainer {
     }
 
     private void setDefaultCommands() {
-        driveBase.setDefaultCommand(new SwerveDriveCommand(driveBase,
-                () -> -driverJoystick.getRawAxis(DriverIOConstants.STRAFE_Y_AXIS),
-                () -> -driverJoystick.getRawAxis(DriverIOConstants.STRAFE_X_AXIS),
-                () -> driverJoystick.getRawAxis(DriverIOConstants.ROTATION_AXIS), () -> DriveConstants.FIELD_CENTRIC, DriverIOConstants.SQUARE_INPUTS));
+        driveBase.setDefaultCommand(
+                new SwerveDriveCommand(driveBase, () -> -driverJoystick.getRawAxis(DriverIOConstants.STRAFE_Y_AXIS),
+                        () -> -driverJoystick.getRawAxis(DriverIOConstants.STRAFE_X_AXIS),
+                        () -> driverJoystick.getRawAxis(DriverIOConstants.ROTATION_AXIS),
+                        () -> DriveConstants.FIELD_CENTRIC, DriverIOConstants.SQUARE_INPUTS));
     }
 
     /**
@@ -116,12 +120,12 @@ public class RobotContainer {
         try {
             return AutoBuilder.followPath(PathPlannerPath.fromPathFile("New New Path"));
         } catch (Exception exception) {
-            return new RunCommand(() -> {});
+            return new RunCommand(() -> {
+            });
         }
     }
 
-    public void configureButtonBindings() {
-    }
+    public void configureButtonBindings() {}
 
     public boolean getOperatorConnected() {
         return operatorJoystick.isConnected();

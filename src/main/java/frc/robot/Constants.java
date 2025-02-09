@@ -198,6 +198,8 @@ public final class Constants {
     public static final int[] SWERVE_CHANNELS = {1, 2, 3, 4, 5, 6, 7, 8};
     public static final int[] ELEVATOR_CHANNELS = {9, 10};
     public static final int PIVOT_CHANNEL = 11;
+
+    public static final boolean VISION_SIM = false;
   }
 
   public static class VisionConstants {
