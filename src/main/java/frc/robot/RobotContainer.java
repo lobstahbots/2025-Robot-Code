@@ -128,13 +128,13 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
-        return new RunCommand(() -> elevator.setExtension(1.5), elevator);
-        // try {
-        //     return AutoBuilder.followPath(PathPlannerPath.fromPathFile("New New Path"));
-        // } catch (Exception exception) {
-        //     return new RunCommand(() -> {
-        //     });
-        // }
+        try {
+            return AutoBuilder.followPath(PathPlannerPath.fromPathFile("New New Path"))
+                    .alongWith(new RunCommand(() -> elevator.setExtension(1.5), elevator));
+        } catch (Exception exception) {
+            return new RunCommand(() -> {
+            });
+        }
     }
 
     public void configureButtonBindings() {}

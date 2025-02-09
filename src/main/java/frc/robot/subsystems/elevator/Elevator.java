@@ -22,7 +22,7 @@ public class Elevator extends SubsystemBase {
   private final Mechanism2d mechanism = new Mechanism2d(RobotConstants.TRACK_WIDTH + Units.feetToMeters(3),
       ElevatorConstants.TOP_HEIGHT + Units.feetToMeters(3));
   private final MechanismRoot2d root = mechanism.getRoot("superstructure",
-      RobotConstants.TRACK_WIDTH + Units.feetToMeters(1.5), 0);
+      RobotConstants.TRACK_WIDTH / 2 + Units.feetToMeters(1.5), 0);
   private final MechanismLigament2d elevatorLigament = root
       .append(new MechanismLigament2d("elevator", getExtension(), 90));
 

@@ -21,6 +21,7 @@ import edu.wpi.first.units.measure.Temperature;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.simulation.ElevatorSim;
+import frc.robot.SimShared;
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.SimConstants;
 
@@ -110,7 +111,7 @@ public class ElevatorIOSim implements ElevatorIO {
         leftMotorSim.setSupplyVoltage(RobotController.getBatteryVoltage());
         rightMotorSim.setSupplyVoltage(RobotController.getBatteryVoltage());
 
-        elevatorSim.setInputVoltage(leftMotorSim.getMotorVoltage());
+        elevatorSim.setInputVoltage(rightMotorSim.getMotorVoltage());
         elevatorSim.update(SimConstants.LOOP_TIME);
         rightMotorSim.setRawRotorPosition(elevatorSim.getPositionMeters()
                 / (ElevatorConstants.GEAR_RATIO * ElevatorConstants.PITCH_DIAMETER * Math.PI));
@@ -139,6 +140,9 @@ public class ElevatorIOSim implements ElevatorIO {
         inputs.leftStatorCurrent = leftStatorCurrent.getValueAsDouble();
         inputs.leftTorqueCurrent = leftTorqueCurrent.getValueAsDouble();
         inputs.leftTempCelsius = leftTempCelsius.getValueAsDouble();
+
+        SimShared.powerDistributionSim.setCurrent(SimConstants.ELEVATOR_CHANNELS[0], inputs.leftSupplyCurrent);
+        SimShared.powerDistributionSim.setCurrent(SimConstants.ELEVATOR_CHANNELS[1], inputs.rightSupplyCurrent);
     }
 
     public void setPosition(double position) {
