@@ -24,6 +24,7 @@ import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.Constants.SimConstants;
+import frc.robot.subsystems.vision.CameraIOSim;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -161,5 +162,7 @@ public class Robot extends LoggedRobot {
     public void simulationPeriodic() {
         SimulatedArena.getInstance().simulationPeriodic();
         m_robotContainer.displaySimField();
+
+        CameraIOSim.periodic();
     }
 }
