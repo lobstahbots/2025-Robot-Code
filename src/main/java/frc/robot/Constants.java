@@ -194,6 +194,10 @@ public final class Constants {
     public static final double LOOP_TIME = 0.02;
     public static final boolean REPLAY = false;
     public static final String REPLAY_LOG_PATH = "Log_24-03-10_09-23-09_q61.wpilog";
+
+    public static final int[] SWERVE_CHANNELS = {1, 2, 3, 4, 5, 6, 7, 8};
+    public static final int[] ELEVATOR_CHANNELS = {9, 10};
+    public static final int PIVOT_CHANNEL = 11;
   }
 
   public static class VisionConstants {
