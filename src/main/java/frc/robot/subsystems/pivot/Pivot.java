@@ -20,43 +20,43 @@ import frc.robot.Constants.PivotConstants;
 public class Pivot extends SubsystemBase {
 
   private final SparkMax pivotMotor;
-  private final PIDController pivotPID = new PIDController(PivotConstants.P_CONTROLLER, PivotConstants.I_CONTROLLER, PivotConstants.D_CONTROLLER);
+  private final PIDController pivotPID = new PIDController(PivotConstants.kP, PivotConstants.kI, PivotConstants.kD);
   private final DutyCycleEncoder encoder;
-  private final ArmFeedforward feedForward = new ArmFeedforward(0, 0, 0);
+  private final ArmFeedforward feedForward = new ArmFeedforward(PivotConstants.kS, PivotConstants.kV, PivotConstants.kA);
 
   /** Creates a new Pivot. */
-  public Pivot(int pivotMotorID, int encoderChanel) {
+  public Pivot(int pivotMotorID, int encoderChannel) {
     SparkMaxConfig config = new SparkMaxConfig();
     pivotMotor = new SparkMax(pivotMotorID, MotorType.kBrushless);
-    config.smartCurrentLimit(40);
+    config.smartCurrentLimit(PivotConstant.pivotMotorCurrentLimit);
     config.idleMode(IdleMode.kBrake);
     config.inverted(false);
     pivotMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     encoder = new DutyCycleEncoder(encoderChanel);
   }
 
-  public void stopPivot(){
+  public void stopPivot() {
     pivotMotor.stopMotor();
   }
 
-  public void setDesiredAngle(double desiredAngle){
+  public void setDesiredAngle(double desiredAngle) {
     pivotPID.setSetpoint(desiredAngle);
     double pidOutput = pivotPID.calculate(encoder.get(), desiredAngle);
     double feedForwardOutput = feedForward.calculate(encoder.get(), pivotMotor.getEncoder().getVelocity());
     pivotMotor.setVoltage(feedForwardOutput + pidOutput);
   }
 
-  public void resetControllerError(){
+  public void resetControllerError() {
     pivotPID.reset();
   }
 
-  public void setIdleMode(IdleMode idleMode){
+  public void setIdleMode(IdleMode idleMode) {
     SparkMaxConfig config = new SparkMaxConfig();
     config.idleMode(idleMode);
-    pivotMotor.configure(config,ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    pivotMotor.configure(config,ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
   }
 
-  public void setVoltage(double voltage){
+  public void setVoltage(double voltage) {
     pivotMotor.setVoltage(voltage);
   }
 
