@@ -26,7 +26,6 @@
     },
   ],
   "java.test.defaultConfig": "WPIlibUnitTests",
-  "java.jdt.ls.java.home": "C:\\Users\\Public\\wpilib\\2025\\jdk",
   "java.format.settings.url": ".vscode/java-formatter.xml",
   "java.import.gradle.annotationProcessing.enabled": false,
   "java.completion.favoriteStaticMembers": [
