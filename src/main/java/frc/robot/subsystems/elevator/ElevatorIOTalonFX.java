@@ -37,7 +37,7 @@ public class ElevatorIOTalonFX implements ElevatorIO {
   private final StatusSignal<Temperature> leftTempCelsius;
   private final MotionMagicVoltage positionVoltage = new MotionMagicVoltage(
       ElevatorConstants.MOTION_MAGIC_POSITION_VOLTAGE);
-  private final VoltageOut voltageOut = new VoltageOut(ElevatorConstants.VOLTAGE_OUTPUT).withEnableFOC(true);
+  private final VoltageOut voltageOut = new VoltageOut(ElevatorConstants.VOLTAGE_OUTPUT).withEnableFOC(false);
 
   public ElevatorIOTalonFX(int leftElevatorID, int rightElevatorID) {
     leftElevatorMotor = new TalonFX(leftElevatorID);

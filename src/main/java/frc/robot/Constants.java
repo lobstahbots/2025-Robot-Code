@@ -293,6 +293,11 @@ public final class Constants {
     public static final int LEFT_ELEVATOR_ID = 0; // TODO: Find actual motor ID
     public static final int RIGHT_ELEVATOR_ID = 1; // TODO: Find actual motor ID
     public static final int LIMIT_SWITCH_CHANNEL = 0; // TODO: Find actual channel
+
+    public static final double BOTTOM_HEIGHT = 0;
+    public static final double TOP_HEIGHT = 2;
+
+    public static final double ELEVATOR_MASS = 4;
   }
 
   public static class EndEffectorConstants {
