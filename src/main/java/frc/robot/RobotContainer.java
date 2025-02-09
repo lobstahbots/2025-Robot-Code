@@ -15,7 +15,7 @@ import frc.robot.Constants.DriveConstants.FrontLeftModuleConstants;
 import frc.robot.Constants.DriveConstants.FrontRightModuleConstants;
 import frc.robot.Constants.IOConstants.DriverIOConstants;
 import frc.robot.Constants.IOConstants.OperatorIOConstants;
-import frc.robot.commands.SwerveDriveCommand;
+import frc.robot.commands.driveCommands.SwerveDriveCommand;
 import frc.robot.subsystems.drive.DriveBase;
 import frc.robot.subsystems.drive.GyroIONavX;
 import frc.robot.subsystems.drive.GyroIOSim;
