@@ -1,4 +1,4 @@
-package frc.robot.subsystems.elevator;
+package frc.robot.subsystems.superstructure;
 
 import org.littletonrobotics.junction.Logger;
 
@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.RobotConstants;
+import frc.robot.subsystems.elevator.ElevatorIOInputsAutoLogged;
 
 public class Elevator extends SubsystemBase {
 
