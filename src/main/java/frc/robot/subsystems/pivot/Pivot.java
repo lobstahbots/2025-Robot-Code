@@ -33,6 +33,7 @@ public class Pivot extends SubsystemBase {
     config.inverted(false);
     pivotMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     encoder = new DutyCycleEncoder(encoderChannel);
+    encoder = new DutyCycleEncoder(encoderChannel);
   }
 
   public void stopPivot() {
