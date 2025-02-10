@@ -6,7 +6,6 @@ public interface CoralEndEffectorIO {
     static class CoralEndEffectorIOInputs {
         double appliedVoltage = 0.0;
         double currentAmps = 0.0;
-        double tempCelsius = 0.0;
     }
 
     public default void updateInputs(CoralEndEffectorIOInputs inputs) {}
