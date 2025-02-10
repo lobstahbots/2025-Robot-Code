@@ -4,10 +4,10 @@
 
 package frc.robot.subsystems.pivot;
 
-import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
@@ -22,17 +22,17 @@ public class Pivot extends SubsystemBase {
   private final SparkMax pivotMotor;
   private final PIDController pivotPID = new PIDController(PivotConstants.kP, PivotConstants.kI, PivotConstants.kD);
   private final DutyCycleEncoder encoder;
-  private final ArmFeedforward feedForward = new ArmFeedforward(PivotConstants.kS, PivotConstants.kV, PivotConstants.kA);
+  private final ArmFeedforward feedForward = new ArmFeedforward(PivotConstants.kS, PivotConstants.kG, PivotConstants.kV, PivotConstants.kA);
 
   /** Creates a new Pivot. */
   public Pivot(int pivotMotorID, int encoderChannel) {
     SparkMaxConfig config = new SparkMaxConfig();
     pivotMotor = new SparkMax(pivotMotorID, MotorType.kBrushless);
-    config.smartCurrentLimit(PivotConstant.pivotMotorCurrentLimit);
+    config.smartCurrentLimit(PivotConstants.pivotMotorCurrentLimit);
     config.idleMode(IdleMode.kBrake);
     config.inverted(false);
     pivotMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-    encoder = new DutyCycleEncoder(encoderChanel);
+    encoder = new DutyCycleEncoder(encoderChannel);
   }
 
   public void stopPivot() {
@@ -40,7 +40,6 @@ public class Pivot extends SubsystemBase {
   }
 
   public void setDesiredAngle(double desiredAngle) {
-    pivotPID.setSetpoint(desiredAngle);
     double pidOutput = pivotPID.calculate(encoder.get(), desiredAngle);
     double feedForwardOutput = feedForward.calculate(encoder.get(), pivotMotor.getEncoder().getVelocity());
     pivotMotor.setVoltage(feedForwardOutput + pidOutput);
