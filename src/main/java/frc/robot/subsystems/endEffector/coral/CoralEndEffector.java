@@ -1,8 +1,10 @@
-package frc.robot.subsystems.endEffector;
+package frc.robot.subsystems.endEffector.coral;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.EndEffectorConstants;
+import frc.robot.Constants.CoralEndEffectorConstants;
+import frc.robot.subsystems.endEffector.coral.CoralEndEffectorIO.CoralEndEffectorIOInputs;
 
+import org.littletonrobotics.junction.Logger;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
@@ -10,23 +12,24 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
-public class EndEffector extends SubsystemBase {
-  private final SparkMax endEffectorMotor;
+public class CoralEndEffector extends SubsystemBase {
+  private final CoralEndEffectorIOInputsAutoLogged inputs = new CoralEndEffectorIOInputsAutoLogged();
+  private final CoralEndEffectorIO io;
 
-  public EndEffector(int endEffectorMotorID) {
-    endEffectorMotor = new SparkMax(endEffectorMotorID, MotorType.kBrushless);
-    SparkMaxConfig config = new SparkMaxConfig();
-    config.smartCurrentLimit(40);
-    config.idleMode(IdleMode.kBrake);
-    config.inverted(false);
-    endEffectorMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+  public CoralEndEffector(CoralEndEffectorIO io) {
+    this.io = io;
   }
 
   public void stopMotor() {
-    endEffectorMotor.stopMotor();
+    io.stopMotor();
   }
 
-  public void runMotor(double speed) {
-    endEffectorMotor.set(speed);
+  public void setSpeed(double speed) {
+    io.setSpeed(speed);
+  }
+  
+  public void periodic() {
+    io.updateInputs(inputs);
+    Logger.processInputs("CoralEndEffector", inputs);
   }
 }
