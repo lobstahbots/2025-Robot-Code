@@ -290,17 +290,17 @@ public final class Constants {
 
   public static class EndEffectorConstants {
     public static final int MOTOR_SPEED = 0;
-    public static final int endEffectorMotorID = 0;
+    public static final int END_EFFECTOR_MOTOR_ID = 0;
   }
 
   public static class PivotConstants {
-    public static final double kP = 0.1;
-    public static final double kI = 0;
-    public static final double kD = 0;
-    public static final double kS = 0;
-    public static final double kG = 0;
-    public static final double kV = 0;
-    public static final double kA = 0;
-    public static final int pivotMotorCurrentLimit = 40;
+    public static final double KP = 0.1;
+    public static final double KI = 0;
+    public static final double KD = 0;
+    public static final double KS = 0;
+    public static final double KG = 0;
+    public static final double KV = 0;
+    public static final double KA = 0;
+    public static final int PIVOT_MOTOR_CURRNET_LIMIT = 40;
   }
 }

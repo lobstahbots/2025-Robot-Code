@@ -20,15 +20,15 @@ import frc.robot.Constants.PivotConstants;
 public class Pivot extends SubsystemBase {
 
   private final SparkMax pivotMotor;
-  private final PIDController pivotPID = new PIDController(PivotConstants.kP, PivotConstants.kI, PivotConstants.kD);
+  private final PIDController pivotPID = new PIDController(PivotConstants.KP, PivotConstants.KI, PivotConstants.KD);
   private final DutyCycleEncoder encoder;
-  private final ArmFeedforward feedForward = new ArmFeedforward(PivotConstants.kS, PivotConstants.kG, PivotConstants.kV, PivotConstants.kA);
+  private final ArmFeedforward feedForward = new ArmFeedforward(PivotConstants.KS, PivotConstants.KG, PivotConstants.KV, PivotConstants.KA);
 
   /** Creates a new Pivot. */
   public Pivot(int pivotMotorID, int encoderChannel) {
     SparkMaxConfig config = new SparkMaxConfig();
     pivotMotor = new SparkMax(pivotMotorID, MotorType.kBrushless);
-    config.smartCurrentLimit(PivotConstants.pivotMotorCurrentLimit);
+    config.smartCurrentLimit(PivotConstants.PIVOT_MOTOR_CURRNET_LIMIT);
     config.idleMode(IdleMode.kBrake);
     config.inverted(false);
     pivotMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
