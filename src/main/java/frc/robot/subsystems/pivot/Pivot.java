@@ -28,11 +28,10 @@ public class Pivot extends SubsystemBase {
   public Pivot(int pivotMotorID, int encoderChannel) {
     SparkMaxConfig config = new SparkMaxConfig();
     pivotMotor = new SparkMax(pivotMotorID, MotorType.kBrushless);
-    config.smartCurrentLimit(PivotConstants.PIVOT_MOTOR_CURRNET_LIMIT);
+    config.smartCurrentLimit(PivotConstants.PIVOT_MOTOR_CURRENT_LIMIT);
     config.idleMode(IdleMode.kBrake);
     config.inverted(false);
     pivotMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-    encoder = new DutyCycleEncoder(encoderChannel);
     encoder = new DutyCycleEncoder(encoderChannel);
   }
 

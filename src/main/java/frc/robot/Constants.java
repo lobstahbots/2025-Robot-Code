@@ -301,6 +301,6 @@ public final class Constants {
     public static final double KG = 0;
     public static final double KV = 0;
     public static final double KA = 0;
-    public static final int PIVOT_MOTOR_CURRNET_LIMIT = 40;
+    public static final int PIVOT_MOTOR_CURRENT_LIMIT = 40;
   }
 }
