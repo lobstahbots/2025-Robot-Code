@@ -289,9 +289,10 @@ public final class Constants {
     public static final int LIMIT_SWITCH_CHANNEL = 0; // TODO: Find actual channel
   }
 
-  public static class EndEffectorConstants {
-    public static final int MOTOR_SPEED = 0;
-    public static final int endEffectorMotorID = 0;
+  public static class CoralEndEffectorConstants {
+    public static final double MOTOR_SPEED = 0;
+    public static final int CURRENT_LIMIT = 0;
+    public static final int CORAL_END_EFFECTOR_MOTOR_ID = 0;
   }
 }
 
