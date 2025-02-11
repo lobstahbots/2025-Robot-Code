@@ -30,10 +30,6 @@ public class PivotIOTalonFX implements PivotIO {
     encoder = new DutyCycleEncoder(encoderChannel);
   }
 
-  public void stopPivot() {
-    pivotMotor.stopMotor();
-  }
-
   public void setDesiredAngle(double desiredAngle) {
     double pidOutput = pivotPID.calculate(encoder.get(), desiredAngle);
     double feedForwardOutput = feedForward.calculate(encoder.get(), pivotMotor.getPosition().getValueAsDouble());
@@ -55,7 +51,13 @@ public class PivotIOTalonFX implements PivotIO {
     pivotMotor.setVoltage(voltage);
   }
 
-  public void periodic(PivotIOInputs inputs) {
+  @Override
+  public void stop() {
+      pivotMotor.stopMotor();
+  }
+
+  @Override
+  public void updateInputs(PivotIOInputs inputs) {
     inputs.position = pivotMotor.getPosition().getValueAsDouble();
     inputs.velocity = pivotMotor.getDifferentialAverageVelocity().getValueAsDouble();
     inputs.supplyCurrent = pivotMotor.getSupplyCurrent().getValueAsDouble();
@@ -63,15 +65,5 @@ public class PivotIOTalonFX implements PivotIO {
     inputs.torqueCurrent = pivotMotor.getTorqueCurrent().getValueAsDouble();
     inputs.temperature = pivotMotor.getDeviceTemp().getValueAsDouble();
     inputs.appliedVoltage = pivotMotor.getMotorVoltage().getValueAsDouble();
-  }
-
-  @Override
-  public void updateInputs(PivotIOInputs inputs) {
-      throw new UnsupportedOperationException("Not supported yet.");
-  }
-
-  @Override
-  public void stop() {
-      pivotMotor.stopMotor();
   }
 }

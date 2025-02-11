@@ -1,6 +1,9 @@
 package frc.robot.subsystems.superstructure;
 
+import org.littletonrobotics.junction.AutoLog;
+
 public interface PivotIO {
+    @AutoLog
     public static class PivotIOInputs {
         /**
          * Position in radians
