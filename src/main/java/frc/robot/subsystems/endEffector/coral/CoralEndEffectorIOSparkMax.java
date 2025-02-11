@@ -21,6 +21,7 @@ public class CoralEndEffectorIOSparkMax implements CoralEndEffectorIO {
     config.smartCurrentLimit(CoralEndEffectorConstants.CURRENT_LIMIT);
     config.idleMode(IdleMode.kBrake);
     config.inverted(false);
+    config.encoder.velocityConversionFactor(1.0 / 60);
     coralEndEffectorMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
     encoder = coralEndEffectorMotor.getEncoder();
