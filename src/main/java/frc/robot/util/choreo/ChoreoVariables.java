@@ -1,4 +1,4 @@
-package stl.choreo;
+package frc.robot.util.choreo;
 
 import static edu.wpi.first.units.Units.KilogramSquareMeters;
 import static edu.wpi.first.units.Units.Kilograms;

@@ -1,13 +1,13 @@
-package frc.robot.commands;
+package frc.robot.commands.algaeIntakeCommands;
 
-import frc.robot.subsystems.algaeIntake.AlgaeIntake;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.algaeIntake.AlgaeIntake;
 
-public class SpinRollerCommand extends Command {
+public class ExtendAlgaeIntakeCommand extends Command {
     private final AlgaeIntake algaeIntake;
     private final double speed;
     
-    public SpinRollerCommand(AlgaeIntake algaeIntake, double speed) {
+    public ExtendAlgaeIntakeCommand(AlgaeIntake algaeIntake, double speed) {
         this.algaeIntake = algaeIntake;
         this.speed = speed;
         addRequirements(algaeIntake);
@@ -15,7 +15,7 @@ public class SpinRollerCommand extends Command {
 
     @Override
     public void initialize() {
-        algaeIntake.setIntakeRollerSpeed(speed);
+        algaeIntake.setIntakePivotSpeed(speed);
     }
 
     @Override
@@ -25,7 +25,7 @@ public class SpinRollerCommand extends Command {
 
     @Override
     public void end(boolean interupted){
-        algaeIntake.stopIntakeRoller();
+        algaeIntake.stopIntakePivot();
     }
 
     @Override
@@ -33,5 +33,4 @@ public class SpinRollerCommand extends Command {
         return false;
     }
 }
-
 

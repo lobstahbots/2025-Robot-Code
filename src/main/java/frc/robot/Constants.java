@@ -31,7 +31,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Mass;
 import edu.wpi.first.units.measure.MomentOfInertia;
 import frc.robot.subsystems.drive.SwerveKinematicLimits;
-import stl.choreo.ChoreoVariables;
+import frc.robot.util.choreo.ChoreoVariables;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide
@@ -294,5 +294,15 @@ public final class Constants {
     public static final int CURRENT_LIMIT = 0;
     public static final int CORAL_END_EFFECTOR_MOTOR_ID = 0;
   }
-}
 
+  public static class PivotConstants {
+    public static final double kP = 0.1;
+    public static final double kI = 0;
+    public static final double kD = 0;
+    public static final double kS = 0;
+    public static final double kG = 0;
+    public static final double kV = 0;
+    public static final double kA = 0;
+    public static final int CURRENT_LIMIT = 40;
+  }
+}
