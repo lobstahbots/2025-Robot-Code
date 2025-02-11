@@ -1,8 +1,6 @@
 package frc.robot.subsystems.endEffector.coral;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.CoralEndEffectorConstants;
-import frc.robot.subsystems.endEffector.coral.CoralEndEffectorIO.CoralEndEffectorIOInputs;
 
 import org.littletonrobotics.junction.Logger;
 

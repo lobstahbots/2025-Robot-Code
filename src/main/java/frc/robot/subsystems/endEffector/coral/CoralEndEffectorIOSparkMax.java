@@ -8,7 +8,6 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
-import edu.wpi.first.math.geometry.Rotation2d;
 import frc.robot.Constants.CoralEndEffectorConstants;
 
 public class CoralEndEffectorIOSparkMax implements CoralEndEffectorIO {
@@ -39,7 +38,7 @@ public class CoralEndEffectorIOSparkMax implements CoralEndEffectorIO {
 
   @Override
   public void updateInputs(CoralEndEffectorIOInputs inputs) {
-    inputs.position = Rotation2d.fromRotations(encoder.getPosition());
+    inputs.position = encoder.getPosition();
     inputs.velocity = encoder.getVelocity();
     inputs.appliedVoltage = coralEndEffectorMotor.getAppliedOutput() * coralEndEffectorMotor.getBusVoltage();
     inputs.currentAmps = coralEndEffectorMotor.getOutputCurrent();
