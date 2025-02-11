@@ -1,15 +1,16 @@
 package frc.robot.subsystems.superstructure;
 
-import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
-import com.ctre.phoenix6.signals.GravityTypeValue;
-import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
+import com.ctre.phoenix6.signals.GravityTypeValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
+
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
@@ -113,18 +114,22 @@ public class ElevatorIOTalonFX implements ElevatorIO {
     inputs.leftTempCelsius = leftTempCelsius.getValueAsDouble();
   }
 
+  @Override
   public void setPosition(double position) {
     rightElevatorMotor.setControl(positionVoltage.withPosition(position));
   }
 
+  @Override
   public void setVoltage(double voltage) {
     rightElevatorMotor.setControl(voltageOut.withOutput(voltage));
   }
 
+  @Override
   public void resetEncoder(double position) {
     rightElevatorMotor.setPosition(position);
   }
 
+  @Override
   public void stop() {
     rightElevatorMotor.stopMotor();
   }
