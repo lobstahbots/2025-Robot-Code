@@ -4,9 +4,6 @@
 
 package frc.robot;
 
-import static edu.wpi.first.units.Units.KilogramSquareMeters;
-import static edu.wpi.first.units.Units.Pounds;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -28,6 +25,8 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
+import static edu.wpi.first.units.Units.KilogramSquareMeters;
+import static edu.wpi.first.units.Units.Pounds;
 import edu.wpi.first.units.measure.Mass;
 import edu.wpi.first.units.measure.MomentOfInertia;
 import frc.robot.subsystems.drive.SwerveKinematicLimits;
@@ -312,5 +311,12 @@ public final class Constants {
     public static final double kV = 0;
     public static final double kA = 0;
     public static final int CURRENT_LIMIT = 40;
+    public static final double X_COORD = 0; //TODO Figure out what all of these constants actually are
+    public static final double Y_COORD = 0;
+    public static final double PIVOT_GEARING = 0;
+    public static final double ARM_LENGTH = 0;
+    public static final double PIVOT_MASS = 0;
+    public static final double PIVOT_MIN_SIM_ANGLE = 0;
+    public static final double PIVOT_MAX_SIM_ANGLE = 0;
   }
 }
