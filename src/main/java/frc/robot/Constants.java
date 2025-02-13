@@ -297,9 +297,14 @@ public final class Constants {
     public static final double ELEVATOR_MASS = 4;
   }
 
-  public static class EndEffectorConstants {
-    public static final int MOTOR_SPEED = 0;
-    public static final int endEffectorMotorID = 0;
+  public static class CoralEndEffectorConstants {
+    public static final double MOTOR_SPEED = 0;
+    public static final int CURRENT_LIMIT = 20;
+    public static final int CORAL_END_EFFECTOR_MOTOR_ID = 0;
+  }
+
+  public static class AlgaeEndEffectorConstants {
+    public static final int CURRENT_LIMIT = 20;
   }
 
   public static class PivotConstants {
