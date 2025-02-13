@@ -8,12 +8,14 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.endEffector.coral.CoralEndEffector;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class StopOuttakeCommand extends Command {
-  /** Creates a new StopOuttakeCommand. */
+public class SpinCoralCommand extends Command {
+  /** Creates a new OuttakeCommand. */
   private final CoralEndEffector endEffector;
-  public StopOuttakeCommand(CoralEndEffector endEffector) {
+  private final double speed;
+  public SpinCoralCommand(CoralEndEffector endEffector, double speed) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.endEffector = endEffector;
+    this.speed = speed;
     addRequirements(endEffector);
   }
 
@@ -24,12 +26,14 @@ public class StopOuttakeCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    endEffector.stopMotor();
+    endEffector.setSpeed(speed);
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    endEffector.stopMotor();
+  }
 
   // Returns true when the command should end.
   @Override

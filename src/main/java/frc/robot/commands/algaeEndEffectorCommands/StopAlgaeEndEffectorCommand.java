@@ -8,14 +8,12 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.endEffector.algae.AlgaeEndEffector;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class OuttakeCommand extends Command {
-  /** Creates a new OuttakeCommand. */
+public class StopAlgaeEndEffectorCommand extends Command {
+  /** Creates a new StopOuttakeCommand. */
   private final AlgaeEndEffector endEffector;
-  private final double speed;
-  public OuttakeCommand(AlgaeEndEffector endEffector, double speed) {
+  public StopAlgaeEndEffectorCommand(AlgaeEndEffector endEffector) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.endEffector = endEffector;
-    this.speed = speed;
     addRequirements(endEffector);
   }
 
@@ -26,14 +24,12 @@ public class OuttakeCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    endEffector.runMotor(speed);
+    endEffector.stopMotor();
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
-    endEffector.stopMotor();
-  }
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override
