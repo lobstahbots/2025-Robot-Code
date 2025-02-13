@@ -16,12 +16,14 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Temperature;
 import edu.wpi.first.units.measure.Voltage;
+import edu.wpi.first.wpilibj.DigitalInput;
 import frc.robot.Constants.ElevatorConstants;
 
 public class ElevatorIOTalonFX implements ElevatorIO {
 
   private final TalonFX leftElevatorMotor;
   private final TalonFX rightElevatorMotor;
+
   private final StatusSignal<Angle> rightPosition;
   private final StatusSignal<AngularVelocity> rightVelocity;
   private final StatusSignal<Voltage> rightAppliedVoltage;
@@ -36,9 +38,12 @@ public class ElevatorIOTalonFX implements ElevatorIO {
   private final StatusSignal<Current> leftStatorCurrent;
   private final StatusSignal<Current> leftTorqueCurrent;
   private final StatusSignal<Temperature> leftTempCelsius;
+
   private final MotionMagicVoltage positionVoltage = new MotionMagicVoltage(
       ElevatorConstants.MOTION_MAGIC_POSITION_VOLTAGE);
   private final VoltageOut voltageOut = new VoltageOut(ElevatorConstants.VOLTAGE_OUTPUT).withEnableFOC(false);
+  
+  private final DigitalInput limitSwitch = new DigitalInput(ElevatorConstants.LIMIT_SWITCH_CHANNEL);
 
   public ElevatorIOTalonFX(int leftElevatorID, int rightElevatorID) {
     leftElevatorMotor = new TalonFX(leftElevatorID);
@@ -112,6 +117,7 @@ public class ElevatorIOTalonFX implements ElevatorIO {
     inputs.leftStatorCurrent = leftStatorCurrent.getValueAsDouble();
     inputs.leftTorqueCurrent = leftTorqueCurrent.getValueAsDouble();
     inputs.leftTempCelsius = leftTempCelsius.getValueAsDouble();
+    inputs.limitSwitchHit = limitSwitch.get();
   }
 
   @Override

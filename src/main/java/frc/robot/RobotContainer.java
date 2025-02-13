@@ -7,6 +7,7 @@ package frc.robot;
 import frc.robot.AutoFactory.CharacterizationRoutine;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.ElevatorConstants;
+import frc.robot.Constants.PivotConstants;
 import frc.robot.Constants.SimConstants;
 import frc.robot.Constants.VisionConstants;
 import frc.robot.Constants.DriveConstants.BackLeftModuleConstants;
@@ -21,9 +22,11 @@ import frc.robot.subsystems.drive.GyroIONavX;
 import frc.robot.subsystems.drive.GyroIOSim;
 import frc.robot.subsystems.drive.SwerveModuleIOSim;
 import frc.robot.subsystems.drive.SwerveModuleIOSparkMax;
-import frc.robot.subsystems.superstructure.Elevator;
+import frc.robot.subsystems.superstructure.Superstructure;
 import frc.robot.subsystems.superstructure.ElevatorIOSim;
 import frc.robot.subsystems.superstructure.ElevatorIOTalonFX;
+import frc.robot.subsystems.superstructure.PivotIOSim;
+import frc.robot.subsystems.superstructure.PivotIOTalonFX;
 import frc.robot.subsystems.vision.Camera;
 import frc.robot.subsystems.vision.CameraIOPhoton;
 import frc.robot.subsystems.vision.CameraIOSim;
@@ -56,7 +59,7 @@ public class RobotContainer {
             () -> Commands.none());
     private final AutoFactory autoFactory;
 
-    private final Elevator elevator;
+    private final Superstructure superstructure;
 
     private SwerveDriveSimulation driveSimulation = null;
 
@@ -83,8 +86,9 @@ public class RobotContainer {
             cameras.add(new Camera(new CameraIOPhoton(VisionConstants.REAR_CAMERA_NAME)));
             driveBase = new DriveBase(new GyroIONavX(), cameras, frontLeft, frontRight, backLeft, backRight, false);
 
-            elevator = new Elevator(
-                    new ElevatorIOTalonFX(ElevatorConstants.LEFT_ELEVATOR_ID, ElevatorConstants.RIGHT_ELEVATOR_ID));
+            superstructure = new Superstructure(
+                    new ElevatorIOTalonFX(ElevatorConstants.LEFT_ELEVATOR_ID, ElevatorConstants.RIGHT_ELEVATOR_ID),
+                    new PivotIOTalonFX(PivotConstants.MOTOR_ID, PivotConstants.ENCODER_ID));
         } else {
             driveSimulation = new SwerveDriveSimulation(DriveConstants.MAPLE_SIM_CONFIG,
                     new Pose2d(3, 3, new Rotation2d()));
@@ -104,7 +108,7 @@ public class RobotContainer {
             driveBase = new DriveBase(new GyroIOSim(driveSimulation.getGyroSimulation()) {}, cameras, frontLeft,
                     frontRight, backLeft, backRight, false);
 
-            elevator = new Elevator(new ElevatorIOSim());
+            superstructure = new Superstructure(new ElevatorIOSim(), new PivotIOSim());
         }
 
         this.autoFactory = new AutoFactory(driveBase, autoChooser::getResponses);
@@ -130,7 +134,7 @@ public class RobotContainer {
     public Command getAutonomousCommand() {
         try {
             return AutoBuilder.followPath(PathPlannerPath.fromPathFile("New New Path"))
-                    .alongWith(new RunCommand(() -> elevator.setExtension(1.5), elevator));
+                    .alongWith(new RunCommand(() -> superstructure.setExtension(1.5), superstructure));
         } catch (Exception exception) {
             return new RunCommand(() -> {
             });

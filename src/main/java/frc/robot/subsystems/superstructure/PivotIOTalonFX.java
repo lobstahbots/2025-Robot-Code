@@ -8,8 +8,6 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
-import edu.wpi.first.math.controller.ArmFeedforward;
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import frc.robot.Constants.PivotConstants;
@@ -17,10 +15,7 @@ import frc.robot.Constants.PivotConstants;
 public class PivotIOTalonFX implements PivotIO {
 
     private final TalonFX pivotMotor;
-    private final PIDController pivotPID = new PIDController(PivotConstants.kP, PivotConstants.kI, PivotConstants.kD);
     private final DutyCycleEncoder encoder;
-    private final ArmFeedforward feedForward = new ArmFeedforward(PivotConstants.kS, PivotConstants.kG,
-            PivotConstants.kV, PivotConstants.kA);
 
     /** Creates a new Pivot. */
     public PivotIOTalonFX(int pivotMotorID, int encoderChannel) {
@@ -30,16 +25,6 @@ public class PivotIOTalonFX implements PivotIO {
         config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
         pivotMotor.getConfigurator().apply(config);
         encoder = new DutyCycleEncoder(encoderChannel);
-    }
-
-    public void setDesiredAngle(double desiredAngle) {
-        double pidOutput = pivotPID.calculate(encoder.get(), desiredAngle);
-        double feedForwardOutput = feedForward.calculate(encoder.get(), pivotMotor.getPosition().getValueAsDouble());
-        pivotMotor.setVoltage(feedForwardOutput + pidOutput);
-    }
-
-    public void resetControllerError() {
-        pivotPID.reset();
     }
 
     public void setIdleMode(NeutralModeValue idleMode) {
@@ -60,7 +45,7 @@ public class PivotIOTalonFX implements PivotIO {
 
     @Override
     public void updateInputs(PivotIOInputs inputs) {
-        inputs.position = new Rotation2d(pivotMotor.getPosition().getValue());
+        inputs.position = new Rotation2d(encoder.get());
         inputs.velocity = pivotMotor.getVelocity().getValueAsDouble();
         inputs.supplyCurrent = pivotMotor.getSupplyCurrent().getValueAsDouble();
         inputs.statorCurrent = pivotMotor.getStatorCurrent().getValueAsDouble();

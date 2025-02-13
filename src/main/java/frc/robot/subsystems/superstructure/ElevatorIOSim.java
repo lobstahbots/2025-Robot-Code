@@ -140,6 +140,7 @@ public class ElevatorIOSim implements ElevatorIO {
         inputs.leftStatorCurrent = leftStatorCurrent.getValueAsDouble();
         inputs.leftTorqueCurrent = leftTorqueCurrent.getValueAsDouble();
         inputs.leftTempCelsius = leftTempCelsius.getValueAsDouble();
+        inputs.limitSwitchHit = elevatorSim.hasHitLowerLimit();
 
         SimShared.powerDistributionSim.setCurrent(SimConstants.ELEVATOR_CHANNELS[0], inputs.leftSupplyCurrent);
         SimShared.powerDistributionSim.setCurrent(SimConstants.ELEVATOR_CHANNELS[1], inputs.rightSupplyCurrent);

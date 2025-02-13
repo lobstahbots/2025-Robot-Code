@@ -3,17 +3,17 @@ package frc.robot.commands.elevatorCommands;
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.elevator.Elevator;
+import frc.robot.subsystems.superstructure.Superstructure;
 
 public class ElevatorCommand extends Command {
-    private final Elevator elevator;
+    private final Superstructure elevator;
     private final DoubleSupplier elevatorSpeed;
-    public ElevatorCommand(Elevator elevator, DoubleSupplier elevatorSpeed) {
+    public ElevatorCommand(Superstructure elevator, DoubleSupplier elevatorSpeed) {
         this.elevator = elevator;
         this.elevatorSpeed = elevatorSpeed;
         addRequirements(elevator);
     }
-    public ElevatorCommand(Elevator elevator, double elevatorSpeed) {
+    public ElevatorCommand(Superstructure elevator, double elevatorSpeed) {
         this(elevator, ()->elevatorSpeed);
     }
 

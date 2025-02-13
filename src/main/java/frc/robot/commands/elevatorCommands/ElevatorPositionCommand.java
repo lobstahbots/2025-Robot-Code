@@ -7,19 +7,19 @@ package frc.robot.commands.elevatorCommands;
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.elevator.Elevator;
+import frc.robot.subsystems.superstructure.Superstructure;
 
 public class ElevatorPositionCommand extends Command {
-  private final Elevator elevator;
+  private final Superstructure elevator;
   private final DoubleSupplier elevatorPosition;
   /** Creates a new ElevatorPositionCommand. */
-  public ElevatorPositionCommand(Elevator elevator, DoubleSupplier elevatorPosition) {
+  public ElevatorPositionCommand(Superstructure elevator, DoubleSupplier elevatorPosition) {
     this.elevator = elevator;
     this.elevatorPosition = elevatorPosition;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(elevator);
   }
-  public ElevatorPositionCommand(Elevator elevator, double elevatorPosition) {
+  public ElevatorPositionCommand(Superstructure elevator, double elevatorPosition) {
     this(elevator, ()->elevatorPosition);
   }
 

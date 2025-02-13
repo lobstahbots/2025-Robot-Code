@@ -15,8 +15,8 @@ public class PivotIOSim implements PivotIO{
         PivotConstants.PIVOT_GEARING, 
         SingleJointedArmSim.estimateMOI(PivotConstants.ARM_LENGTH, PivotConstants.PIVOT_MASS), 
         PivotConstants.ARM_LENGTH, 
-        PivotConstants.PIVOT_MIN_SIM_ANGLE, 
-        PivotConstants.PIVOT_MAX_SIM_ANGLE, 
+        PivotConstants.MIN_ANGLE, 
+        PivotConstants.MAX_ANGLE, 
         true, 
         0, 
         0);
