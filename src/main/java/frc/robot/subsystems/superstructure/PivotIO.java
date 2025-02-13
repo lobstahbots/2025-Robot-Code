@@ -2,13 +2,15 @@ package frc.robot.subsystems.superstructure;
 
 import org.littletonrobotics.junction.AutoLog;
 
+import edu.wpi.first.math.geometry.Rotation2d;
+
 public interface PivotIO {
     @AutoLog
     public static class PivotIOInputs {
         /**
-         * Position in radians
+         * Position in a {@link Rotation2d}
          */
-        public double position = 0.0;
+        public Rotation2d position = new Rotation2d();
         /**
          * Velocity in rad/sec
          */
