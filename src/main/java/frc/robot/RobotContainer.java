@@ -4,39 +4,6 @@
 
 package frc.robot;
 
-import frc.robot.AutoFactory.CharacterizationRoutine;
-import frc.robot.Constants.CoralEndEffectorConstants;
-import frc.robot.Constants.DriveConstants;
-import frc.robot.Constants.ElevatorConstants;
-import frc.robot.Constants.PivotConstants;
-import frc.robot.Constants.RobotConstants;
-import frc.robot.Constants.SimConstants;
-import frc.robot.Constants.VisionConstants;
-import frc.robot.Constants.DriveConstants.BackLeftModuleConstants;
-import frc.robot.Constants.DriveConstants.BackRightModuleConstants;
-import frc.robot.Constants.DriveConstants.FrontLeftModuleConstants;
-import frc.robot.Constants.DriveConstants.FrontRightModuleConstants;
-import frc.robot.Constants.IOConstants.DriverIOConstants;
-import frc.robot.Constants.IOConstants.OperatorIOConstants;
-import frc.robot.commands.driveCommands.SwerveDriveCommand;
-import frc.robot.subsystems.drive.DriveBase;
-import frc.robot.subsystems.drive.GyroIONavX;
-import frc.robot.subsystems.drive.GyroIOSim;
-import frc.robot.subsystems.drive.SwerveModuleIOSim;
-import frc.robot.subsystems.drive.SwerveModuleIOSparkMax;
-import frc.robot.subsystems.endEffector.coral.CoralEndEffector;
-import frc.robot.subsystems.endEffector.coral.CoralEndEffectorIOSparkMax;
-import frc.robot.subsystems.superstructure.Superstructure;
-import frc.robot.subsystems.superstructure.ElevatorIOSim;
-import frc.robot.subsystems.superstructure.ElevatorIOTalonFX;
-import frc.robot.subsystems.superstructure.PivotIOSim;
-import frc.robot.subsystems.superstructure.PivotIOTalonFX;
-import frc.robot.subsystems.vision.Camera;
-import frc.robot.subsystems.vision.CameraIOPhoton;
-import frc.robot.subsystems.vision.CameraIOSim;
-import frc.robot.util.auto.AutonSelector;
-import frc.robot.util.auto.AutonSelector.AutoQuestion;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -54,22 +21,53 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.RunCommand;
-import edu.wpi.first.wpilibj2.command.SelectCommand;
-import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.AutoFactory.CharacterizationRoutine;
+import frc.robot.Constants.CoralEndEffectorConstants;
+import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.DriveConstants.BackLeftModuleConstants;
+import frc.robot.Constants.DriveConstants.BackRightModuleConstants;
+import frc.robot.Constants.DriveConstants.FrontLeftModuleConstants;
+import frc.robot.Constants.DriveConstants.FrontRightModuleConstants;
+import frc.robot.Constants.IOConstants.DriverIOConstants;
+import frc.robot.Constants.IOConstants.OperatorIOConstants;
+import frc.robot.Constants.PivotConstants;
+import frc.robot.Constants.SimConstants;
+import frc.robot.Constants.VisionConstants;
+import frc.robot.commands.driveCommands.SwerveDriveCommand;
+import frc.robot.commands.superstructureCommands.PivotCommand;
+import frc.robot.commands.superstructureCommands.PivotPositionCommand;
+import frc.robot.subsystems.drive.DriveBase;
+import frc.robot.subsystems.drive.GyroIONavX;
+import frc.robot.subsystems.drive.GyroIOSim;
+import frc.robot.subsystems.drive.SwerveModuleIOSim;
+import frc.robot.subsystems.drive.SwerveModuleIOSparkMax;
+import frc.robot.subsystems.endEffector.coral.CoralEndEffector;
+import frc.robot.subsystems.endEffector.coral.CoralEndEffectorIOSparkMax;
+import frc.robot.subsystems.superstructure.PivotIOSim;
+import frc.robot.subsystems.superstructure.PivotIOTalonFX;
+import frc.robot.subsystems.superstructure.Superstructure;
+import frc.robot.subsystems.vision.Camera;
+import frc.robot.subsystems.vision.CameraIOPhoton;
+import frc.robot.subsystems.vision.CameraIOSim;
+import frc.robot.util.auto.AutonSelector;
+import frc.robot.util.auto.AutonSelector.AutoQuestion;
 
 public class RobotContainer {
     private final DriveBase driveBase;
 
+    //sticks
     private final Joystick driverJoystick = new Joystick(DriverIOConstants.DRIVER_CONTROLLER_PORT);
     private final Joystick operatorJoystick = new Joystick(OperatorIOConstants.OPERATOR_CONTROLLER_PORT);
 
+    //Coral Score
     private final JoystickButton scoreButton = new JoystickButton(driverJoystick, DriverIOConstants.SCORE_BUTTON);
-
+    private final JoystickButton intakeButton = new JoystickButton(operatorJoystick, OperatorIOConstants.SPIN_INTAKE_BUTTON_ID);
+    private final JoystickButton stowButton = new JoystickButton(operatorJoystick, OperatorIOConstants.STOW_BUTTON_ID);
     private final JoystickButton l1Button = new JoystickButton(operatorJoystick, OperatorIOConstants.L1_BUTTON);
     private final JoystickButton l2Button = new JoystickButton(operatorJoystick, OperatorIOConstants.L2_BUTTON);
-
+    
     private final Trigger manualArm = new Trigger(
             () -> operatorJoystick.getRawAxis(OperatorIOConstants.MANUAL_ARM_AXIS) > 0.1);
 
@@ -150,7 +148,8 @@ public class RobotContainer {
                         () -> -driverJoystick.getRawAxis(DriverIOConstants.STRAFE_X_AXIS),
                         () -> driverJoystick.getRawAxis(DriverIOConstants.ROTATION_AXIS),
                         () -> DriveConstants.FIELD_CENTRIC, DriverIOConstants.SQUARE_INPUTS));
-        superstructure.setDefaultCommand(superstructure.setStateCommand(RobotConstants.INTAKE_STATE));
+        //superstructure.setDefaultCommand(superstructure.setStateCommand(RobotConstants.INTAKE_STATE)); Note: Also post week 0 shenanigans we don't have a super structure we just have a pivot
+        superstructure.setDefaultCommand(new PivotCommand(superstructure, () -> operatorJoystick.getRawAxis(OperatorIOConstants.MANUAL_ARM_AXIS)));
         coral.setDefaultCommand(coral.spinCommand(CoralEndEffectorConstants.MOTOR_SPEED)
                 .until(() -> coral.getCurrent() > CoralEndEffectorConstants.CURRENT_THRESHOLD)
                 .andThen(new RunCommand(() -> {
@@ -173,8 +172,9 @@ public class RobotContainer {
     }
 
     public void configureButtonBindings() {
+        /* Note: post week 0 shenanigans
         scoreButton
-                .onTrue(new SelectCommand<Integer>(
+                .whileTrue(new SelectCommand<Integer>(
                         Map.ofEntries(Map.entry(1, superstructure.setStateCommand(RobotConstants.L1_STATE)),
                                 Map.entry(2, superstructure.setStateCommand(RobotConstants.L2_STATE))),
                         () -> scoreLevel)
@@ -183,6 +183,13 @@ public class RobotContainer {
         }));
         l2Button.onTrue(new StartEndCommand(() -> scoreLevel = 2, () -> {
         }));
+        */
+
+        scoreButton.whileTrue(coral.spinCommand(1));
+        intakeButton.whileTrue(coral.spinCommand(-1));
+        stowButton.whileTrue(new PivotPositionCommand(superstructure, OperatorIOConstants.INTAKE_SETPOINT_ANGLE));
+        l1Button.whileTrue(new PivotCommand(superstructure, OperatorIOConstants.L1_ANGLE));
+        l2Button.whileTrue(new PivotCommand(superstructure, OperatorIOConstants.L2_ANGLE));
     }
 
     public boolean getOperatorConnected() {

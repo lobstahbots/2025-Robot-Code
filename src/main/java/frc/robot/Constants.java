@@ -6,6 +6,7 @@ package frc.robot;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.DoubleSupplier;
 
 import org.ironmaple.simulation.drivesims.COTS;
 import org.ironmaple.simulation.drivesims.configs.DriveTrainSimulationConfig;
@@ -59,15 +60,20 @@ public final class Constants {
             public static final int STRAFE_X_AXIS = 0;
             public static final int STRAFE_Y_AXIS = 1;
             public static final int ROTATION_AXIS = 2;
-            public static final int SCORE_BUTTON = 0;
+            public static final int SCORE_BUTTON = 0; //Should be LT
             public static final boolean SQUARE_INPUTS = false;
         }
 
         public static class OperatorIOConstants {
             public static final int OPERATOR_CONTROLLER_PORT = 1;
             public static final int MANUAL_ARM_AXIS = 1;
-            public static final int L1_BUTTON = 0;
-            public static final int L2_BUTTON = 0;
+            public static final int L1_BUTTON = 0; //Should be X
+            public static final int L2_BUTTON = 0; //Should be Y
+            public static final int SPIN_INTAKE_BUTTON_ID = 0; //Should be LT
+            public static final int STOW_BUTTON_ID = 0; //Should be RT
+            public static final double INTAKE_SETPOINT_ANGLE = 0; //TODO: figure this out
+            public static final DoubleSupplier L1_ANGLE = null; //TODO: figure this out
+            public static final DoubleSupplier L2_ANGLE = null; //TODO: figure this out
         }
     }
 
