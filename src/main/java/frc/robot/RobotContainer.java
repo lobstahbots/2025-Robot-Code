@@ -110,7 +110,7 @@ public class RobotContainer {
 
             superstructure = new Superstructure(
                     // new ElevatorIOTalonFX(ElevatorConstants.LEFT_ELEVATOR_ID, ElevatorConstants.RIGHT_ELEVATOR_ID),
-                    new PivotIOTalonFX(PivotConstants.MOTOR_ID, coralSparkMax.getAbsoluteEncoder()));
+                    new PivotIOTalonFX(PivotConstants.MOTOR_ID, PivotConstants.ENCODER_ID));
         } else {
             driveSimulation = new SwerveDriveSimulation(DriveConstants.MAPLE_SIM_CONFIG,
                     new Pose2d(3, 3, new Rotation2d()));
@@ -173,7 +173,7 @@ public class RobotContainer {
     }
 
     public void configureButtonBindings() {
-        /* Note: post week 0 shenanigans
+        /* Note: post week 0 shenanigans; needs editing so that there isn't an invisible toggle
         scoreButton
                 .whileTrue(new SelectCommand<Integer>(
                         Map.ofEntries(Map.entry(1, superstructure.setStateCommand(RobotConstants.L1_STATE)),
@@ -188,9 +188,9 @@ public class RobotContainer {
 
         scoreButton.whileTrue(coral.spinCommand(1));
         intakeButton.whileTrue(coral.spinCommand(-1));
-        stowButton.whileTrue(new PivotPositionCommand(superstructure, OperatorIOConstants.INTAKE_SETPOINT_ANGLE));
-        l1Button.whileTrue(new PivotCommand(superstructure, OperatorIOConstants.L1_ANGLE));
-        l2Button.whileTrue(new PivotCommand(superstructure, OperatorIOConstants.L2_ANGLE));
+        stowButton.whileTrue(new PivotPositionCommand(superstructure, PivotConstants.INTAKE_SETPOINT_ANGLE));
+        l1Button.whileTrue(new PivotCommand(superstructure, PivotConstants.L1_VOLTS));
+        l2Button.whileTrue(new PivotCommand(superstructure, PivotConstants.L2_VOLTS));
     }
 
     public boolean getOperatorConnected() {
