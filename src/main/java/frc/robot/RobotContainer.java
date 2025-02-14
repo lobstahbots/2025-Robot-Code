@@ -9,6 +9,7 @@ import frc.robot.Constants.CoralEndEffectorConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.PivotConstants;
+import frc.robot.Constants.RobotConstants;
 import frc.robot.Constants.SimConstants;
 import frc.robot.Constants.VisionConstants;
 import frc.robot.Constants.DriveConstants.BackLeftModuleConstants;
@@ -53,11 +54,25 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SelectCommand;
+import edu.wpi.first.wpilibj2.command.StartEndCommand;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 public class RobotContainer {
     private final DriveBase driveBase;
+
     private final Joystick driverJoystick = new Joystick(DriverIOConstants.DRIVER_CONTROLLER_PORT);
     private final Joystick operatorJoystick = new Joystick(OperatorIOConstants.OPERATOR_CONTROLLER_PORT);
+
+    private final JoystickButton scoreButton = new JoystickButton(driverJoystick, DriverIOConstants.SCORE_BUTTON);
+
+    private final JoystickButton l1Button = new JoystickButton(operatorJoystick, OperatorIOConstants.L1_BUTTON);
+    private final JoystickButton l2Button = new JoystickButton(operatorJoystick, OperatorIOConstants.L2_BUTTON);
+
+    private final Trigger manualArm = new Trigger(
+            () -> operatorJoystick.getRawAxis(OperatorIOConstants.MANUAL_ARM_AXIS) > 0.1);
+
     private final AutonSelector<Object> autoChooser = new AutonSelector<>("Auto Chooser", "Do Nothing", List.of(),
             () -> Commands.none());
     private final AutoFactory autoFactory;
@@ -68,11 +83,14 @@ public class RobotContainer {
 
     private SwerveDriveSimulation driveSimulation = null;
 
+    private int scoreLevel = 1;
+
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
      */
     public RobotContainer() {
-        var coralSparkMax = new CoralEndEffectorIOSparkMax(CoralEndEffectorConstants.LEFT_ID, CoralEndEffectorConstants.RIGHT_ID);
+        var coralSparkMax = new CoralEndEffectorIOSparkMax(CoralEndEffectorConstants.LEFT_ID,
+                CoralEndEffectorConstants.RIGHT_ID);
         if (Robot.isReal()) {
             SwerveModuleIOSparkMax frontLeft = new SwerveModuleIOSparkMax(FrontLeftModuleConstants.moduleID,
                     "Front left ", FrontLeftModuleConstants.angleID, FrontLeftModuleConstants.driveID,
@@ -114,7 +132,7 @@ public class RobotContainer {
             driveBase = new DriveBase(new GyroIOSim(driveSimulation.getGyroSimulation()) {}, cameras, frontLeft,
                     frontRight, backLeft, backRight, false);
 
-            superstructure = new Superstructure(/*new ElevatorIOSim(),*/ new PivotIOSim());
+            superstructure = new Superstructure(/* new ElevatorIOSim(), */ new PivotIOSim());
         }
 
         coral = new CoralEndEffector(coralSparkMax);
@@ -132,6 +150,7 @@ public class RobotContainer {
                         () -> -driverJoystick.getRawAxis(DriverIOConstants.STRAFE_X_AXIS),
                         () -> driverJoystick.getRawAxis(DriverIOConstants.ROTATION_AXIS),
                         () -> DriveConstants.FIELD_CENTRIC, DriverIOConstants.SQUARE_INPUTS));
+        superstructure.setDefaultCommand(superstructure.setStateCommand(RobotConstants.INTAKE_STATE));
     }
 
     /**
@@ -149,7 +168,18 @@ public class RobotContainer {
         }
     }
 
-    public void configureButtonBindings() {}
+    public void configureButtonBindings() {
+        scoreButton
+                .onTrue(new SelectCommand<Integer>(
+                        Map.ofEntries(Map.entry(1, superstructure.setStateCommand(RobotConstants.L1_STATE)),
+                                Map.entry(2, superstructure.setStateCommand(RobotConstants.L2_STATE))),
+                        () -> scoreLevel)
+                                .andThen(coral.spinCommand(-CoralEndEffectorConstants.MOTOR_SPEED).withTimeout(1)));
+        l1Button.onTrue(new StartEndCommand(() -> scoreLevel = 1, () -> {
+        }));
+        l2Button.onTrue(new StartEndCommand(() -> scoreLevel = 2, () -> {
+        }));
+    }
 
     public boolean getOperatorConnected() {
         return operatorJoystick.isConnected();

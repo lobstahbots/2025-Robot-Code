@@ -18,6 +18,7 @@ import com.pathplanner.lib.path.PathConstraints;
 
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.Vector;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -31,6 +32,7 @@ import static edu.wpi.first.units.Units.Pounds;
 import edu.wpi.first.units.measure.Mass;
 import edu.wpi.first.units.measure.MomentOfInertia;
 import frc.robot.subsystems.drive.SwerveKinematicLimits;
+import frc.robot.subsystems.superstructure.SuperstructureState;
 import frc.robot.util.choreo.ChoreoVariables;
 
 /**
@@ -57,11 +59,15 @@ public final class Constants {
             public static final int STRAFE_X_AXIS = 0;
             public static final int STRAFE_Y_AXIS = 1;
             public static final int ROTATION_AXIS = 2;
+            public static final int SCORE_BUTTON = 0;
             public static final boolean SQUARE_INPUTS = false;
         }
 
         public static class OperatorIOConstants {
             public static final int OPERATOR_CONTROLLER_PORT = 1;
+            public static final int MANUAL_ARM_AXIS = 1;
+            public static final int L1_BUTTON = 0;
+            public static final int L2_BUTTON = 0;
         }
     }
 
@@ -77,6 +83,10 @@ public final class Constants {
         public static final double MAX_DRIVE_SPEED = 5.23; // from https://www.reca.lc/drive
         public static final Mass WEIGHT = Pounds.of(40);
         public static final MomentOfInertia MOI = KilogramSquareMeters.of(1.4988172);
+
+        public static final SuperstructureState INTAKE_STATE = new SuperstructureState(Rotation2d.fromDegrees(-90), ElevatorConstants.BOTTOM_HEIGHT);
+        public static final SuperstructureState L1_STATE = new SuperstructureState(Rotation2d.fromDegrees(0), ElevatorConstants.BOTTOM_HEIGHT);
+        public static final SuperstructureState L2_STATE = new SuperstructureState(Rotation2d.fromDegrees(45), ElevatorConstants.BOTTOM_HEIGHT);
     }
 
     public static class DriveConstants {
@@ -301,7 +311,7 @@ public final class Constants {
     }
 
     public static class CoralEndEffectorConstants {
-        public static final double MOTOR_SPEED = 0;
+        public static final double MOTOR_SPEED = 0.1;
         public static final int CURRENT_LIMIT = 20;
         public static final int LEFT_ID = 0;
         public static final int RIGHT_ID = 0;
@@ -319,7 +329,7 @@ public final class Constants {
         public static final double kG = 0;
         public static final double kV = 0;
         public static final double kA = 0;
-        public static final TrapezoidProfile.Constraints CONSTRAINTS = new TrapezoidProfile.Constraints(10, 10);
+        public static final TrapezoidProfile.Constraints CONSTRAINTS = new TrapezoidProfile.Constraints(0.1, 0.1);
 
         public static final int CURRENT_LIMIT = 40;
 

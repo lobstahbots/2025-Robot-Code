@@ -41,6 +41,8 @@ public class Superstructure extends SubsystemBase {
     private final ArmFeedforward armFeedforward = new ArmFeedforward(PivotConstants.kS, PivotConstants.kG,
             PivotConstants.kV, PivotConstants.kA);
 
+    public final Trigger atSetpoint = new Trigger(armPID::atSetpoint);
+
     public Superstructure(/*ElevatorIO elevatorIO, */ PivotIO pivotIO) {
         // this.elevatorIO = elevatorIO;
         this.pivotIO = pivotIO;
