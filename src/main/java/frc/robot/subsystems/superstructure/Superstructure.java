@@ -88,6 +88,10 @@ public class Superstructure extends SubsystemBase {
         // return elevatorInputs.rightPosition;
     }
 
+    public Rotation2d getPivotRotation() {
+        return pivotIO.getPivotRotation();
+    }
+
     @Override
     public void periodic() {
         // elevatorIO.updateInputs(elevatorInputs);

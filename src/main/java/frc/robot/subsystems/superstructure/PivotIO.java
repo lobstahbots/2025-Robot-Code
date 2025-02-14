@@ -49,4 +49,6 @@ public interface PivotIO {
      * Halt all pivot motion
      */
     public void stop();
+
+    public Rotation2d getPivotRotation();
 }

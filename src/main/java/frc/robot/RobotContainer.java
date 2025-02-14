@@ -150,6 +150,7 @@ public class RobotContainer {
                         () -> DriveConstants.FIELD_CENTRIC, DriverIOConstants.SQUARE_INPUTS));
         //superstructure.setDefaultCommand(superstructure.setStateCommand(RobotConstants.INTAKE_STATE)); Note: Also post week 0 shenanigans we don't have a super structure we just have a pivot
         superstructure.setDefaultCommand(new PivotCommand(superstructure, () -> operatorJoystick.getRawAxis(OperatorIOConstants.MANUAL_ARM_AXIS)));
+        //superstructure.setDefaultCommand(new PivotPositionCommand(superstructure, () -> operatorJoystick.getRawAxis(OperatorIOConstants.MANUAL_ARM_AXIS)));
         coral.setDefaultCommand(coral.spinCommand(CoralEndEffectorConstants.MOTOR_SPEED)
                 .until(() -> coral.getCurrent() > CoralEndEffectorConstants.CURRENT_THRESHOLD)
                 .andThen(new RunCommand(() -> {

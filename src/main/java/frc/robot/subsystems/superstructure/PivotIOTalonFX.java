@@ -53,4 +53,9 @@ public class PivotIOTalonFX implements PivotIO {
         inputs.temperature = pivotMotor.getDeviceTemp().getValueAsDouble();
         inputs.appliedVoltage = pivotMotor.getMotorVoltage().getValueAsDouble();
     }
+
+    @Override
+    public Rotation2d getPivotRotation() {
+        return Rotation2d.fromRotations(encoder.getPosition());
+    }
 }

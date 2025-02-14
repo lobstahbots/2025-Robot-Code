@@ -33,7 +33,7 @@ public class PivotPositionCommand extends Command {
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        pivot.setRotation(new Rotation2d(MathUtil.clamp(pivotAngle.getAsDouble(), PivotConstants.MIN_ANGLE, PivotConstants.MAX_ANGLE)));
+        pivot.setRotation(new Rotation2d(MathUtil.clamp(pivotAngle.getAsDouble() + pivot.getPivotRotation().getDegrees(), PivotConstants.MIN_ANGLE, PivotConstants.MAX_ANGLE)));
     }
 
     // Called once the command ends or is interrupted.
