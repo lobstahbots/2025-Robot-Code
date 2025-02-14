@@ -350,5 +350,6 @@ public final class Constants {
         public static final Rotation2d L2_ANGLE = Rotation2d.fromDegrees(0);; //TODO: figure this out
         public static final double L1_VOLTS = 10; //TODO: figure this out
         public static final double L2_VOLTS = 10; //TODO: figure this out
+        public static final double JOYSTICK_SCALING = 1; //TODO: figure this out
     }
 }

@@ -13,34 +13,34 @@ import frc.robot.Constants.PivotConstants;
 import frc.robot.subsystems.superstructure.Superstructure;
 
 public class PivotPositionCommand extends Command {
-    private final Superstructure pivot;
+    private final Superstructure superstructure;
     private final Supplier<Rotation2d> pivotAngle;
 
     /**
      * Creates a new PivotCommand that accepts a supplier for a Rotation2d.
-     * @param pivot The {@link Superstructure} to control.
+     * @param superstructure The {@link Superstructure} to control.
      * @param pivotAngle The angle to rotate to, as a supplier for a {@link Rotation2d}. 
      */
-    public PivotPositionCommand(Superstructure pivot, Supplier<Rotation2d> pivotAngle) {
+    public PivotPositionCommand(Superstructure superstructure, Supplier<Rotation2d> pivotAngle) {
         // Use addRequirements() here to declare subsystem dependencies.
-        this.pivot = pivot;
+        this.superstructure = superstructure;
         this.pivotAngle = pivotAngle;
-        addRequirements(pivot);
+        addRequirements(superstructure);
     }
 
      /**
      * Creates a new PivotCommand without a supplier, with input as a Rotation2d.
-     * @param pivot The {@link Superstructure} to control.
+     * @param superstructure The {@link Superstructure} to control.
      * @param pivotAngle The angle to rotate to, as a {@link Rotation2d}
      */
-    public PivotPositionCommand(Superstructure pivot, Rotation2d pivotAngle) {
-        this(pivot, () -> pivotAngle);
+    public PivotPositionCommand(Superstructure superstructure, Rotation2d pivotAngle) {
+        this(superstructure, () -> pivotAngle);
     }
 
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        pivot.setRotation(new Rotation2d(MathUtil.clamp(pivotAngle.get().plus(pivot.getPivotRotation()).getDegrees(), PivotConstants.MIN_ANGLE, PivotConstants.MAX_ANGLE)));
+        superstructure.setRotation(Rotation2d.fromDegrees(MathUtil.clamp(pivotAngle.get().plus(superstructure.getPivotRotation()).getDegrees(), PivotConstants.MIN_ANGLE, PivotConstants.MAX_ANGLE)));
     }
 
     // Called once the command ends or is interrupted.

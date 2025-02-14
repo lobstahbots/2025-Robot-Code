@@ -11,20 +11,20 @@ import frc.robot.subsystems.superstructure.Superstructure;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class PivotCommand extends Command {
-    private final Superstructure pivot;
+    private final Superstructure superstructure;
     private final DoubleSupplier pivotSpeed;
 
 
     /** Creates a new PivotCommand. */
-    public PivotCommand(Superstructure pivot, DoubleSupplier pivotSpeed) {
+    public PivotCommand(Superstructure superstructure, DoubleSupplier pivotSpeed) {
         // Use addRequirements() here to declare subsystem dependencies.
-        this.pivot = pivot;
+        this.superstructure = superstructure;
         this.pivotSpeed = pivotSpeed;
-        addRequirements(pivot);
+        addRequirements(superstructure);
     }
 
-    public PivotCommand(Superstructure pivot, double pivotSpeed) {
-        this(pivot, () -> pivotSpeed);
+    public PivotCommand(Superstructure superstructure, double pivotSpeed) {
+        this(superstructure, () -> pivotSpeed);
     }
 
     // Called when the command is initially scheduled.
@@ -34,13 +34,13 @@ public class PivotCommand extends Command {
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        pivot.setPivotVoltage(pivotSpeed.getAsDouble());
+        superstructure.setPivotVoltage(pivotSpeed.getAsDouble());
     }
 
     // Called once the command ends or is interrupted.
     @Override
     public void end(boolean interrupted) {
-        pivot.setPivotVoltage(0);
+        superstructure.setPivotVoltage(0);
     }
 
     // Returns true when the command should end.
