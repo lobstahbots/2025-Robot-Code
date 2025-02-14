@@ -75,8 +75,12 @@ public class Superstructure extends SubsystemBase {
         return new SuperstructureState(pivotInputs.position, getExtension());
     }
 
-    public void setVoltage(double voltage) {
+    public void setElevatorVoltage(double voltage) {
         // elevatorIO.setVoltage(voltage);
+    }
+
+    public void setPivotVoltage (double voltage) {
+        pivotIO.setVoltage(voltage);
     }
 
     public double getExtension() {

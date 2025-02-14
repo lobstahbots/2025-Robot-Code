@@ -22,12 +22,12 @@ public class ElevatorCommand extends Command {
 
     @Override
     public void execute() {
-        elevator.setVoltage(elevatorSpeed.getAsDouble());
+        elevator.setElevatorVoltage(elevatorSpeed.getAsDouble());
     }
 
     @Override
     public void end(boolean interrupted) {
-        elevator.setVoltage(0);
+        elevator.setElevatorVoltage(0);
     }
 
     @Override
