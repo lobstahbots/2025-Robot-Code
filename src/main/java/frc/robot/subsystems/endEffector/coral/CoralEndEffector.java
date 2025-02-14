@@ -51,6 +51,10 @@ public class CoralEndEffector extends SubsystemBase {
         return run(io::stopMotor);
     }
 
+    public double getCurrent() {
+        return (inputs.leftCurrentAmps + inputs.rightCurrentAmps) / 2;
+    }
+
     public void periodic() {
         io.updateInputs(inputs);
         Logger.processInputs("CoralEndEffector", inputs);

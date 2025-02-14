@@ -151,6 +151,10 @@ public class RobotContainer {
                         () -> driverJoystick.getRawAxis(DriverIOConstants.ROTATION_AXIS),
                         () -> DriveConstants.FIELD_CENTRIC, DriverIOConstants.SQUARE_INPUTS));
         superstructure.setDefaultCommand(superstructure.setStateCommand(RobotConstants.INTAKE_STATE));
+        coral.setDefaultCommand(coral.spinCommand(CoralEndEffectorConstants.MOTOR_SPEED)
+                .until(() -> coral.getCurrent() > CoralEndEffectorConstants.CURRENT_THRESHOLD)
+                .andThen(new RunCommand(() -> {
+                })));
     }
 
     /**
