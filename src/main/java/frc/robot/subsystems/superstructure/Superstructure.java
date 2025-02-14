@@ -19,13 +19,13 @@ import frc.robot.Constants.RobotConstants;
 
 public class Superstructure extends SubsystemBase {
 
-    private final ElevatorIO elevatorIO;
-    private final ElevatorIOInputsAutoLogged elevatorInputs = new ElevatorIOInputsAutoLogged();
+    // private final ElevatorIO elevatorIO;
+    // private final ElevatorIOInputsAutoLogged elevatorInputs = new ElevatorIOInputsAutoLogged();
 
     private final PivotIO pivotIO;
     private final PivotIOInputsAutoLogged pivotInputs = new PivotIOInputsAutoLogged();
 
-    public final Trigger limitSwitch = new Trigger(() -> elevatorInputs.limitSwitchHit);
+    // public final Trigger limitSwitch = new Trigger(() -> elevatorInputs.limitSwitchHit);
 
     private final Mechanism2d mechanism = new Mechanism2d(RobotConstants.TRACK_WIDTH + Units.feetToMeters(3),
             ElevatorConstants.TOP_HEIGHT + Units.feetToMeters(3));
@@ -41,13 +41,13 @@ public class Superstructure extends SubsystemBase {
     private final ArmFeedforward armFeedforward = new ArmFeedforward(PivotConstants.kS, PivotConstants.kG,
             PivotConstants.kV, PivotConstants.kA);
 
-    public Superstructure(ElevatorIO elevatorIO, PivotIO pivotIO) {
-        this.elevatorIO = elevatorIO;
+    public Superstructure(/*ElevatorIO elevatorIO, */ PivotIO pivotIO) {
+        // this.elevatorIO = elevatorIO;
         this.pivotIO = pivotIO;
     }
 
     public void setState(SuperstructureState state) {
-        setExtension(state.elevatorHeight);
+        // setExtension(state.elevatorHeight);
         setRotation(state.pivotRotation);
     }
 
@@ -57,12 +57,12 @@ public class Superstructure extends SubsystemBase {
 
     public void stopMotion() {
         setState(getState());
-        elevatorIO.stop();
+        // elevatorIO.stop();
         pivotIO.stop();
     }
 
     public void setExtension(double height) {
-        elevatorIO.setPosition(height);
+        // elevatorIO.setPosition(height);
     }
 
     public void setRotation(Rotation2d rotation) {
@@ -74,20 +74,21 @@ public class Superstructure extends SubsystemBase {
     }
 
     public void setVoltage(double voltage) {
-        elevatorIO.setVoltage(voltage);
+        // elevatorIO.setVoltage(voltage);
     }
 
     public double getExtension() {
-        return elevatorInputs.rightPosition;
+        return ElevatorConstants.BOTTOM_HEIGHT;
+        // return elevatorInputs.rightPosition;
     }
 
     @Override
     public void periodic() {
-        elevatorIO.updateInputs(elevatorInputs);
+        // elevatorIO.updateInputs(elevatorInputs);
         pivotIO.updateInputs(pivotInputs);
-        Logger.processInputs("Superstructure/Elevator", elevatorInputs);
+        // Logger.processInputs("Superstructure/Elevator", elevatorInputs);
         Logger.processInputs("Superstructure/Pivot", pivotInputs);
-        if (limitSwitch.getAsBoolean()) elevatorIO.resetEncoder(ElevatorConstants.BOTTOM_HEIGHT);
+        // if (limitSwitch.getAsBoolean()) elevatorIO.resetEncoder(ElevatorConstants.BOTTOM_HEIGHT);
         elevatorLigament.setLength(getExtension());
         pivotLigament.setAngle(pivotInputs.position);
         SmartDashboard.putData("Superstructure", mechanism);

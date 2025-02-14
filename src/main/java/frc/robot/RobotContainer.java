@@ -93,7 +93,7 @@ public class RobotContainer {
             driveBase = new DriveBase(new GyroIONavX(), cameras, frontLeft, frontRight, backLeft, backRight, false);
 
             superstructure = new Superstructure(
-                    new ElevatorIOTalonFX(ElevatorConstants.LEFT_ELEVATOR_ID, ElevatorConstants.RIGHT_ELEVATOR_ID),
+                    // new ElevatorIOTalonFX(ElevatorConstants.LEFT_ELEVATOR_ID, ElevatorConstants.RIGHT_ELEVATOR_ID),
                     new PivotIOTalonFX(PivotConstants.MOTOR_ID, coralSparkMax.getAbsoluteEncoder()));
         } else {
             driveSimulation = new SwerveDriveSimulation(DriveConstants.MAPLE_SIM_CONFIG,
@@ -114,7 +114,7 @@ public class RobotContainer {
             driveBase = new DriveBase(new GyroIOSim(driveSimulation.getGyroSimulation()) {}, cameras, frontLeft,
                     frontRight, backLeft, backRight, false);
 
-            superstructure = new Superstructure(new ElevatorIOSim(), new PivotIOSim());
+            superstructure = new Superstructure(/*new ElevatorIOSim(),*/ new PivotIOSim());
         }
 
         coral = new CoralEndEffector(coralSparkMax);
