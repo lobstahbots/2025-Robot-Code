@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.ElevatorConstants;
@@ -48,6 +49,16 @@ public class Superstructure extends SubsystemBase {
     public void setState(SuperstructureState state) {
         setExtension(state.elevatorHeight);
         setRotation(state.pivotRotation);
+    }
+
+    public Command setStateCommand(SuperstructureState state) {
+        return startEnd(() -> setState(state), this::stopMotion);
+    }
+
+    public void stopMotion() {
+        setState(getState());
+        elevatorIO.stop();
+        pivotIO.stop();
     }
 
     public void setExtension(double height) {
