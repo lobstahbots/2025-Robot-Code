@@ -1,4 +1,4 @@
-package frc.robot.commands.elevatorCommands;
+package frc.robot.commands.superstructureCommands;
 
 import java.util.function.DoubleSupplier;
 
