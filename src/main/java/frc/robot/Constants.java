@@ -59,15 +59,17 @@ public final class Constants {
             public static final int STRAFE_X_AXIS = 0;
             public static final int STRAFE_Y_AXIS = 1;
             public static final int ROTATION_AXIS = 2;
-            public static final int SCORE_BUTTON = 0;
+            public static final int SCORE_BUTTON = 0; //Should be LT
             public static final boolean SQUARE_INPUTS = false;
         }
 
         public static class OperatorIOConstants {
             public static final int OPERATOR_CONTROLLER_PORT = 1;
             public static final int MANUAL_ARM_AXIS = 1;
-            public static final int L1_BUTTON = 0;
-            public static final int L2_BUTTON = 0;
+            public static final int L1_BUTTON = 0; //Should be X
+            public static final int L2_BUTTON = 0; //Should be Y
+            public static final int SPIN_INTAKE_BUTTON_ID = 0; //Should be LT
+            public static final int STOW_BUTTON_ID = 0; //Should be RT
         }
     }
 
@@ -342,5 +344,12 @@ public final class Constants {
 
         public static final int MOTOR_ID = 0;
         public static final int ENCODER_ID = 0;
+
+        public static final Rotation2d INTAKE_SETPOINT_ANGLE = Rotation2d.fromDegrees(0); //TODO: figure this out
+        public static final Rotation2d L1_ANGLE = Rotation2d.fromDegrees(0); //TODO: figure this out
+        public static final Rotation2d L2_ANGLE = Rotation2d.fromDegrees(0);; //TODO: figure this out
+        public static final double L1_VOLTS = 10; //TODO: figure this out
+        public static final double L2_VOLTS = 10; //TODO: figure this out
+        public static final double JOYSTICK_SCALING = 1; //TODO: figure this out
     }
 }

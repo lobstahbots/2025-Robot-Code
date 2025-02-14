@@ -3,9 +3,9 @@ package frc.robot.subsystems.superstructure;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
-import frc.robot.SimShared;
 import frc.robot.Constants.PivotConstants;
 import frc.robot.Constants.SimConstants;
+import frc.robot.SimShared;
 
 public class PivotIOSim implements PivotIO{
     private final DCMotor pivotGearBox = DCMotor.getFalcon500(1);
@@ -44,4 +44,5 @@ public class PivotIOSim implements PivotIO{
     public void stop() {
         pivotSim.setInputVoltage(0);
     }
+
 }

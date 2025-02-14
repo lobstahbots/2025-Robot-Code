@@ -51,6 +51,7 @@ public class CoralEndEffectorIOSparkMax implements CoralEndEffectorIO {
     return leftMotor.getAbsoluteEncoder();
   }
 
+  @Override
   public void updateInputs(CoralEndEffectorIOInputs inputs) {
     inputs.leftVelocity = leftEncoder.getVelocity();
     inputs.leftAppliedVoltage = leftMotor.getAppliedOutput() * leftMotor.getBusVoltage();
