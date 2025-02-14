@@ -89,7 +89,7 @@ public class Superstructure extends SubsystemBase {
     }
 
     public Rotation2d getPivotRotation() {
-        return pivotIO.getPivotRotation();
+        return pivotInputs.position;
     }
 
     @Override

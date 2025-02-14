@@ -45,9 +45,4 @@ public class PivotIOSim implements PivotIO{
         pivotSim.setInputVoltage(0);
     }
 
-    @Override
-    public Rotation2d getPivotRotation() {
-        //idk if this is important for now
-        return null;
-    }
 }

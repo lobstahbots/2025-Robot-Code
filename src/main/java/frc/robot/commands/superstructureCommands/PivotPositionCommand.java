@@ -4,7 +4,7 @@
 
 package frc.robot.commands.superstructureCommands;
 
-import java.util.function.DoubleSupplier;
+import java.util.function.Supplier;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -12,28 +12,35 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.PivotConstants;
 import frc.robot.subsystems.superstructure.Superstructure;
 
-/* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class PivotPositionCommand extends Command {
     private final Superstructure pivot;
-    private final DoubleSupplier pivotAngle;
+    private final Supplier<Rotation2d> pivotAngle;
 
-
-    /** Creates a new PivotCommand. */
-    public PivotPositionCommand(Superstructure pivot, DoubleSupplier pivotAngle) {
+    /**
+     * Creates a new PivotCommand that accepts a supplier for a Rotation2d.
+     * @param pivot The {@link Superstructure} to control.
+     * @param pivotAngle The angle to rotate to, as a supplier for a {@link Rotation2d}. 
+     */
+    public PivotPositionCommand(Superstructure pivot, Supplier<Rotation2d> pivotAngle) {
         // Use addRequirements() here to declare subsystem dependencies.
         this.pivot = pivot;
         this.pivotAngle = pivotAngle;
         addRequirements(pivot);
     }
 
-    public PivotPositionCommand(Superstructure pivot, double pivotAngle) {
+     /**
+     * Creates a new PivotCommand without a supplier, with input as a Rotation2d.
+     * @param pivot The {@link Superstructure} to control.
+     * @param pivotAngle The angle to rotate to, as a {@link Rotation2d}
+     */
+    public PivotPositionCommand(Superstructure pivot, Rotation2d pivotAngle) {
         this(pivot, () -> pivotAngle);
     }
 
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        pivot.setRotation(new Rotation2d(MathUtil.clamp(pivotAngle.getAsDouble() + pivot.getPivotRotation().getDegrees(), PivotConstants.MIN_ANGLE, PivotConstants.MAX_ANGLE)));
+        pivot.setRotation(new Rotation2d(MathUtil.clamp(pivotAngle.get().plus(pivot.getPivotRotation()).getDegrees(), PivotConstants.MIN_ANGLE, PivotConstants.MAX_ANGLE)));
     }
 
     // Called once the command ends or is interrupted.

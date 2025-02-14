@@ -50,5 +50,4 @@ public interface PivotIO {
      */
     public void stop();
 
-    public Rotation2d getPivotRotation();
 }
