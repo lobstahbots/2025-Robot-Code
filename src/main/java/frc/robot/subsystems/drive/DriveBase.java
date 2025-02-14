@@ -239,6 +239,7 @@ public class DriveBase extends CharacterizableSubsystem {
    * @return The angle of the gyro as a {@link Rotation2d}.
    */
   public Rotation2d getGyroAngle() {
+    if (Robot.isSimulation()) return simRotation;
     return gyroInputs.yawPosition;
   }
 
