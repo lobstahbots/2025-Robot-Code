@@ -5,6 +5,7 @@
 package frc.robot;
 
 import frc.robot.AutoFactory.CharacterizationRoutine;
+import frc.robot.Constants.CoralEndEffectorConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.PivotConstants;
@@ -22,6 +23,8 @@ import frc.robot.subsystems.drive.GyroIONavX;
 import frc.robot.subsystems.drive.GyroIOSim;
 import frc.robot.subsystems.drive.SwerveModuleIOSim;
 import frc.robot.subsystems.drive.SwerveModuleIOSparkMax;
+import frc.robot.subsystems.endEffector.coral.CoralEndEffector;
+import frc.robot.subsystems.endEffector.coral.CoralEndEffectorIOSparkMax;
 import frc.robot.subsystems.superstructure.Superstructure;
 import frc.robot.subsystems.superstructure.ElevatorIOSim;
 import frc.robot.subsystems.superstructure.ElevatorIOTalonFX;
@@ -61,12 +64,15 @@ public class RobotContainer {
 
     private final Superstructure superstructure;
 
+    private final CoralEndEffector coral;
+
     private SwerveDriveSimulation driveSimulation = null;
 
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
      */
     public RobotContainer() {
+        var coralSparkMax = new CoralEndEffectorIOSparkMax(CoralEndEffectorConstants.LEFT_ID, CoralEndEffectorConstants.RIGHT_ID);
         if (Robot.isReal()) {
             SwerveModuleIOSparkMax frontLeft = new SwerveModuleIOSparkMax(FrontLeftModuleConstants.moduleID,
                     "Front left ", FrontLeftModuleConstants.angleID, FrontLeftModuleConstants.driveID,
@@ -88,7 +94,7 @@ public class RobotContainer {
 
             superstructure = new Superstructure(
                     new ElevatorIOTalonFX(ElevatorConstants.LEFT_ELEVATOR_ID, ElevatorConstants.RIGHT_ELEVATOR_ID),
-                    new PivotIOTalonFX(PivotConstants.MOTOR_ID, PivotConstants.ENCODER_ID));
+                    new PivotIOTalonFX(PivotConstants.MOTOR_ID, coralSparkMax.getAbsoluteEncoder()));
         } else {
             driveSimulation = new SwerveDriveSimulation(DriveConstants.MAPLE_SIM_CONFIG,
                     new Pose2d(3, 3, new Rotation2d()));
@@ -110,6 +116,8 @@ public class RobotContainer {
 
             superstructure = new Superstructure(new ElevatorIOSim(), new PivotIOSim());
         }
+
+        coral = new CoralEndEffector(coralSparkMax);
 
         this.autoFactory = new AutoFactory(driveBase, autoChooser::getResponses);
 
