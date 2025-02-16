@@ -18,6 +18,7 @@ import com.pathplanner.lib.path.PathConstraints;
 
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.Vector;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
@@ -84,9 +85,12 @@ public final class Constants {
         public static final Mass WEIGHT = Pounds.of(40);
         public static final MomentOfInertia MOI = KilogramSquareMeters.of(1.4988172);
 
-        public static final SuperstructureState INTAKE_STATE = new SuperstructureState(Rotation2d.fromDegrees(-90), ElevatorConstants.BOTTOM_HEIGHT);
-        public static final SuperstructureState L1_STATE = new SuperstructureState(Rotation2d.fromDegrees(0), ElevatorConstants.BOTTOM_HEIGHT);
-        public static final SuperstructureState L2_STATE = new SuperstructureState(Rotation2d.fromDegrees(45), ElevatorConstants.BOTTOM_HEIGHT);
+        public static final SuperstructureState INTAKE_STATE = new SuperstructureState(Rotation2d.fromDegrees(-90),
+                ElevatorConstants.BOTTOM_HEIGHT);
+        public static final SuperstructureState L1_STATE = new SuperstructureState(Rotation2d.fromDegrees(0),
+                ElevatorConstants.BOTTOM_HEIGHT);
+        public static final SuperstructureState L2_STATE = new SuperstructureState(Rotation2d.fromDegrees(45),
+                ElevatorConstants.BOTTOM_HEIGHT);
     }
 
     public static class DriveConstants {
@@ -258,7 +262,29 @@ public final class Constants {
     }
 
     public static class FieldConstants {
-        public static final double FIELD_LENGTH = 16.54;
+        public static final double FIELD_LENGTH = ChoreoVariables.get("FIELD_LENGTH");
+        public static final double FIELD_HEIGHT = ChoreoVariables.get("FIELD_HEIGHT");
+
+        public static class Poses {
+            public static final Pose2d A = ChoreoVariables.getPose("A");
+            public static final Pose2d B = ChoreoVariables.getPose("B");
+            public static final Pose2d C = ChoreoVariables.getPose("C");
+            public static final Pose2d D = ChoreoVariables.getPose("D");
+            public static final Pose2d E = ChoreoVariables.getPose("E");
+            public static final Pose2d F = ChoreoVariables.getPose("F");
+            public static final Pose2d G = ChoreoVariables.getPose("G");
+            public static final Pose2d H = ChoreoVariables.getPose("H");
+            public static final Pose2d I = ChoreoVariables.getPose("I");
+            public static final Pose2d J = ChoreoVariables.getPose("J");
+            public static final Pose2d K = ChoreoVariables.getPose("K");
+            public static final Pose2d L = ChoreoVariables.getPose("L");
+
+            public static final Pose2d REEF_CENTER = ChoreoVariables.getPose("REEF_CENTER");
+
+            public static final Pose2d FIELD_CENTER = new Pose2d(FIELD_LENGTH / 2, FIELD_HEIGHT / 2, new Rotation2d());
+
+            public static final Pose2d[] REEF_POSES = { A, B, C, D, E, F, G, H, I, J, K, L };
+        }
     }
 
     public static class AlertConstants {
