@@ -265,7 +265,7 @@ public final class Constants {
 
     public static class FieldConstants {
         public static final double FIELD_LENGTH = ChoreoVariables.get("FIELD_LENGTH");
-        public static final double FIELD_HEIGHT = ChoreoVariables.get("FIELD_HEIGHT");
+        public static final double FIELD_WIDTH = ChoreoVariables.get("FIELD_WIDTH");
 
         public static class Poses {
             public static final Pose2d A = ChoreoVariables.getPose("A");
@@ -283,7 +283,7 @@ public final class Constants {
 
             public static final Pose2d REEF_CENTER = ChoreoVariables.getPose("REEF_CENTER");
 
-            public static final Pose2d FIELD_CENTER = new Pose2d(FIELD_LENGTH / 2, FIELD_HEIGHT / 2, new Rotation2d());
+            public static final Pose2d FIELD_CENTER = new Pose2d(FIELD_LENGTH / 2, FIELD_WIDTH / 2, new Rotation2d());
 
             public static final Pose2d[] REEF_POSES = { A, B, C, D, E, F, G, H, I, J, K, L };
         }
