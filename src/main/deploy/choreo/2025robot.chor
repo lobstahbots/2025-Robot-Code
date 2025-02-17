@@ -67,18 +67,18 @@
      "val":0.04445
     }
    },
-   "FIELD_HEIGHT":{
+   "FIELD_LENGTH":{
+    "dimension":"Length",
+    "var":{
+     "exp":"57 ft + 6.875 in",
+     "val":17.548225
+    }
+   },
+   "FIELD_WIDTH":{
     "dimension":"Length",
     "var":{
      "exp":"26 ft + 5 in",
      "val":8.0518
-    }
-   },
-   "FIELD_LENGTH":{
-    "dimension":"Length",
-    "var":{
-     "exp":"26 ft + 6.875 in",
-     "val":8.099425
     }
    },
    "RADIUS":{
@@ -306,7 +306,7 @@
      "val":4.489450000000001
     },
     "y":{
-     "exp":"FIELD_HEIGHT / 2",
+     "exp":"FIELD_WIDTH / 2",
      "val":4.0259
     },
     "heading":{

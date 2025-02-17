@@ -18,7 +18,8 @@ import frc.robot.Constants.DriveConstants.FrontLeftModuleConstants;
 import frc.robot.Constants.DriveConstants.FrontRightModuleConstants;
 import frc.robot.Constants.IOConstants.DriverIOConstants;
 import frc.robot.Constants.IOConstants.OperatorIOConstants;
-import frc.robot.commands.driveCommands.SwerveDriveCommand;
+import frc.robot.commands.drivebase.AlignToReefCommand;
+import frc.robot.commands.drivebase.SwerveDriveCommand;
 import frc.robot.subsystems.drive.DriveBase;
 import frc.robot.subsystems.drive.GyroIONavX;
 import frc.robot.subsystems.drive.GyroIOSim;
@@ -66,6 +67,8 @@ public class RobotContainer {
     private final Joystick operatorJoystick = new Joystick(OperatorIOConstants.OPERATOR_CONTROLLER_PORT);
 
     private final JoystickButton scoreButton = new JoystickButton(driverJoystick, DriverIOConstants.SCORE_BUTTON);
+    private final JoystickButton leftButton = new JoystickButton(driverJoystick, DriverIOConstants.LEFT_BUTTON);
+    private final JoystickButton rightButton = new JoystickButton(driverJoystick, DriverIOConstants.RIGHT_BUTTON);
 
     private final JoystickButton l1Button = new JoystickButton(operatorJoystick, OperatorIOConstants.L1_BUTTON);
     private final JoystickButton l2Button = new JoystickButton(operatorJoystick, OperatorIOConstants.L2_BUTTON);
@@ -183,6 +186,8 @@ public class RobotContainer {
         }));
         l2Button.onTrue(new StartEndCommand(() -> scoreLevel = 2, () -> {
         }));
+        leftButton.onTrue(new AlignToReefCommand(driveBase, false));
+        rightButton.onTrue(new AlignToReefCommand(driveBase, true));
     }
 
     public boolean getOperatorConnected() {
