@@ -18,6 +18,7 @@ import frc.robot.Constants.DriveConstants.FrontLeftModuleConstants;
 import frc.robot.Constants.DriveConstants.FrontRightModuleConstants;
 import frc.robot.Constants.IOConstants.DriverIOConstants;
 import frc.robot.Constants.IOConstants.OperatorIOConstants;
+import frc.robot.commands.drivebase.AlignToReefCommand;
 import frc.robot.commands.drivebase.SwerveDriveCommand;
 import frc.robot.subsystems.drive.DriveBase;
 import frc.robot.subsystems.drive.GyroIONavX;
@@ -185,6 +186,8 @@ public class RobotContainer {
         }));
         l2Button.onTrue(new StartEndCommand(() -> scoreLevel = 2, () -> {
         }));
+        leftButton.onTrue(new AlignToReefCommand(driveBase, false));
+        rightButton.onTrue(new AlignToReefCommand(driveBase, true));
     }
 
     public boolean getOperatorConnected() {
