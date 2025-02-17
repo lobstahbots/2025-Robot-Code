@@ -183,10 +183,13 @@ public class LobstahMath {
      * robot pose
      * 
      * @param currentPose the current robot pose, blue alliance origin
+     * @param ccw         whether or not to use the counterclockwise branch - that
+     *                    is, the right branch for the nearest face of the reef, or
+     *                    the left branch for the farthest face
      * @return nearest scoring pose, blue alliance origin
      */
-    public static Pose2d getNearestScoringPose(Pose2d currentPose) {
+    public static Pose2d getNearestScoringPose(Pose2d currentPose, boolean ccw) {
         return flipPose(Poses.REEF_POSES[(int) wrapValue(flipPose(currentPose).minus(Poses.REEF_CENTER).getTranslation()
-                .getAngle().minus(Rotation2d.fromRadians(5 * Math.PI / 6)).getRotations() * 12, 0, 12)]);
+                .getAngle().minus(Rotation2d.fromRadians(5 * Math.PI / 6)).getRotations() * 6, 0, 6) + (ccw ? 1 : 0)]);
     }
 }
