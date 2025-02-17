@@ -2,25 +2,19 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands.superstructureCommands;
-
-import java.util.function.DoubleSupplier;
+package frc.robot.commands.algaeEE;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.superstructure.Superstructure;
+import frc.robot.subsystems.endEffector.algae.AlgaeEndEffector;
 
-public class ElevatorPositionCommand extends Command {
-  private final Superstructure elevator;
-  private final DoubleSupplier elevatorPosition;
-  /** Creates a new ElevatorPositionCommand. */
-  public ElevatorPositionCommand(Superstructure elevator, DoubleSupplier elevatorPosition) {
-    this.elevator = elevator;
-    this.elevatorPosition = elevatorPosition;
+/* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
+public class StopOuttakeCommand extends Command {
+  /** Creates a new StopOuttakeCommand. */
+  private final AlgaeEndEffector endEffector;
+  public StopOuttakeCommand(AlgaeEndEffector endEffector) {
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(elevator);
-  }
-  public ElevatorPositionCommand(Superstructure elevator, double elevatorPosition) {
-    this(elevator, ()->elevatorPosition);
+    this.endEffector = endEffector;
+    addRequirements(endEffector);
   }
 
   // Called when the command is initially scheduled.
@@ -30,7 +24,7 @@ public class ElevatorPositionCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    elevator.setExtension(elevatorPosition.getAsDouble());
+    endEffector.stopMotor();
   }
 
   // Called once the command ends or is interrupted.
