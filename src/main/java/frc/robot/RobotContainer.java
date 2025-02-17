@@ -66,6 +66,8 @@ public class RobotContainer {
     private final Joystick operatorJoystick = new Joystick(OperatorIOConstants.OPERATOR_CONTROLLER_PORT);
 
     private final JoystickButton scoreButton = new JoystickButton(driverJoystick, DriverIOConstants.SCORE_BUTTON);
+    private final JoystickButton leftButton = new JoystickButton(driverJoystick, DriverIOConstants.LEFT_BUTTON);
+    private final JoystickButton rightButton = new JoystickButton(driverJoystick, DriverIOConstants.RIGHT_BUTTON);
 
     private final JoystickButton l1Button = new JoystickButton(operatorJoystick, OperatorIOConstants.L1_BUTTON);
     private final JoystickButton l2Button = new JoystickButton(operatorJoystick, OperatorIOConstants.L2_BUTTON);

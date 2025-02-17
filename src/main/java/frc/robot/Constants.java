@@ -61,6 +61,8 @@ public final class Constants {
             public static final int STRAFE_Y_AXIS = 1;
             public static final int ROTATION_AXIS = 2;
             public static final int SCORE_BUTTON = 0;
+            public static final int LEFT_BUTTON = 0;
+            public static final int RIGHT_BUTTON = 0;
             public static final boolean SQUARE_INPUTS = false;
         }
 
