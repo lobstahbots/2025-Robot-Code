@@ -41,7 +41,7 @@ public class Superstructure extends SubsystemBase {
     private final MechanismLigament2d pivotLigament = elevatorLigament
             .append(new MechanismLigament2d("pivot", PivotConstants.ARM_LENGTH, 90));
 
-    private final ProfiledPIDController armPID = new ProfiledPIDController(PivotConstants.kP, PivotConstants.kI,
+    private final ProfiledPIDController pivotPID = new ProfiledPIDController(PivotConstants.kP, PivotConstants.kI,
             PivotConstants.kD, PivotConstants.CONSTRAINTS);
     private final ArmFeedforward armFeedforward = new ArmFeedforward(PivotConstants.kS, PivotConstants.kG,
             PivotConstants.kV, PivotConstants.kA);
@@ -51,7 +51,7 @@ public class Superstructure extends SubsystemBase {
     private final ElevatorFeedforward elevatorFeedforward = new ElevatorFeedforward(ElevatorConstants.kS,
             ElevatorConstants.kG, ElevatorConstants.kV, ElevatorConstants.kA);
 
-    public final Trigger atSetpoint = new Trigger(armPID::atSetpoint);
+    public final Trigger atSetpoint = new Trigger(pivotPID::atSetpoint);
 
     public Superstructure(ElevatorIO elevatorIO, PivotIO pivotIO) {
         this.elevatorIO = elevatorIO;
@@ -64,7 +64,7 @@ public class Superstructure extends SubsystemBase {
     }
 
     public void setRotation(Rotation2d rotation, double velocity) {
-        armPID.setGoal(new TrapezoidProfile.State(rotation.getRotations(), velocity));
+        pivotPID.setGoal(new TrapezoidProfile.State(rotation.getRotations(), velocity));
     }
 
     public void setExtension(double height, double velocity) {
@@ -90,7 +90,7 @@ public class Superstructure extends SubsystemBase {
     }
 
     public void reset(SuperstructureState state) {
-        armPID.reset(state.pivotRotation.getRotations());
+        pivotPID.reset(state.pivotRotation.getRotations());
         elevatorPID.reset(state.elevatorHeight);
     }
 
@@ -107,7 +107,7 @@ public class Superstructure extends SubsystemBase {
     }
 
     public boolean atPivotSetpoint() {
-        return armPID.atGoal();
+        return pivotPID.atGoal();
     }
 
     public Command getSetpointCommand(SuperstructureState setpoint) {
@@ -137,8 +137,8 @@ public class Superstructure extends SubsystemBase {
         pivotLigament.setAngle(getRotation());
         SmartDashboard.putData("Superstructure", mechanism);
         
-        setPivotVoltage(armPID.calculate(pivotInputs.position.getRotations())
-            + armFeedforward.calculate(armPID.getSetpoint().position, armPID.getSetpoint().velocity));
+        setPivotVoltage(pivotPID.calculate(pivotInputs.position.getRotations())
+            + armFeedforward.calculate(pivotPID.getSetpoint().position, pivotPID.getSetpoint().velocity));
         setElevatorVoltage(elevatorPID.calculate(elevatorInputs.rightPosition) 
             + elevatorFeedforward.calculate(elevatorPID.getSetpoint().velocity));
     }
