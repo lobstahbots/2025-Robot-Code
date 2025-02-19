@@ -110,6 +110,10 @@ public class Superstructure extends SubsystemBase {
         return pivotPID.atGoal();
     }
 
+    /**
+     * Returns a command that moves the superstructure to the given setpoint with avoidance of danger zones.
+     * @param setpoint The setpoint to move to.
+     */
     public Command getSetpointCommand(SuperstructureState setpoint) {
         Command superstructureCommand = new SuperstructureStateCommand(this, setpoint);
 
