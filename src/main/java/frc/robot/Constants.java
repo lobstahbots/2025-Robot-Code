@@ -313,8 +313,7 @@ public final class Constants {
     public static class CoralEndEffectorConstants {
         public static final double MOTOR_SPEED = 0.1;
         public static final int CURRENT_LIMIT = 20;
-        public static final int LEFT_ID = 0;
-        public static final int RIGHT_ID = 0;
+        public static final int ID = 0;
         public static final int CURRENT_THRESHOLD = 10;
     }
 
