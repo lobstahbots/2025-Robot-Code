@@ -1,32 +1,32 @@
 package frc.robot.subsystems.endEffector.algae;
 
-import com.revrobotics.spark.SparkBase.PersistMode;
-import com.revrobotics.spark.SparkBase.ResetMode;
-import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
-import com.revrobotics.spark.config.SparkMaxConfig;
+import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.AlgaeEndEffectorConstants;
 
 public class AlgaeEndEffector extends SubsystemBase {
-  private final SparkMax endEffectorMotor;
+    private final AlgaeEndEffectorIOInputsAutoLogged inputs = new AlgaeEndEffectorIOInputsAutoLogged();
+    private final AlgaeEndEffectorIO io;
 
-  public AlgaeEndEffector(int endEffectorMotorID) {
-    endEffectorMotor = new SparkMax(endEffectorMotorID, MotorType.kBrushless);
-    SparkMaxConfig config = new SparkMaxConfig();
-    config.smartCurrentLimit(AlgaeEndEffectorConstants.CURRENT_LIMIT);
-    config.idleMode(IdleMode.kBrake);
-    config.inverted(false);
-    endEffectorMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-  }
+    public AlgaeEndEffector(AlgaeEndEffectorIO io) {
+        this.io = io;
+    }
 
-  public void stopMotor() {
-    endEffectorMotor.stopMotor();
-  }
+    public void stopMotor() {
+        io.stopMotor();
+    }
 
-  public void runMotor(double speed) {
-    endEffectorMotor.set(speed);
-  }
+    public void setSpeed(double speed) {
+        io.setSpeed(speed);
+    }
+
+    public double getCurrent() {
+        return inputs.currentAmps;
+    }
+
+    @Override
+    public void periodic() {
+        io.updateInputs(inputs);
+        Logger.processInputs("AlgaeEndEffector", inputs);
+    }
 }
