@@ -60,13 +60,13 @@ public class ElevatorIOTalonFX implements ElevatorIO {
     config.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
     config.Feedback.SensorToMechanismRatio = ElevatorConstants.GEAR_RATIO * ElevatorConstants.PITCH_DIAMETER * Math.PI;
 
-    config.Slot0.kP = ElevatorConstants.PID_P;
-    config.Slot0.kI = ElevatorConstants.PID_I;
-    config.Slot0.kD = ElevatorConstants.PID_D;
-    config.Slot0.kS = ElevatorConstants.KS;
-    config.Slot0.kV = ElevatorConstants.KV;
-    config.Slot0.kA = ElevatorConstants.KA;
-    config.Slot0.kG = ElevatorConstants.KG;
+    config.Slot0.kP = ElevatorConstants.kP;
+    config.Slot0.kI = ElevatorConstants.kI;
+    config.Slot0.kD = ElevatorConstants.kD;
+    config.Slot0.kS = ElevatorConstants.kS;
+    config.Slot0.kV = ElevatorConstants.kV;
+    config.Slot0.kA = ElevatorConstants.kA;
+    config.Slot0.kG = ElevatorConstants.kG;
     config.MotionMagic.MotionMagicAcceleration = ElevatorConstants.MOTION_MAGIC_ACCELERATION;
     config.MotionMagic.MotionMagicCruiseVelocity = ElevatorConstants.MOTION_MAGIC_CRUISE_VELOCITY;
     config.Slot0.GravityType = GravityTypeValue.Elevator_Static;
