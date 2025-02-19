@@ -289,7 +289,6 @@ public final class Constants {
         public static final double kA = 0.2; // TODO: Find actual value
         public static final double kG = 2; // TODO: Find actual value
         public static final TrapezoidProfile.Constraints CONSTRAINTS = new TrapezoidProfile.Constraints(0.1, 0.1);
-        public static final TrapezoidProfile ELEVATOR_PROFILE = new TrapezoidProfile(CONSTRAINTS);
 
         public static final double SUPPLY_CURRENT_LIMIT = 40;
         public static final double STATOR_CURRENT_LIMIT = 80;
@@ -333,7 +332,6 @@ public final class Constants {
         public static final double kV = 0;
         public static final double kA = 0;
         public static final TrapezoidProfile.Constraints CONSTRAINTS = new TrapezoidProfile.Constraints(0.1, 0.1);
-        public static final TrapezoidProfile PIVOT_PROFILE = new TrapezoidProfile(CONSTRAINTS);
 
         public static final int CURRENT_LIMIT = 40;
 
@@ -345,5 +343,8 @@ public final class Constants {
 
         public static final int MOTOR_ID = 0;
         public static final int ENCODER_ID = 0;
+
+        public static final Rotation2d UPPER_DANGER_ZONE = Rotation2d.fromDegrees(175);
+        public static final Rotation2d LOWER_DANGER_ZONE = Rotation2d.fromDegrees(300);
     }
 }
