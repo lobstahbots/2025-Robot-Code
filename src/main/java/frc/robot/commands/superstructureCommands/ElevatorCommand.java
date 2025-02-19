@@ -6,15 +6,15 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.superstructure.Superstructure;
 
 public class ElevatorCommand extends Command {
-    private final Superstructure elevator;
+    private final Superstructure superstructure;
     private final DoubleSupplier elevatorSpeed;
-    public ElevatorCommand(Superstructure elevator, DoubleSupplier elevatorSpeed) {
-        this.elevator = elevator;
+    public ElevatorCommand(Superstructure superstructure, DoubleSupplier elevatorSpeed) {
+        this.superstructure = superstructure;
         this.elevatorSpeed = elevatorSpeed;
-        addRequirements(elevator);
+        addRequirements(superstructure);
     }
-    public ElevatorCommand(Superstructure elevator, double elevatorSpeed) {
-        this(elevator, ()->elevatorSpeed);
+    public ElevatorCommand(Superstructure superstructure, double elevatorSpeed) {
+        this(superstructure, () -> elevatorSpeed);
     }
 
     @Override
@@ -22,12 +22,12 @@ public class ElevatorCommand extends Command {
 
     @Override
     public void execute() {
-        elevator.setVoltage(elevatorSpeed.getAsDouble());
+        superstructure.setElevatorVoltage(elevatorSpeed.getAsDouble());
     }
 
     @Override
     public void end(boolean interrupted) {
-        elevator.setVoltage(0);
+        superstructure.setElevatorVoltage(0);
     }
 
     @Override
