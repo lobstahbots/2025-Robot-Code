@@ -3,6 +3,7 @@ package frc.robot.subsystems.superstructure;
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.controller.ArmFeedforward;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
@@ -36,8 +37,8 @@ public class Superstructure extends SubsystemBase {
     private final MechanismLigament2d pivotLigament = elevatorLigament
             .append(new MechanismLigament2d("pivot", PivotConstants.ARM_LENGTH, 90));
 
-    private final ProfiledPIDController armPID = new ProfiledPIDController(PivotConstants.kP, PivotConstants.kI,
-            PivotConstants.kD, PivotConstants.CONSTRAINTS);
+    private final PIDController armPID = new PIDController(PivotConstants.kP, PivotConstants.kI,
+            PivotConstants.kD);
     private final ArmFeedforward armFeedforward = new ArmFeedforward(PivotConstants.kS, PivotConstants.kG,
             PivotConstants.kV, PivotConstants.kA);
 
@@ -68,7 +69,7 @@ public class Superstructure extends SubsystemBase {
     }
 
     public void setRotation(Rotation2d rotation) {
-        armPID.setGoal(rotation.getRotations());
+        armPID.setSetpoint(rotation.getRotations());
     }
 
     public SuperstructureState getState() {
@@ -102,7 +103,9 @@ public class Superstructure extends SubsystemBase {
         elevatorLigament.setLength(getExtension());
         pivotLigament.setAngle(pivotInputs.position);
         SmartDashboard.putData("Superstructure", mechanism);
-        pivotIO.setVoltage(armPID.calculate(pivotInputs.position.getRotations())
-                + armFeedforward.calculate(armPID.getSetpoint().position, armPID.getSetpoint().velocity));
+        Logger.recordOutput("Superstructure", pivotInputs.position);
+        Logger.recordOutput("Setpoint", armPID.getSetpoint());
+        Logger.recordOutput("PID", armPID.calculate(getPivotRotation().getRotations(), armPID.getSetpoint()));
+        pivotIO.setVoltage(armPID.calculate(getPivotRotation().getRotations(), armPID.getSetpoint()));
     }
 }

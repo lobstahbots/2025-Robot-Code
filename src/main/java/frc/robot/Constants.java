@@ -56,20 +56,21 @@ public final class Constants {
 
         public static class DriverIOConstants {
             public static final int DRIVER_CONTROLLER_PORT = 0;
-            public static final int STRAFE_X_AXIS = 0;
-            public static final int STRAFE_Y_AXIS = 1;
-            public static final int ROTATION_AXIS = 2;
-            public static final int SCORE_BUTTON = 0; //Should be LT
+            public static final int STRAFE_X_AXIS = 1;
+            public static final int STRAFE_Y_AXIS = 0;
+            public static final int ROTATION_AXIS = 4;
+            public static final int SCORE_BUTTON = 6; //Should be LT
             public static final boolean SQUARE_INPUTS = false;
         }
 
         public static class OperatorIOConstants {
             public static final int OPERATOR_CONTROLLER_PORT = 1;
             public static final int MANUAL_ARM_AXIS = 1;
-            public static final int L1_BUTTON = 0; //Should be X
-            public static final int L2_BUTTON = 0; //Should be Y
-            public static final int SPIN_INTAKE_BUTTON_ID = 0; //Should be LT
-            public static final int STOW_BUTTON_ID = 0; //Should be RT
+            public static final int L1_BUTTON = 1; //Should be X
+            public static final int L2_BUTTON = 1; //Should be Y
+            public static final int SPIN_INTAKE_BUTTON_ID = 7; //Should be LT
+            public static final int SCORE_BUTTON = 6;
+            public static final int STOW_BUTTON_ID = 1; //Should be RT
         }
     }
 
@@ -302,8 +303,8 @@ public final class Constants {
 
         public static final double BASE_STATUS_SIGNAL_FREQUENCY = 50.0;
 
-        public static final int LEFT_ELEVATOR_ID = 0; // TODO: Find actual motor ID
-        public static final int RIGHT_ELEVATOR_ID = 1; // TODO: Find actual motor ID
+        public static final int LEFT_ELEVATOR_ID = 33; // TODO: Find actual motor ID
+        public static final int RIGHT_ELEVATOR_ID = 34; // TODO: Find actual motor ID
         public static final int LIMIT_SWITCH_CHANNEL = 0; // TODO: Find actual channel
 
         public static final double BOTTOM_HEIGHT = 0;
@@ -315,8 +316,8 @@ public final class Constants {
     public static class CoralEndEffectorConstants {
         public static final double MOTOR_SPEED = 0.1;
         public static final int CURRENT_LIMIT = 20;
-        public static final int LEFT_ID = 0;
-        public static final int RIGHT_ID = 0;
+        public static final int LEFT_ID = 44;
+        public static final int RIGHT_ID = 45;
         public static final int CURRENT_THRESHOLD = 10;
     }
 
@@ -325,7 +326,7 @@ public final class Constants {
     }
 
     public static class PivotConstants {
-        public static final double kP = 0.1;
+        public static final double kP = 10;
         public static final double kI = 0;
         public static final double kD = 0;
         public static final double kS = 0;
@@ -340,16 +341,16 @@ public final class Constants {
         public static final double ARM_LENGTH = 0;
         public static final double PIVOT_MASS = 0;
         public static final double MIN_ANGLE = 0;
-        public static final double MAX_ANGLE = 0;
+        public static final double MAX_ANGLE = 0.52;
 
-        public static final int MOTOR_ID = 0;
-        public static final int ENCODER_ID = 0;
+        public static final int MOTOR_ID = 22;
+        public static final int ENCODER_ID = 55;
 
         public static final Rotation2d INTAKE_SETPOINT_ANGLE = Rotation2d.fromDegrees(0); //TODO: figure this out
-        public static final Rotation2d L1_ANGLE = Rotation2d.fromDegrees(0); //TODO: figure this out
+        public static final Rotation2d L1_ANGLE = Rotation2d.fromDegrees(0.3); //TODO: figure this out
         public static final Rotation2d L2_ANGLE = Rotation2d.fromDegrees(0);; //TODO: figure this out
         public static final double L1_VOLTS = 10; //TODO: figure this out
         public static final double L2_VOLTS = 10; //TODO: figure this out
-        public static final double JOYSTICK_SCALING = 1; //TODO: figure this out
+        public static final double JOYSTICK_SCALING = 0.25; //TODO: figure this out
     }
 }

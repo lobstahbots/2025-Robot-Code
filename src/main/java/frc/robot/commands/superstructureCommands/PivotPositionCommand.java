@@ -40,7 +40,7 @@ public class PivotPositionCommand extends Command {
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        superstructure.setRotation(Rotation2d.fromDegrees(MathUtil.clamp(pivotAngle.get().plus(superstructure.getPivotRotation()).getDegrees(), PivotConstants.MIN_ANGLE, PivotConstants.MAX_ANGLE)));
+        superstructure.setRotation(Rotation2d.fromRotations(MathUtil.clamp(pivotAngle.get().getRotations(), PivotConstants.MIN_ANGLE, PivotConstants.MAX_ANGLE)));
     }
 
     // Called once the command ends or is interrupted.

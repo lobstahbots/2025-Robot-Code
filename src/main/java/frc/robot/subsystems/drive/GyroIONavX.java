@@ -13,12 +13,12 @@ import edu.wpi.first.math.geometry.Rotation2d;
 public class GyroIONavX implements GyroIO {
     private final AHRS gyro = new AHRS(NavXComType.kMXP_SPI);
 
-    public GyroIONavX(){
-        gyro.zeroYaw();
+    public GyroIONavX() {   
+        zeroGyro();
     }
 
     public Rotation2d getYaw() {
-        return Rotation2d.fromDegrees(-gyro.getYaw());
+        return Rotation2d.fromDegrees(gyro.getYaw());
       }
 
     public Rotation2d getPitch() {
@@ -46,6 +46,7 @@ public class GyroIONavX implements GyroIO {
     }
 
     public void updateInputs(GyroIOInputs inputs) {
+        System.out.println(gyro.getYaw());
         inputs.connected = gyro.isConnected();
         inputs.rollPosition = getRoll();
         inputs.pitchPosition = getPitch();

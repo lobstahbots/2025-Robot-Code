@@ -39,7 +39,7 @@ public class CoralEndEffector extends SubsystemBase {
      * @return constructed command
      */
     public Command spinCommand(double speed) {
-        return spinCommand(speed, speed);
+        return spinCommand(-speed, speed);
     }
 
     /**
