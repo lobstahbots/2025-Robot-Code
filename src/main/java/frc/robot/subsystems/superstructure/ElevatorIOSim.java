@@ -21,9 +21,9 @@ import edu.wpi.first.units.measure.Temperature;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.simulation.ElevatorSim;
-import frc.robot.SimShared;
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.SimConstants;
+import frc.robot.SimShared;
 
 public class ElevatorIOSim implements ElevatorIO {
     private final DCMotor gearbox = DCMotor.getFalcon500(2);
@@ -71,13 +71,13 @@ public class ElevatorIOSim implements ElevatorIO {
         config.Feedback.SensorToMechanismRatio = ElevatorConstants.GEAR_RATIO * ElevatorConstants.PITCH_DIAMETER
                 * Math.PI;
 
-        config.Slot0.kP = ElevatorConstants.PID_P;
-        config.Slot0.kI = ElevatorConstants.PID_I;
-        config.Slot0.kD = ElevatorConstants.PID_D;
-        config.Slot0.kS = ElevatorConstants.KS;
-        config.Slot0.kV = ElevatorConstants.KV;
-        config.Slot0.kA = ElevatorConstants.KA;
-        config.Slot0.kG = ElevatorConstants.KG;
+        config.Slot0.kP = ElevatorConstants.kP;
+        config.Slot0.kI = ElevatorConstants.kI;
+        config.Slot0.kD = ElevatorConstants.kD;
+        config.Slot0.kS = ElevatorConstants.kS;
+        config.Slot0.kV = ElevatorConstants.kV;
+        config.Slot0.kA = ElevatorConstants.kA;
+        config.Slot0.kG = ElevatorConstants.kG;
         config.MotionMagic.MotionMagicAcceleration = ElevatorConstants.MOTION_MAGIC_ACCELERATION;
         config.MotionMagic.MotionMagicCruiseVelocity = ElevatorConstants.MOTION_MAGIC_CRUISE_VELOCITY;
         config.Slot0.GravityType = GravityTypeValue.Elevator_Static;
@@ -107,6 +107,7 @@ public class ElevatorIOSim implements ElevatorIO {
                 leftPosition, leftVelocity, leftAppliedVoltage, leftSupplyCurrent, leftTorqueCurrent, leftTempCelsius);
     }
 
+    @Override
     public void updateInputs(ElevatorIOInputs inputs) {
         leftMotorSim.setSupplyVoltage(RobotController.getBatteryVoltage());
         rightMotorSim.setSupplyVoltage(RobotController.getBatteryVoltage());
@@ -146,18 +147,22 @@ public class ElevatorIOSim implements ElevatorIO {
         SimShared.powerDistributionSim.setCurrent(SimConstants.ELEVATOR_CHANNELS[1], inputs.rightSupplyCurrent);
     }
 
+    @Override
     public void setPosition(double position) {
         rightMotor.setControl(positionVoltage.withPosition(position));
     }
 
+    @Override
     public void setVoltage(double voltage) {
         rightMotor.setControl(voltageOut.withOutput(voltage));
     }
 
+    @Override
     public void resetEncoder(double position) {
         elevatorSim.setState(position, elevatorSim.getVelocityMetersPerSecond());
     }
 
+    @Override
     public void stop() {
         rightMotor.stopMotor();
     }
