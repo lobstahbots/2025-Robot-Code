@@ -147,9 +147,9 @@ public class RobotContainer {
 
     private void setDefaultCommands() {
         driveBase.setDefaultCommand(
-                new SwerveDriveCommand(driveBase, () -> -driverJoystick.getRawAxis(DriverIOConstants.STRAFE_X_AXIS),
+                new SwerveDriveCommand(driveBase, () -> driverJoystick.getRawAxis(DriverIOConstants.STRAFE_X_AXIS),
                         () -> driverJoystick.getRawAxis(DriverIOConstants.STRAFE_Y_AXIS),
-                        () -> -driverJoystick.getRawAxis(DriverIOConstants.ROTATION_AXIS),
+                        () -> driverJoystick.getRawAxis(DriverIOConstants.ROTATION_AXIS),
                         () -> DriveConstants.FIELD_CENTRIC, DriverIOConstants.SQUARE_INPUTS));
         // superstructure.setDefaultCommand(new PivotCommand(superstructure, () -> driverJoystick.getRawAxis(OperatorIOConstants.MANUAL_ARM_AXIS)));
         superstructure.setDefaultCommand(new PivotPositionCommand(superstructure, () -> Rotation2d.fromRotations(superstructure.getPivotRotation().getRotations() + PivotConstants.JOYSTICK_SCALING * MathUtil.applyDeadband(-operatorJoystick.getRawAxis(OperatorIOConstants.MANUAL_ARM_AXIS), 0.1))));
