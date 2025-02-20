@@ -15,6 +15,7 @@ import org.ironmaple.simulation.motorsims.SimulatedMotorController;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
+import frc.robot.SimShared;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.SimConstants;
 
@@ -30,13 +31,16 @@ public class SwerveModuleIOSim implements SwerveModuleIO {
 
   private Rotation2d angularOffset;
 
-  public SwerveModuleIOSim(double angularOffsetDegrees, SwerveModuleSimulation moduleSimulation) {
+  private final int id;
+
+  public SwerveModuleIOSim(double angularOffsetDegrees, SwerveModuleSimulation moduleSimulation, int id) {
     this.moduleSimulation = moduleSimulation;
     this.angularOffset = Rotation2d.fromDegrees(angularOffsetDegrees);
     driveMotor = moduleSimulation.useGenericMotorControllerForDrive()
         .withCurrentLimit(Amps.of(DriveConstants.DRIVE_MOTOR_CURRENT_LIMIT));
     angleMotor = moduleSimulation.useGenericControllerForSteer()
         .withCurrentLimit(Amps.of(DriveConstants.ANGLE_MOTOR_CURRENT_LIMIT));
+    this.id = id;
   }
 
   public void updateInputs(ModuleIOInputs inputs) {
@@ -46,7 +50,7 @@ public class SwerveModuleIOSim implements SwerveModuleIO {
     }
 
     inputs.turnAbsolutePosition = moduleSimulation.getSteerAbsoluteFacing().plus(angularOffset);
-    inputs.turnPosition = new Rotation2d(moduleSimulation.getSteerRelativeEncoderPosition());
+    inputs.turnPosition = inputs.turnAbsolutePosition;
     inputs.drivePosition = new Rotation2d(moduleSimulation.getDriveWheelFinalPosition()
         .plus(moduleSimulation.getDriveWheelFinalSpeed().times(Seconds.of(SimConstants.LOOP_TIME))));
     inputs.driveVelocityRadPerSec = moduleSimulation.getDriveWheelFinalSpeed().in(RadiansPerSecond);
@@ -56,6 +60,9 @@ public class SwerveModuleIOSim implements SwerveModuleIO {
     inputs.turnAppliedVolts = turnAppliedVolts;
     inputs.turnCurrentAmps = moduleSimulation.getSteerMotorSupplyCurrent().in(Amps);
     inputs.angularOffset = angularOffset;
+
+    SimShared.powerDistributionSim.setCurrent(SimConstants.SWERVE_CHANNELS[2 * id], inputs.driveCurrentAmps);
+    SimShared.powerDistributionSim.setCurrent(SimConstants.SWERVE_CHANNELS[2 * id + 1], inputs.turnCurrentAmps);
   }
 
   /**

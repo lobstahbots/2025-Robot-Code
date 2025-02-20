@@ -1,10 +1,10 @@
 package frc.robot;
 
-import static edu.wpi.first.units.Units.Volts;
-
 import java.util.List;
 import java.util.function.Supplier;
+
 import org.littletonrobotics.junction.Logger;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.path.GoalEndState;
@@ -13,6 +13,7 @@ import com.pathplanner.lib.path.Waypoint;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import static edu.wpi.first.units.Units.Volts;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -21,9 +22,9 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.PathConstants;
-import frc.robot.commands.SwerveDriveStopCommand;
+import frc.robot.commands.driveCommands.SwerveDriveStopCommand;
 import frc.robot.subsystems.drive.DriveBase;
-import stl.sysId.CharacterizableSubsystem;
+import frc.robot.util.sysId.CharacterizableSubsystem;
 
 public class AutoFactory {
     private final Supplier<List<Object>> responses;
@@ -34,7 +35,7 @@ public class AutoFactory {
      * 
      * @param driveBase         {@link DriveBase} to drive.
      * @param responsesSupplier Responses to auto chooser questions.
-     * @see stl.auto.AutonSelector
+     * @see frc.robot.util.auto.AutonSelector
      */
     public AutoFactory(DriveBase driveBase, Supplier<List<Object>> responsesSupplier) {
         this.responses = responsesSupplier;

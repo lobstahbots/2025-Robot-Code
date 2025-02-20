@@ -19,11 +19,16 @@ import edu.wpi.first.hal.can.CANStatus;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.Filesystem;
+import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Alert.AlertType;
+import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
+import edu.wpi.first.wpilibj.simulation.BatterySim;
+import edu.wpi.first.wpilibj.simulation.RoboRioSim;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.Constants.SimConstants;
+import frc.robot.subsystems.vision.CameraIOSim;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -38,6 +43,8 @@ public class Robot extends LoggedRobot {
     private RobotContainer m_robotContainer;
 
     private Alert canAlert = new Alert("CAN Error", AlertType.kError);
+
+    private PowerDistribution powerDistribution = new PowerDistribution(1, ModuleType.kRev);
 
     /**
      * This function is run when the robot is first started up and should be used
@@ -70,6 +77,7 @@ public class Robot extends LoggedRobot {
                 setUseTiming(false); // Run as fast as possible
             } else {
                 Logger.addDataReceiver(new WPILOGWriter(logPath)); // Save outputs to a new log
+                Logger.addDataReceiver(new NT4Publisher());
             }
         }
         DataLogManager.start();
@@ -99,7 +107,8 @@ public class Robot extends LoggedRobot {
             canAlert.set(true);
             canAlert.setText(String.format("CAN error: %d receive errors, %d transmit errors, %d%% utilization",
                     canStatus.receiveErrorCount, canStatus.transmitErrorCount, canStatus.percentBusUtilization));
-        } else canAlert.set(false);
+        } else
+            canAlert.set(false);
     }
 
     /** This function is called once each time the robot enters Disabled mode. */
@@ -118,9 +127,7 @@ public class Robot extends LoggedRobot {
         m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
         // schedule the autonomous command (example)
-        if (m_autonomousCommand != null) {
-            m_autonomousCommand.schedule();
-        }
+        if (m_autonomousCommand != null) { m_autonomousCommand.schedule(); }
     }
 
     /** This function is called periodically during autonomous. */
@@ -133,9 +140,7 @@ public class Robot extends LoggedRobot {
         // teleop starts running. If you want the autonomous to
         // continue until interrupted by another command, remove
         // this line or comment it out.
-        if (m_autonomousCommand != null) {
-            m_autonomousCommand.cancel();
-        }
+        if (m_autonomousCommand != null) { m_autonomousCommand.cancel(); }
     }
 
     /** This function is called periodically during operator control. */
@@ -161,5 +166,9 @@ public class Robot extends LoggedRobot {
     public void simulationPeriodic() {
         SimulatedArena.getInstance().simulationPeriodic();
         m_robotContainer.displaySimField();
+
+        CameraIOSim.periodic();
+
+        RoboRioSim.setVInVoltage(BatterySim.calculateDefaultBatteryLoadedVoltage(powerDistribution.getAllCurrents()));
     }
 }
