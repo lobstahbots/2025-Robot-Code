@@ -13,7 +13,9 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.sim.ChassisReference;
 import com.ctre.phoenix6.sim.TalonFXSimState;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.system.plant.DCMotor;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
@@ -142,14 +144,15 @@ public class ElevatorIOSim implements ElevatorIO {
         inputs.leftTorqueCurrent = leftTorqueCurrent.getValueAsDouble();
         inputs.leftTempCelsius = leftTempCelsius.getValueAsDouble();
         inputs.limitSwitchHit = elevatorSim.hasHitLowerLimit();
+        inputs.atSetpoint = MathUtil.applyDeadband(rightMotor.getClosedLoopError().getValueAsDouble(), ElevatorConstants.HEIHGT_DEADBAND) == 0;
 
         SimShared.powerDistributionSim.setCurrent(SimConstants.ELEVATOR_CHANNELS[0], inputs.leftSupplyCurrent);
         SimShared.powerDistributionSim.setCurrent(SimConstants.ELEVATOR_CHANNELS[1], inputs.rightSupplyCurrent);
     }
 
     @Override
-    public void setPosition(double position) {
-        rightMotor.setControl(positionVoltage.withPosition(position));
+    public void setPosition(TrapezoidProfile.State state) {
+        rightMotor.setControl(positionVoltage.withPosition(state.position));
     }
 
     @Override

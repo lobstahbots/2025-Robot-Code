@@ -2,6 +2,8 @@ package frc.robot.subsystems.superstructure;
 
 import org.littletonrobotics.junction.AutoLog;
 
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
+
 public interface ElevatorIO {
     @AutoLog
     public static class ElevatorIOInputs {
@@ -65,6 +67,10 @@ public interface ElevatorIO {
          * Whether or not the limit switch is hit
          */
         public boolean limitSwitchHit = false;
+        /**
+         * At setpoint or not
+         */
+        public boolean atSetpoint = false;
     }
 
     public void updateInputs(ElevatorIOInputs inputs);
@@ -81,7 +87,7 @@ public interface ElevatorIO {
      * 
      * @param position the position setpoint
      */
-    public void setPosition(double position);
+    public void setPosition(TrapezoidProfile.State state);
 
     /**
      * Stop all elevator motion

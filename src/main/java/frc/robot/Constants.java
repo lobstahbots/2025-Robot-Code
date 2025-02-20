@@ -298,6 +298,7 @@ public final class Constants {
         public static final double MOTION_MAGIC_POSITION_VOLTAGE = 12;
         public static final double MOTION_MAGIC_ACCELERATION = 3; // TODO: Find actual acceleration
         public static final double MOTION_MAGIC_CRUISE_VELOCITY = 3; // TODO: Find actual cruise velocity
+        public static final double HEIHGT_DEADBAND = 0.2;
 
         public static final double BASE_STATUS_SIGNAL_FREQUENCY = 50.0;
 

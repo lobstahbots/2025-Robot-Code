@@ -3,7 +3,6 @@ package frc.robot.subsystems.superstructure;
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.controller.ArmFeedforward;
-import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
@@ -46,12 +45,7 @@ public class Superstructure extends SubsystemBase {
     private final ArmFeedforward armFeedforward = new ArmFeedforward(PivotConstants.kS, PivotConstants.kG,
             PivotConstants.kV, PivotConstants.kA);
 
-    private final ProfiledPIDController elevatorPID = new ProfiledPIDController(ElevatorConstants.kP,
-            ElevatorConstants.kI, ElevatorConstants.kD, ElevatorConstants.CONSTRAINTS);
-    private final ElevatorFeedforward elevatorFeedforward = new ElevatorFeedforward(ElevatorConstants.kS,
-            ElevatorConstants.kG, ElevatorConstants.kV, ElevatorConstants.kA);
-
-    public final Trigger atSetpoint = new Trigger(pivotPID::atSetpoint);
+    public final Trigger atSetpoint = new Trigger(this::atSetpoint);
 
     public Superstructure(ElevatorIO elevatorIO, PivotIO pivotIO) {
         this.elevatorIO = elevatorIO;
@@ -68,7 +62,7 @@ public class Superstructure extends SubsystemBase {
     }
 
     public void setExtension(double height, double velocity) {
-        elevatorPID.setGoal(new TrapezoidProfile.State(height, velocity));
+        elevatorIO.setPosition(new TrapezoidProfile.State(height, velocity));
     }
 
     public SuperstructureState getState() {
@@ -91,7 +85,7 @@ public class Superstructure extends SubsystemBase {
 
     public void reset(SuperstructureState state) {
         pivotPID.reset(state.pivotRotation.getRotations());
-        elevatorPID.reset(state.elevatorHeight);
+        elevatorIO.resetEncoder(state.elevatorHeight);
     }
 
     public void setElevatorVoltage(double voltage) {
@@ -102,8 +96,12 @@ public class Superstructure extends SubsystemBase {
         pivotIO.setVoltage(voltage);
     }
 
+    public boolean atSetpoint() {
+        return atElevatorSetpoint() && atPivotSetpoint();
+    }
+
     public boolean atElevatorSetpoint() {
-        return elevatorPID.atGoal();
+        return elevatorInputs.atSetpoint;
     }
 
     public boolean atPivotSetpoint() {
@@ -122,12 +120,13 @@ public class Superstructure extends SubsystemBase {
         }
 
         if(getRotation().getRotations() > PivotConstants.LOWER_DANGER_ZONE.getRotations()) {
-            superstructureCommand = new PivotToPositionCommand(this, PivotConstants.LOWER_DANGER_ZONE).andThen(superstructureCommand);
+            return new PivotToPositionCommand(this, PivotConstants.LOWER_DANGER_ZONE).andThen(superstructureCommand);
         } else if (getRotation().getRotations() < PivotConstants.UPPER_DANGER_ZONE.getRotations()) {
-            superstructureCommand = new PivotToPositionCommand(this, PivotConstants.UPPER_DANGER_ZONE).andThen(superstructureCommand);
+            return new PivotToPositionCommand(this, PivotConstants.UPPER_DANGER_ZONE).andThen(superstructureCommand);
         }
 
         return superstructureCommand;
+
     }
 
     @Override
@@ -143,7 +142,5 @@ public class Superstructure extends SubsystemBase {
         
         setPivotVoltage(pivotPID.calculate(pivotInputs.position.getRotations())
             + armFeedforward.calculate(pivotPID.getSetpoint().position, pivotPID.getSetpoint().velocity));
-        setElevatorVoltage(elevatorPID.calculate(elevatorInputs.rightPosition) 
-            + elevatorFeedforward.calculate(elevatorPID.getSetpoint().velocity));
     }
 }

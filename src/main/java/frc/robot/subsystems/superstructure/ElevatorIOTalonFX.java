@@ -11,6 +11,8 @@ import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
@@ -118,11 +120,12 @@ public class ElevatorIOTalonFX implements ElevatorIO {
     inputs.leftTorqueCurrent = leftTorqueCurrent.getValueAsDouble();
     inputs.leftTempCelsius = leftTempCelsius.getValueAsDouble();
     inputs.limitSwitchHit = limitSwitch.get();
+    inputs.atSetpoint = MathUtil.applyDeadband(rightElevatorMotor.getClosedLoopError().getValueAsDouble(), ElevatorConstants.HEIHGT_DEADBAND) == 0;
   }
 
   @Override
-  public void setPosition(double position) {
-    rightElevatorMotor.setControl(positionVoltage.withPosition(position));
+  public void setPosition(TrapezoidProfile.State state) {
+    rightElevatorMotor.setControl(positionVoltage.withPosition(state.position));
   }
 
   @Override
