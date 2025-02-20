@@ -19,10 +19,11 @@ public interface GyroIO {
       public double rollVelocity = 0.0;
       public double pitchVelocity = 0.0;
       public double yawVelocity= 0.0;
+      public boolean isCalibrating = true;
     }
   
     /* Zeroes the gyro. */
     public default void zeroGyro() {}
 
     public default void updateInputs(GyroIOInputs inputs) {}
-  }
+}

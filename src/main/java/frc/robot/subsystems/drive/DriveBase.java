@@ -52,6 +52,7 @@ public class DriveBase extends CharacterizableSubsystem {
   private Rotation2d simRotation = new Rotation2d();
   private final List<Camera> cameras;
   private boolean hasSeenTag = false;
+  private boolean needGyroReset = true;
 
   private Field2d field;
 
@@ -258,6 +259,12 @@ public class DriveBase extends CharacterizableSubsystem {
 
   @Override
   public void periodic() {
+    
+    if(needGyroReset && !gyroInputs.isCalibrating) {
+        gyro.zeroGyro();
+        needGyroReset = false;
+    }
+
     if (Robot.isSimulation()) {
       var twist = DriveConstants.KINEMATICS.toTwist2d(getPositions());
       simRotation = gyroInputs.yawPosition.plus(Rotation2d.fromDegrees(twist.dtheta));
