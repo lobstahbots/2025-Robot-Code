@@ -5,12 +5,12 @@
 package frc.robot.subsystems.ramp;
 
 import com.revrobotics.spark.SparkBase.PersistMode;
+import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.RelativeEncoder;
-import com.revrobotics.servohub.ServoHub.ResetMode;
 
 import frc.robot.Constants.RampConstants;
 
@@ -26,11 +26,10 @@ public class Ramp extends SubsystemBase {
     this.rampMotor = new SparkMax(id, MotorType.kBrushless);
 
     SparkMaxConfig config = new SparkMaxConfig();
-    config.setSmartCurrentLimit(RampConstants.CURRENT_LIMIT);
+    config.smartCurrentLimit(RampConstants.CURRENT_LIMIT);
     config.idleMode(IdleMode.kBrake);
     config.inverted(false);
     config.encoder.velocityConversionFactor(1.0);
-
     rampMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
     encoder = rampMotor.getEncoder();
