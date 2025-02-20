@@ -71,11 +71,11 @@ public class DriveBase extends CharacterizableSubsystem {
     this.modules = new SwerveModule[] { new SwerveModule(frontLeft, FrontLeftModuleConstants.moduleID),
         new SwerveModule(frontRight, FrontRightModuleConstants.moduleID),
         new SwerveModule(backLeft, BackLeftModuleConstants.moduleID),
-        new SwerveModule(backRight, BackRightModuleConstants.moduleID) };
+        new SwerveModule
+        (backRight, BackRightModuleConstants.moduleID) };
 
     this.gyro = gyroIO;
 
-    gyro.zeroGyro();
     this.cameras = cameras;
     swerveOdometry = new SwerveDrivePoseEstimator(DriveConstants.KINEMATICS, gyroInputs.yawPosition, getPositions(),
         new Pose2d());
