@@ -1,11 +1,11 @@
 package frc.robot.commands.superstructureCommands;
 
-import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.superstructure.Superstructure;
 import frc.robot.subsystems.superstructure.SuperstructureState;
 
 /** Superstructure move to setpoint command that sets goal. Does not do danger zone avoidance. */
-public class SuperstructureStateCommand extends InstantCommand {
+public class SuperstructureStateCommand extends Command {
   private final Superstructure superstructure;
     private final SuperstructureState goal;
 
@@ -29,7 +29,7 @@ public class SuperstructureStateCommand extends InstantCommand {
 
   @Override
   public boolean isFinished() {
-    return false;
+    return superstructure.atSetpoint();
   }
 
   @Override
