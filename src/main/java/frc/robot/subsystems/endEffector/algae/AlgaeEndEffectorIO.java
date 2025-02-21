@@ -1,11 +1,11 @@
-package frc.robot.subsystems.endEffector.coral;
+package frc.robot.subsystems.endEffector.algae;
 
 import org.littletonrobotics.junction.AutoLog;
 
-public interface CoralEndEffectorIO {
+public interface AlgaeEndEffectorIO {
     @AutoLog
-    public static class CoralEndEffectorIOInputs {
-       /**
+    public static class AlgaeEndEffectorIOInputs {
+        /**
          * Velocity of motor in rotations/sec
          */
         public double velocity = 0.0;
@@ -23,7 +23,7 @@ public interface CoralEndEffectorIO {
         public double tempCelsius = 0.0;
     }
 
-    public void updateInputs(CoralEndEffectorIOInputs inputs);
+    public void updateInputs(AlgaeEndEffectorIOInputs inputs);
 
     /**
      * Halt motion of this end effector

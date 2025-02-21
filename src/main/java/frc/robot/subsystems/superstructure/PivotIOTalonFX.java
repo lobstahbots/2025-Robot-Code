@@ -7,7 +7,7 @@ package frc.robot.subsystems.superstructure;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-import com.revrobotics.AbsoluteEncoder;
+import com.reduxrobotics.sensors.canandmag.Canandmag;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import frc.robot.Constants.PivotConstants;
@@ -15,16 +15,16 @@ import frc.robot.Constants.PivotConstants;
 public class PivotIOTalonFX implements PivotIO {
 
     private final TalonFX pivotMotor;
-    private final AbsoluteEncoder encoder;
+    private final Canandmag encoder;
 
     /** Creates a new Pivot. */
-    public PivotIOTalonFX(int pivotMotorID, AbsoluteEncoder encoder) {
+    public PivotIOTalonFX(int pivotMotorID, int encoderID) {
         TalonFXConfiguration config = new TalonFXConfiguration();
         pivotMotor = new TalonFX(pivotMotorID);
         config.CurrentLimits.SupplyCurrentLimit = PivotConstants.CURRENT_LIMIT;
         config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
         pivotMotor.getConfigurator().apply(config);
-        this.encoder = encoder;
+        this.encoder = new Canandmag(encoderID);
     }
 
     public void setIdleMode(NeutralModeValue idleMode) {
@@ -45,7 +45,7 @@ public class PivotIOTalonFX implements PivotIO {
 
     @Override
     public void updateInputs(PivotIOInputs inputs) {
-        inputs.position = new Rotation2d(encoder.getPosition());
+        inputs.position = new Rotation2d(encoder.getAbsPosition());
         inputs.velocity = pivotMotor.getVelocity().getValueAsDouble();
         inputs.supplyCurrent = pivotMotor.getSupplyCurrent().getValueAsDouble();
         inputs.statorCurrent = pivotMotor.getStatorCurrent().getValueAsDouble();
