@@ -327,12 +327,12 @@
      "val":1.118158312436223
     },
     "y":{
-     "exp":"FIELD_HEIGHT / 2 + TO_STATION + sin(36 degrees) * ALONG_STATION * STATION_LENGTH",
-     "val":7.4183875
+     "exp":"FIELD_HEIGHT / 2 + TO_STATION + sin(36 degrees) * ALONG_STATION * STATION_LENGTH - sin(54 degrees) * ROBOT_HALF_WIDTH",
+     "val":7.07932847765746
     },
     "heading":{
-     "exp":"144 deg",
-     "val":2.5132741228718345
+     "exp":"306 deg",
+     "val":5.340707511102648
     }
    },
    "REEF_CENTER":{
@@ -356,11 +356,11 @@
     },
     "y":{
      "exp":"FIELD_HEIGHT - LEFT_STATION.y",
-     "val":0.6334125000000005
+     "val":0.9724715223425404
     },
     "heading":{
      "exp":"-LEFT_STATION.heading",
-     "val":-2.5132741228718345
+     "val":-5.340707511102648
     }
    },
    "SIDE_AB":{
