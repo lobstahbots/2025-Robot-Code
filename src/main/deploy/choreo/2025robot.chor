@@ -56,8 +56,29 @@
    "BUMPER_THICKNESS":{
     "dimension":"Length",
     "var":{
-     "exp":"2 in",
-     "val":0.0508
+     "exp":"3.625 in",
+     "val":0.092075
+    }
+   },
+   "CAGE_CLOSE":{
+    "dimension":"Length",
+    "var":{
+     "exp":"3 ft + 5.5 in",
+     "val":1.0541
+    }
+   },
+   "CAGE_FAR":{
+    "dimension":"Length",
+    "var":{
+     "exp":"10 ft + 7.375 in",
+     "val":3.235325
+    }
+   },
+   "CAGE_MIDDLE":{
+    "dimension":"Length",
+    "var":{
+     "exp":"7 ft + 0.375 in",
+     "val":2.143125
     }
    },
    "DRIVE_GEAR_RATIO":{
@@ -92,7 +113,7 @@
     "dimension":"Length",
     "var":{
      "exp":"REEF_WIDTH / 2 + ROBOT_HALF_WIDTH",
-     "val":1.2509499999999998
+     "val":1.292225
     }
    },
    "REEF_DISTANCE":{
@@ -113,7 +134,7 @@
     "dimension":"Length",
     "var":{
      "exp":"ROBOT_SIZE / 2 + BUMPER_THICKNESS",
-     "val":0.4191
+     "val":0.460375
     }
    },
    "ROBOT_SIZE":{
@@ -121,6 +142,13 @@
     "var":{
      "exp":"29 in",
      "val":0.7365999999999999
+    }
+   },
+   "START_LINE":{
+    "dimension":"Length",
+    "var":{
+     "exp":"7 ft + 4 in",
+     "val":2.2352
     }
    },
    "STATION_LENGTH":{
@@ -156,7 +184,7 @@
    "A":{
     "x":{
      "exp":"SIDE_AB.x + TO_PIPE * cos(SIDE_AB.heading + (1 / 2 pi) rad)",
-     "val":3.2385000000000006
+     "val":3.1972250000000004
     },
     "y":{
      "exp":"SIDE_AB.y + TO_PIPE * sin(SIDE_AB.heading + (1 / 2 pi) rad)",
@@ -170,7 +198,7 @@
    "B":{
     "x":{
      "exp":"SIDE_AB.x + TO_PIPE * cos(SIDE_AB.heading - (1 / 2 pi) rad)",
-     "val":3.2385000000000006
+     "val":3.1972250000000004
     },
     "y":{
      "exp":"SIDE_AB.y + TO_PIPE * sin(SIDE_AB.heading - (1 / 2 pi) rad)",
@@ -184,11 +212,11 @@
    "C":{
     "x":{
      "exp":"SIDE_CD.x + TO_PIPE * cos(SIDE_CD.heading + (1 / 2 pi) rad)",
-     "val":3.720994205835189
+     "val":3.700356705835189
     },
     "y":{
      "exp":"SIDE_CD.y + TO_PIPE * sin(SIDE_CD.heading + (1 / 2 pi) rad)",
-     "val":3.025095521135857
+     "val":2.989350322594654
     },
     "heading":{
      "exp":"SIDE_CD.heading",
@@ -198,11 +226,11 @@
    "D":{
     "x":{
      "exp":"SIDE_CD.x + TO_PIPE * cos(SIDE_CD.heading - (1 / 2 pi) rad)",
-     "val":4.006955794164811
+     "val":3.986318294164811
     },
     "y":{
      "exp":"SIDE_CD.y + TO_PIPE * sin(SIDE_CD.heading - (1 / 2 pi) rad)",
-     "val":2.859995521135857
+     "val":2.8242503225946542
     },
     "heading":{
      "exp":"SIDE_CD.heading",
@@ -212,11 +240,11 @@
    "E":{
     "x":{
      "exp":"SIDE_EF.x + TO_PIPE * cos(SIDE_EF.heading + (1 / 2 pi) rad)",
-     "val":4.9719442058351895
+     "val":4.992581705835189
     },
     "y":{
      "exp":"SIDE_EF.y + TO_PIPE * sin(SIDE_EF.heading + (1 / 2 pi) rad)",
-     "val":2.8599955211358568
+     "val":2.824250322594654
     },
     "heading":{
      "exp":"SIDE_EF.heading",
@@ -226,11 +254,11 @@
    "F":{
     "x":{
      "exp":"SIDE_EF.x + TO_PIPE * cos(SIDE_EF.heading - (1 / 2 pi) rad)",
-     "val":5.25790579416481
+     "val":5.278543294164812
     },
     "y":{
      "exp":"SIDE_EF.y + TO_PIPE * sin(SIDE_EF.heading - (1 / 2 pi) rad)",
-     "val":3.025095521135857
+     "val":2.989350322594654
     },
     "heading":{
      "exp":"SIDE_EF.heading",
@@ -240,7 +268,7 @@
    "G":{
     "x":{
      "exp":"SIDE_GH.x + TO_PIPE * cos(SIDE_GH.heading + (1 / 2 pi) rad)",
-     "val":5.740400000000001
+     "val":5.781675
     },
     "y":{
      "exp":"SIDE_GH.y + TO_PIPE * sin(SIDE_GH.heading + (1 / 2 pi) rad)",
@@ -254,7 +282,7 @@
    "H":{
     "x":{
      "exp":"SIDE_GH.x + TO_PIPE * cos(SIDE_GH.heading - (1 / 2 pi) rad)",
-     "val":5.740400000000001
+     "val":5.781675
     },
     "y":{
      "exp":"SIDE_GH.y + TO_PIPE * sin(SIDE_GH.heading - (1 / 2 pi) rad)",
@@ -268,11 +296,11 @@
    "I":{
     "x":{
      "exp":"SIDE_IJ.x + TO_PIPE * cos(SIDE_IJ.heading + (1 / 2 pi) rad)",
-     "val":5.25790579416481
+     "val":5.278543294164812
     },
     "y":{
      "exp":"SIDE_IJ.y + TO_PIPE * sin(SIDE_IJ.heading + (1 / 2 pi) rad)",
-     "val":5.026704478864143
+     "val":5.062449677405346
     },
     "heading":{
      "exp":"SIDE_IJ.heading",
@@ -282,11 +310,11 @@
    "J":{
     "x":{
      "exp":"SIDE_IJ.x + TO_PIPE * cos(SIDE_IJ.heading - (1 / 2 pi) rad)",
-     "val":4.9719442058351895
+     "val":4.992581705835189
     },
     "y":{
      "exp":"SIDE_IJ.y + TO_PIPE * sin(SIDE_IJ.heading - (1 / 2 pi) rad)",
-     "val":5.191804478864142
+     "val":5.227549677405347
     },
     "heading":{
      "exp":"SIDE_IJ.heading",
@@ -296,11 +324,11 @@
    "K":{
     "x":{
      "exp":"SIDE_KL.x + TO_PIPE * cos(SIDE_KL.heading + (1 / 2 pi) rad)",
-     "val":4.006955794164812
+     "val":3.986318294164812
     },
     "y":{
      "exp":"SIDE_KL.y + TO_PIPE * sin(SIDE_KL.heading + (1 / 2 pi) rad)",
-     "val":5.191804478864142
+     "val":5.227549677405346
     },
     "heading":{
      "exp":"SIDE_KL.heading",
@@ -310,11 +338,11 @@
    "L":{
     "x":{
      "exp":"SIDE_KL.x + TO_PIPE * cos(SIDE_KL.heading - (1 / 2 pi) rad)",
-     "val":3.72099420583519
+     "val":3.70035670583519
     },
     "y":{
      "exp":"SIDE_KL.y + TO_PIPE * sin(SIDE_KL.heading - (1 / 2 pi) rad)",
-     "val":5.0267044788641435
+     "val":5.062449677405347
     },
     "heading":{
      "exp":"SIDE_KL.heading",
@@ -324,11 +352,11 @@
    "LEFT_STATION":{
     "x":{
      "exp":"cos(36 degrees) * ALONG_STATION * STATION_LENGTH + cos(54 degrees) * ROBOT_HALF_WIDTH",
-     "val":1.118158312436223
+     "val":1.1424191487245947
     },
     "y":{
      "exp":"FIELD_HEIGHT / 2 + TO_STATION + sin(36 degrees) * ALONG_STATION * STATION_LENGTH - sin(54 degrees) * ROBOT_HALF_WIDTH",
-     "val":7.07932847765746
+     "val":7.045936301214633
     },
     "heading":{
      "exp":"306 deg",
@@ -352,11 +380,11 @@
    "RIGHT_STATION":{
     "x":{
      "exp":"LEFT_STATION.x",
-     "val":1.118158312436223
+     "val":1.1424191487245947
     },
     "y":{
      "exp":"FIELD_HEIGHT - LEFT_STATION.y",
-     "val":0.9724715223425404
+     "val":1.005863698785367
     },
     "heading":{
      "exp":"-LEFT_STATION.heading",
@@ -366,7 +394,7 @@
    "SIDE_AB":{
     "x":{
      "exp":"REEF_CENTER.x + RADIUS * cos(ANGLE_AB)",
-     "val":3.2385000000000006
+     "val":3.1972250000000004
     },
     "y":{
      "exp":"REEF_CENTER.y + RADIUS * sin(ANGLE_AB)",
@@ -380,11 +408,11 @@
    "SIDE_CD":{
     "x":{
      "exp":"REEF_CENTER.x + RADIUS * cos(ANGLE_CD)",
-     "val":3.863975
+     "val":3.8433375
     },
     "y":{
      "exp":"REEF_CENTER.y + RADIUS * sin(ANGLE_CD)",
-     "val":2.942545521135857
+     "val":2.906800322594654
     },
     "heading":{
      "exp":"pi rad + ANGLE_CD",
@@ -394,11 +422,11 @@
    "SIDE_EF":{
     "x":{
      "exp":"REEF_CENTER.x + RADIUS * cos(ANGLE_EF)",
-     "val":5.114925
+     "val":5.135562500000001
     },
     "y":{
      "exp":"REEF_CENTER.y + RADIUS * sin(ANGLE_EF)",
-     "val":2.9425455211358567
+     "val":2.9068003225946537
     },
     "heading":{
      "exp":"pi rad + ANGLE_EF",
@@ -408,7 +436,7 @@
    "SIDE_GH":{
     "x":{
      "exp":"REEF_CENTER.x + RADIUS * cos(ANGLE_GH)",
-     "val":5.740400000000001
+     "val":5.781675
     },
     "y":{
      "exp":"REEF_CENTER.y + RADIUS * sin(ANGLE_GH)",
@@ -422,11 +450,11 @@
    "SIDE_IJ":{
     "x":{
      "exp":"REEF_CENTER.x + RADIUS * cos(ANGLE_IJ)",
-     "val":5.114925
+     "val":5.135562500000001
     },
     "y":{
      "exp":"REEF_CENTER.y + RADIUS * sin(ANGLE_IJ)",
-     "val":5.109254478864143
+     "val":5.1449996774053455
     },
     "heading":{
      "exp":"pi rad + ANGLE_IJ",
@@ -436,15 +464,99 @@
    "SIDE_KL":{
     "x":{
      "exp":"REEF_CENTER.x + RADIUS * cos(ANGLE_KL)",
-     "val":3.863975000000001
+     "val":3.843337500000001
     },
     "y":{
      "exp":"REEF_CENTER.y + RADIUS * sin(ANGLE_KL)",
-     "val":5.109254478864144
+     "val":5.1449996774053455
     },
     "heading":{
      "exp":"pi rad + ANGLE_KL",
      "val":5.235987755982988
+    }
+   },
+   "START_LC":{
+    "x":{
+     "exp":"START_LL.x",
+     "val":7.188200000000001
+    },
+    "y":{
+     "exp":"FIELD_HEIGHT / 2 + CAGE_MIDDLE",
+     "val":6.1690249999999995
+    },
+    "heading":{
+     "exp":"180 deg",
+     "val":3.141592653589793
+    }
+   },
+   "START_LL":{
+    "x":{
+     "exp":"REEF_DISTANCE + REEF_WIDTH + START_LINE - ROBOT_SIZE / 2",
+     "val":7.188200000000001
+    },
+    "y":{
+     "exp":"FIELD_HEIGHT / 2 + CAGE_FAR",
+     "val":7.261225
+    },
+    "heading":{
+     "exp":"180 deg",
+     "val":3.141592653589793
+    }
+   },
+   "START_LR":{
+    "x":{
+     "exp":"START_LL.x",
+     "val":7.188200000000001
+    },
+    "y":{
+     "exp":"FIELD_HEIGHT / 2 + CAGE_CLOSE",
+     "val":5.079999999999999
+    },
+    "heading":{
+     "exp":"180 deg",
+     "val":3.141592653589793
+    }
+   },
+   "START_RC":{
+    "x":{
+     "exp":"START_LC.x",
+     "val":7.188200000000001
+    },
+    "y":{
+     "exp":"FIELD_HEIGHT - START_LC.y",
+     "val":1.8827750000000003
+    },
+    "heading":{
+     "exp":"START_LC.heading",
+     "val":3.141592653589793
+    }
+   },
+   "START_RL":{
+    "x":{
+     "exp":"START_LR.x",
+     "val":7.188200000000001
+    },
+    "y":{
+     "exp":"FIELD_HEIGHT - START_LR.y",
+     "val":2.9718
+    },
+    "heading":{
+     "exp":"START_LR.heading",
+     "val":3.141592653589793
+    }
+   },
+   "START_RR":{
+    "x":{
+     "exp":"START_LL.x",
+     "val":7.188200000000001
+    },
+    "y":{
+     "exp":"FIELD_HEIGHT - START_LL.y",
+     "val":0.7905750000000005
+    },
+    "heading":{
+     "exp":"START_LL.heading",
+     "val":3.141592653589793
     }
    }
   }
@@ -501,15 +613,15 @@
   "bumper":{
    "front":{
     "exp":"ROBOT_HALF_WIDTH",
-    "val":0.4191
+    "val":0.460375
    },
    "side":{
     "exp":"ROBOT_HALF_WIDTH",
-    "val":0.4191
+    "val":0.460375
    },
    "back":{
     "exp":"ROBOT_HALF_WIDTH",
-    "val":0.4191
+    "val":0.460375
    }
   },
   "differentialTrackWidth":{
