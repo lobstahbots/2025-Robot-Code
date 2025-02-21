@@ -323,8 +323,8 @@
    },
    "LEFT_STATION":{
     "x":{
-     "exp":"cos(36 degrees) * ALONG_STATION * STATION_LENGTH",
-     "val":0.8718175132004475
+     "exp":"cos(36 degrees) * ALONG_STATION * STATION_LENGTH + cos(54 degrees) * ROBOT_HALF_WIDTH",
+     "val":1.118158312436223
     },
     "y":{
      "exp":"FIELD_HEIGHT / 2 + TO_STATION + sin(36 degrees) * ALONG_STATION * STATION_LENGTH",
@@ -352,7 +352,7 @@
    "RIGHT_STATION":{
     "x":{
      "exp":"LEFT_STATION.x",
-     "val":0.8718175132004475
+     "val":1.118158312436223
     },
     "y":{
      "exp":"FIELD_HEIGHT - LEFT_STATION.y",
