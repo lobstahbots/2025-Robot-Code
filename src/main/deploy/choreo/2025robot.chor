@@ -4,6 +4,13 @@
  "type":"Swerve",
  "variables":{
   "expressions":{
+   "ALONG_STATION":{
+    "dimension":"Number",
+    "var":{
+     "exp":"0.5",
+     "val":0.5
+    }
+   },
    "ANGLE_AB":{
     "dimension":"Angle",
     "var":{
@@ -116,11 +123,25 @@
      "val":0.7365999999999999
     }
    },
+   "STATION_LENGTH":{
+    "dimension":"Length",
+    "var":{
+     "exp":"(FIELD_HEIGHT / 2 - TO_STATION) / sin(36 degrees)",
+     "val":2.1552514205811466
+    }
+   },
    "TO_PIPE":{
     "dimension":"Length",
     "var":{
      "exp":"(1 ft + 1 in) / 2",
      "val":0.1651
+    }
+   },
+   "TO_STATION":{
+    "dimension":"Length",
+    "var":{
+     "exp":"(217.25 in) / 2",
+     "val":2.7590749999999997
     }
    },
    "WHEEL_DIAMETER":{
@@ -300,6 +321,20 @@
      "val":5.235987755982988
     }
    },
+   "LEFT_STATION":{
+    "x":{
+     "exp":"cos(36 degrees) * ALONG_STATION * STATION_LENGTH + cos(54 degrees) * ROBOT_HALF_WIDTH",
+     "val":1.118158312436223
+    },
+    "y":{
+     "exp":"FIELD_HEIGHT / 2 + TO_STATION + sin(36 degrees) * ALONG_STATION * STATION_LENGTH - sin(54 degrees) * ROBOT_HALF_WIDTH",
+     "val":7.07932847765746
+    },
+    "heading":{
+     "exp":"306 deg",
+     "val":5.340707511102648
+    }
+   },
    "REEF_CENTER":{
     "x":{
      "exp":"REEF_DISTANCE + REEF_WIDTH / 2",
@@ -312,6 +347,20 @@
     "heading":{
      "exp":"0 rad",
      "val":0.0
+    }
+   },
+   "RIGHT_STATION":{
+    "x":{
+     "exp":"LEFT_STATION.x",
+     "val":1.118158312436223
+    },
+    "y":{
+     "exp":"FIELD_HEIGHT - LEFT_STATION.y",
+     "val":0.9724715223425404
+    },
+    "heading":{
+     "exp":"-LEFT_STATION.heading",
+     "val":-5.340707511102648
     }
    },
    "SIDE_AB":{
