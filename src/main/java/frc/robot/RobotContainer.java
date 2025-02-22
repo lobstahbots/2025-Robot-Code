@@ -39,6 +39,7 @@ import frc.robot.Constants.PivotConstants;
 import frc.robot.Constants.RobotConstants;
 import frc.robot.Constants.SimConstants;
 import frc.robot.Constants.VisionConstants;
+import frc.robot.commands.coralEndEffectorCommands.CoralCommand;
 import frc.robot.commands.driveCommands.SwerveDriveCommand;
 import frc.robot.commands.superstructureCommands.SuperstructureStateCommand;
 import frc.robot.subsystems.drive.DriveBase;
@@ -109,7 +110,7 @@ public class RobotContainer {
             driveBase = new DriveBase(new GyroIONavX(), cameras, frontLeft, frontRight, backLeft, backRight, false);
 
             superstructure = new Superstructure(
-                    // new ElevatorIOTalonFX(ElevatorConstants.LEFT_ELEVATOR_ID, ElevatorConstants.RIGHT_ELEVATOR_ID),
+                    new ElevatorIOTalonFX(ElevatorConstants.LEFT_ELEVATOR_ID, ElevatorConstants.RIGHT_ELEVATOR_ID),
                     new PivotIOTalonFX(PivotConstants.MOTOR_ID, PivotConstants.ENCODER_ID));
         } else {
             driveSimulation = new SwerveDriveSimulation(DriveConstants.MAPLE_SIM_CONFIG,
@@ -149,10 +150,7 @@ public class RobotContainer {
                         () -> driverJoystick.getRawAxis(DriverIOConstants.ROTATION_AXIS),
                         () -> DriveConstants.FIELD_CENTRIC, DriverIOConstants.SQUARE_INPUTS));
         superstructure.setDefaultCommand(new SuperstructureStateCommand(superstructure, RobotConstants.INTAKE_STATE));
-        coral.setDefaultCommand(coral.spinCommand(CoralEndEffectorConstants.MOTOR_SPEED)
-                .until(() -> coral.getCurrent() > CoralEndEffectorConstants.CURRENT_THRESHOLD)
-                .andThen(new RunCommand(() -> {
-                })));
+        coral.setDefaultCommand(new CoralCommand(coral, scoreLevel));
     }
 
     /**
