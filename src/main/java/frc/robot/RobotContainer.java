@@ -69,7 +69,7 @@ public class RobotContainer {
 
     private final JoystickButton l1Button = new JoystickButton(operatorJoystick, OperatorIOConstants.L1_BUTTON);
     private final JoystickButton l2Button = new JoystickButton(operatorJoystick, OperatorIOConstants.L2_BUTTON);
-
+    
     private final Trigger manualArm = new Trigger(
             () -> operatorJoystick.getRawAxis(OperatorIOConstants.MANUAL_ARM_AXIS) > 0.1);
 
@@ -89,8 +89,6 @@ public class RobotContainer {
      * The container for the robot. Contains subsystems, OI devices, and commands.
      */
     public RobotContainer() {
-        var coralSparkMax = new CoralEndEffectorIOSparkMax(CoralEndEffectorConstants.LEFT_ID,
-                CoralEndEffectorConstants.RIGHT_ID);
         if (Robot.isReal()) {
             SwerveModuleIOSparkMax frontLeft = new SwerveModuleIOSparkMax(FrontLeftModuleConstants.moduleID,
                     "Front left ", FrontLeftModuleConstants.angleID, FrontLeftModuleConstants.driveID,
@@ -111,8 +109,8 @@ public class RobotContainer {
             driveBase = new DriveBase(new GyroIONavX(), cameras, frontLeft, frontRight, backLeft, backRight, false);
 
             superstructure = new Superstructure(
-                    new ElevatorIOTalonFX(ElevatorConstants.LEFT_ELEVATOR_ID, ElevatorConstants.RIGHT_ELEVATOR_ID),
-                    new PivotIOTalonFX(PivotConstants.MOTOR_ID, coralSparkMax.getAbsoluteEncoder()));
+                    // new ElevatorIOTalonFX(ElevatorConstants.LEFT_ELEVATOR_ID, ElevatorConstants.RIGHT_ELEVATOR_ID),
+                    new PivotIOTalonFX(PivotConstants.MOTOR_ID, PivotConstants.ENCODER_ID));
         } else {
             driveSimulation = new SwerveDriveSimulation(DriveConstants.MAPLE_SIM_CONFIG,
                     new Pose2d(3, 3, new Rotation2d()));
@@ -135,7 +133,7 @@ public class RobotContainer {
             superstructure = new Superstructure(new ElevatorIOSim(), new PivotIOSim());
         }
 
-        coral = new CoralEndEffector(coralSparkMax);
+        coral = new CoralEndEffector(new CoralEndEffectorIOSparkMax(CoralEndEffectorConstants.ID));
 
         this.autoFactory = new AutoFactory(driveBase, autoChooser::getResponses);
 
@@ -178,7 +176,7 @@ public class RobotContainer {
                         Map.ofEntries(Map.entry(1, new SuperstructureStateCommand(superstructure, RobotConstants.L1_STATE)),
                                 Map.entry(2, new SuperstructureStateCommand(superstructure, RobotConstants.L2_STATE))),
                         () -> scoreLevel)
-                                .andThen(coral.spinCommand(-CoralEndEffectorConstants.MOTOR_SPEED).withTimeout(1)));
+                                .andThen(new CoralCommand(coral, -CoralEndEffectorConstants.MOTOR_SPEED).withTimeout(1)));
         l1Button.onTrue(new StartEndCommand(() -> scoreLevel = 1, () -> {
         }));
         l2Button.onTrue(new StartEndCommand(() -> scoreLevel = 2, () -> {

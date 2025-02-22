@@ -1,4 +1,4 @@
-package frc.robot.subsystems.endEffector.coral;
+package frc.robot.subsystems.endEffector.algae;
 
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkBase.PersistMode;
@@ -10,38 +10,38 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 
 import frc.robot.Constants.CoralEndEffectorConstants;
 
-public class CoralEndEffectorIOSparkMax implements CoralEndEffectorIO {
-  private final SparkMax coralMotor;
+public class AlgaeEndEffectorIOSparkMax implements AlgaeEndEffectorIO {
+  private final SparkMax algaeMotor;
   private final RelativeEncoder encoder;
 
-  public CoralEndEffectorIOSparkMax(int id) {
-    this.coralMotor = new SparkMax(id, MotorType.kBrushless);
+  public AlgaeEndEffectorIOSparkMax(int id) {
+    this.algaeMotor = new SparkMax(id, MotorType.kBrushless);
 
     SparkMaxConfig config = new SparkMaxConfig();
     config.smartCurrentLimit(CoralEndEffectorConstants.CURRENT_LIMIT);
     config.idleMode(IdleMode.kBrake);
     config.inverted(false);
     config.encoder.velocityConversionFactor(1.0 / 60);
-    coralMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    algaeMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
-    encoder = coralMotor.getEncoder();
+    encoder = algaeMotor.getEncoder();
   }
 
   @Override
   public void stopMotor() {
-    coralMotor.stopMotor();
+    algaeMotor.stopMotor();
   }
 
   @Override
   public void setSpeed(double speed) {
-    coralMotor.set(speed);
+    algaeMotor.set(speed);
   }
 
   @Override
-  public void updateInputs(CoralEndEffectorIOInputs inputs) {
+  public void updateInputs(AlgaeEndEffectorIOInputs inputs) {
     inputs.velocity = encoder.getVelocity();
-    inputs.appliedVoltage = coralMotor.getAppliedOutput() * coralMotor.getBusVoltage();
-    inputs.currentAmps = coralMotor.getOutputCurrent();
-    inputs.tempCelsius = coralMotor.getMotorTemperature();
+    inputs.appliedVoltage = algaeMotor.getAppliedOutput() * algaeMotor.getBusVoltage();
+    inputs.currentAmps = algaeMotor.getOutputCurrent();
+    inputs.tempCelsius = algaeMotor.getMotorTemperature();
   }
 }
