@@ -95,18 +95,18 @@
      "val":0.04445
     }
    },
-   "FIELD_HEIGHT":{
-    "dimension":"Length",
-    "var":{
-     "exp":"26 ft + 5 in",
-     "val":8.0518
-    }
-   },
    "FIELD_LENGTH":{
     "dimension":"Length",
     "var":{
      "exp":"26 ft + 6.875 in",
      "val":8.099425
+    }
+   },
+   "FIELD_WIDTH":{
+    "dimension":"Length",
+    "var":{
+     "exp":"26 ft + 5 in",
+     "val":8.0518
     }
    },
    "RADIUS":{
@@ -154,7 +154,7 @@
    "STATION_LENGTH":{
     "dimension":"Length",
     "var":{
-     "exp":"(FIELD_HEIGHT / 2 - TO_STATION) / sin(36 degrees)",
+     "exp":"(FIELD_WIDTH / 2 - TO_STATION) / sin(36 degrees)",
      "val":2.1552514205811466
     }
    },
@@ -355,7 +355,7 @@
      "val":1.1424191487245947
     },
     "y":{
-     "exp":"FIELD_HEIGHT / 2 + TO_STATION + sin(36 degrees) * ALONG_STATION * STATION_LENGTH - sin(54 degrees) * ROBOT_HALF_WIDTH",
+     "exp":"FIELD_WIDTH / 2 + TO_STATION + sin(36 degrees) * ALONG_STATION * STATION_LENGTH - sin(54 degrees) * ROBOT_HALF_WIDTH",
      "val":7.045936301214633
     },
     "heading":{
@@ -369,7 +369,7 @@
      "val":4.489450000000001
     },
     "y":{
-     "exp":"FIELD_HEIGHT / 2",
+     "exp":"FIELD_WIDTH / 2",
      "val":4.0259
     },
     "heading":{
@@ -383,7 +383,7 @@
      "val":1.1424191487245947
     },
     "y":{
-     "exp":"FIELD_HEIGHT - LEFT_STATION.y",
+     "exp":"FIELD_WIDTH - LEFT_STATION.y",
      "val":1.005863698785367
     },
     "heading":{
@@ -481,7 +481,7 @@
      "val":7.188200000000001
     },
     "y":{
-     "exp":"FIELD_HEIGHT / 2 + CAGE_MIDDLE",
+     "exp":"FIELD_WIDTH / 2 + CAGE_MIDDLE",
      "val":6.1690249999999995
     },
     "heading":{
@@ -495,7 +495,7 @@
      "val":7.188200000000001
     },
     "y":{
-     "exp":"FIELD_HEIGHT / 2 + CAGE_FAR",
+     "exp":"FIELD_WIDTH / 2 + CAGE_FAR",
      "val":7.261225
     },
     "heading":{
@@ -509,7 +509,7 @@
      "val":7.188200000000001
     },
     "y":{
-     "exp":"FIELD_HEIGHT / 2 + CAGE_CLOSE",
+     "exp":"FIELD_WIDTH / 2 + CAGE_CLOSE",
      "val":5.079999999999999
     },
     "heading":{
@@ -523,7 +523,7 @@
      "val":7.188200000000001
     },
     "y":{
-     "exp":"FIELD_HEIGHT - START_LC.y",
+     "exp":"FIELD_WIDTH - START_LC.y",
      "val":1.8827750000000003
     },
     "heading":{
@@ -537,7 +537,7 @@
      "val":7.188200000000001
     },
     "y":{
-     "exp":"FIELD_HEIGHT - START_LR.y",
+     "exp":"FIELD_WIDTH - START_LR.y",
      "val":2.9718
     },
     "heading":{
@@ -551,7 +551,7 @@
      "val":7.188200000000001
     },
     "y":{
-     "exp":"FIELD_HEIGHT - START_LL.y",
+     "exp":"FIELD_WIDTH - START_LL.y",
      "val":0.7905750000000005
     },
     "heading":{
