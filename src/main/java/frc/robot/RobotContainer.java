@@ -66,10 +66,10 @@ public class RobotContainer {
     private final Joystick driverJoystick = new Joystick(DriverIOConstants.DRIVER_CONTROLLER_PORT);
     private final Joystick operatorJoystick = new Joystick(OperatorIOConstants.OPERATOR_CONTROLLER_PORT);
 
-    private final JoystickButton scoreButton = new JoystickButton(driverJoystick, DriverIOConstants.SCORE_BUTTON);
+    private final JoystickButton scoreButton = new JoystickButton(driverJoystick, OperatorIOConstants.SCORE_BUTTON);
 
-    private final JoystickButton l1Button = new JoystickButton(operatorJoystick, OperatorIOConstants.L1_BUTTON);
-    private final JoystickButton l2Button = new JoystickButton(operatorJoystick, OperatorIOConstants.L2_BUTTON);
+    // private final JoystickButton l1Button = new JoystickButton(operatorJoystick, OperatorIOConstants.L1_BUTTON);
+    // private final JoystickButton l2Button = new JoystickButton(operatorJoystick, OperatorIOConstants.L2_BUTTON);
     
     private final Trigger manualArm = new Trigger(
             () -> operatorJoystick.getRawAxis(OperatorIOConstants.MANUAL_ARM_AXIS) > 0.1);
@@ -160,7 +160,7 @@ public class RobotContainer {
      */
     public Command getAutonomousCommand() {
         try {
-            return AutoBuilder.followPath(PathPlannerPath.fromPathFile("New New Path"))
+            return AutoBuilder.followPath(PathPlannerPath.fromPathFile("RIGHT_A"))
                     .alongWith(new RunCommand(() -> superstructure.setExtension(1.5, 0), superstructure));
         } catch (Exception exception) {
             return new RunCommand(() -> {
@@ -169,6 +169,7 @@ public class RobotContainer {
     }
 
     public void configureButtonBindings() {
+        /*
         scoreButton
                 .onTrue(new SelectCommand<Integer>(
                         Map.ofEntries(Map.entry(1, new SuperstructureStateCommand(superstructure, RobotConstants.L1_STATE)),
@@ -179,6 +180,9 @@ public class RobotContainer {
         }));
         l2Button.onTrue(new StartEndCommand(() -> scoreLevel = 2, () -> {
         }));
+        */
+
+        scoreButton.whileTrue(new CoralCommand(coral, scoreLevel));
     }
 
     public boolean getOperatorConnected() {

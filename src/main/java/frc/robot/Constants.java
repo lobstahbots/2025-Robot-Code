@@ -59,15 +59,16 @@ public final class Constants {
             public static final int STRAFE_X_AXIS = 0;
             public static final int STRAFE_Y_AXIS = 1;
             public static final int ROTATION_AXIS = 2;
-            public static final int SCORE_BUTTON = 0;
+            //public static final int SCORE_BUTTON = 0;
             public static final boolean SQUARE_INPUTS = false;
         }
 
         public static class OperatorIOConstants {
             public static final int OPERATOR_CONTROLLER_PORT = 1;
             public static final int MANUAL_ARM_AXIS = 1;
-            public static final int L1_BUTTON = 0;
-            public static final int L2_BUTTON = 0;
+            public static final int SCORE_BUTTON = 7;
+            // public static final int L1_BUTTON = 0;
+            // public static final int L2_BUTTON = 0;
         }
     }
 
@@ -210,7 +211,7 @@ public final class Constants {
         public static final int[] ELEVATOR_CHANNELS = { 9, 10 };
         public static final int PIVOT_CHANNEL = 11;
 
-        public static final boolean VISION_SIM = false;
+        public static final boolean VISION_SIM = true;
     }
 
     public static class VisionConstants {

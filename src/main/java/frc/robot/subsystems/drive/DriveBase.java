@@ -34,6 +34,7 @@ import frc.robot.Constants.DriveConstants.FrontLeftModuleConstants;
 import frc.robot.Constants.DriveConstants.FrontRightModuleConstants;
 import frc.robot.subsystems.vision.Camera;
 import frc.robot.subsystems.vision.Camera.Pose;
+import frc.robot.util.choreo.ChoreoVariables;
 import frc.robot.util.math.LobstahMath;
 import frc.robot.util.sysId.CharacterizableSubsystem;
 
@@ -282,10 +283,13 @@ public class DriveBase extends CharacterizableSubsystem {
             estimatedPose.stdev().get());
       }
     }
+    /* 
     resetPose(new Pose2d(
         MathUtil.clamp(getPose().getX(), RobotConstants.TRACK_WIDTH / 2, 16.5 - RobotConstants.TRACK_WIDTH / 2),
         MathUtil.clamp(getPose().getY(), RobotConstants.TRACK_WIDTH / 2, 8 - RobotConstants.TRACK_WIDTH / 2),
         getPose().getRotation()));
+        */
+    resetPose(new Pose2d(ChoreoVariables.get("RIGHT_STATION.x"), ChoreoVariables.get("RIGHT_STATION.x"), Rotation2d.fromDegrees(ChoreoVariables.get("RIGHT_STATION.x"))));
     field.setRobotPose(getPose());
     Logger.recordOutput("Odometry", getPose());
     Logger.recordOutput("Vision Less", visionLessOdometry.getEstimatedPosition());
