@@ -336,11 +336,11 @@ public final class Constants {
 
         public static final int CURRENT_LIMIT = 40;
 
-        public static final double PIVOT_GEARING = 0;
-        public static final double ARM_LENGTH = 0;
-        public static final double PIVOT_MASS = 0;
+        public static final double PIVOT_GEARING = 12;
+        public static final double ARM_LENGTH = Units.inchesToMeters(12);
+        public static final double PIVOT_MASS = Units.lbsToKilograms(15);
         public static final double MIN_ANGLE = 0;
-        public static final double MAX_ANGLE = 0;
+        public static final double MAX_ANGLE = Math.PI;
 
         public static final int MOTOR_ID = 0;
         public static final int ENCODER_ID = 0;

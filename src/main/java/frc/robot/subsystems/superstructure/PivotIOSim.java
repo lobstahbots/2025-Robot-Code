@@ -1,5 +1,7 @@
 package frc.robot.subsystems.superstructure;
 
+import com.fasterxml.jackson.annotation.JsonTypeInfo.None;
+
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
@@ -18,7 +20,6 @@ public class PivotIOSim implements PivotIO{
         PivotConstants.MIN_ANGLE, 
         PivotConstants.MAX_ANGLE, 
         true, 
-        0, 
         0);
 
     public PivotIOSim() {}
