@@ -2,6 +2,7 @@ package frc.robot.subsystems.endEffector.coral;
 
 import org.littletonrobotics.junction.Logger;
 
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class CoralEndEffector extends SubsystemBase {
@@ -27,8 +28,8 @@ public class CoralEndEffector extends SubsystemBase {
      * @param rightSpeed speed for right motor
      * @return constructed command
      */
-    public Command spinCommand(double leftSpeed, double rightSpeed) {
-        return runEnd(() -> io.setSpeed(leftSpeed, rightSpeed), io::stopMotor);
+    public Command spinCommand(double speed) {
+        return runEnd(() -> io.setSpeed(speed), io::stopMotor);
     }
 
     /**
@@ -37,10 +38,11 @@ public class CoralEndEffector extends SubsystemBase {
      * @param speed speed to spin it at
      * @return constructed command
      */
+    /* 
     public Command spinCommand(double speed) {
         return spinCommand(speed, speed);
     }
-
+    */
     /**
      * Construct a command to stop the end effector
      * 
