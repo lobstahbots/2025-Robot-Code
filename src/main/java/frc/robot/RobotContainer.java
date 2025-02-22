@@ -91,7 +91,7 @@ public class RobotContainer {
      */
     public RobotContainer() {
         var coralSparkMax = new CoralEndEffectorIOSparkMax(CoralEndEffectorConstants.LEFT_ID,
-                 CoralEndEffectorConstants.RIGHT_ID);
+                CoralEndEffectorConstants.RIGHT_ID);
         if (Robot.isReal()) {
             SwerveModuleIOSparkMax frontLeft = new SwerveModuleIOSparkMax(FrontLeftModuleConstants.moduleID,
                     "Front left ", FrontLeftModuleConstants.angleID, FrontLeftModuleConstants.driveID,
@@ -136,7 +136,7 @@ public class RobotContainer {
             superstructure = new Superstructure(/* new ElevatorIOSim(), */ new PivotIOSim());
         }
 
-        coral = new CoralEndEffector(coralSparkMax);
+        coral = new CoralEndEffector(new CoralEndEffectorIOSparkMax(CoralEndEffectorConstants.ID));
 
         this.autoFactory = new AutoFactory(driveBase, autoChooser::getResponses);
 
@@ -185,7 +185,7 @@ public class RobotContainer {
                         Map.ofEntries(Map.entry(1, superstructure.setStateCommand(RobotConstants.L1_STATE)),
                                 Map.entry(2, superstructure.setStateCommand(RobotConstants.L2_STATE))),
                         () -> scoreLevel)
-                                .andThen(coral.spinCommand(-CoralEndEffectorConstants.MOTOR_SPEED).withTimeout(1)));
+                                .andThen(new CoralCommand(coral, -CoralEndEffectorConstants.MOTOR_SPEED).withTimeout(1)));
         l1Button.onTrue(new StartEndCommand(() -> scoreLevel = 1, () -> {
         }));
         l2Button.onTrue(new StartEndCommand(() -> scoreLevel = z2, () -> {

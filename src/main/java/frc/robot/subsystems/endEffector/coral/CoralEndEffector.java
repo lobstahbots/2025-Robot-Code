@@ -2,7 +2,6 @@ package frc.robot.subsystems.endEffector.coral;
 
 import org.littletonrobotics.junction.Logger;
 
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class CoralEndEffector extends SubsystemBase {
@@ -39,7 +38,7 @@ public class CoralEndEffector extends SubsystemBase {
      * @return constructed command
      */
     public Command spinCommand(double speed) {
-        return spinCommand(-speed, speed);
+        return spinCommand(speed, speed);
     }
 
     /**
@@ -52,10 +51,9 @@ public class CoralEndEffector extends SubsystemBase {
     }
 
     public double getCurrent() {
-        return (inputs.leftCurrentAmps + inputs.rightCurrentAmps) / 2;
+        return inputs.currentAmps;
     }
 
-    @Override
     public void periodic() {
         io.updateInputs(inputs);
         Logger.processInputs("CoralEndEffector", inputs);
