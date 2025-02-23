@@ -62,5 +62,6 @@
     "editor.detectIndentation": false
   },
   "java.debug.settings.onBuildFailureProceed": true,
-  "wpilib.selectDefaultSimulateExtension": false
+  "wpilib.selectDefaultSimulateExtension": false,
+  "wpilib.autoStartRioLog": false
 }

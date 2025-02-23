@@ -13,6 +13,10 @@ import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedNetworkString;
 
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.path.PathConstraints;
+import com.pathplanner.lib.path.PathPlannerPath;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Joystick;
@@ -24,6 +28,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.AutoFactory.CharacterizationRoutine;
 import frc.robot.AutoFactory.CoralStation;
+import frc.robot.AutoFactory.PathType;
 import frc.robot.AutoFactory.StartingPosition;
 import frc.robot.Constants.CoralEndEffectorConstants;
 import frc.robot.Constants.DriveConstants;
@@ -32,6 +37,7 @@ import frc.robot.Constants.DriveConstants.BackRightModuleConstants;
 import frc.robot.Constants.DriveConstants.FrontLeftModuleConstants;
 import frc.robot.Constants.DriveConstants.FrontRightModuleConstants;
 import frc.robot.Constants.ElevatorConstants;
+import frc.robot.Constants.PathConstants;
 import frc.robot.Constants.IOConstants.DriverIOConstants;
 import frc.robot.Constants.IOConstants.OperatorIOConstants;
 import frc.robot.Constants.PivotConstants;
@@ -105,7 +111,7 @@ public class RobotContainer {
 
             List<Camera> cameras = new ArrayList<>();
             cameras.add(new Camera(new CameraIOPhoton(VisionConstants.FRONT_CAMERA_NAME)));
-            cameras.add(new Camera(new CameraIOPhoton(VisionConstants.REAR_CAMERA_NAME)));
+            // cameras.add(new Camera(new CameraIOPhoton(VisionConstants.REAR_CAMERA_NAME)));
             driveBase = new DriveBase(new GyroIONavX(), cameras, frontLeft, frontRight, backLeft, backRight, false);
 
             // superstructure = new Superstructure(
@@ -125,7 +131,7 @@ public class RobotContainer {
             List<Camera> cameras = new ArrayList<>();
             if (SimConstants.VISION_SIM) {
                 cameras.add(new Camera(new CameraIOSim(VisionConstants.FRONT_CAMERA_NAME)));
-                cameras.add(new Camera(new CameraIOSim(VisionConstants.REAR_CAMERA_NAME)));
+                // cameras.add(new Camera(new CameraIOSim(VisionConstants.REAR_CAMERA_NAME)));
             }
             driveBase = new DriveBase(new GyroIOSim(driveSimulation.getGyroSimulation()) {}, cameras, frontLeft,
                     frontRight, backLeft, backRight, false);
@@ -146,7 +152,7 @@ public class RobotContainer {
         driveBase.setDefaultCommand(
                 new SwerveDriveCommand(driveBase, () -> -driverJoystick.getRawAxis(DriverIOConstants.STRAFE_Y_AXIS),
                         () -> -driverJoystick.getRawAxis(DriverIOConstants.STRAFE_X_AXIS),
-                        () -> driverJoystick.getRawAxis(DriverIOConstants.ROTATION_AXIS),
+                        () -> -driverJoystick.getRawAxis(DriverIOConstants.ROTATION_AXIS),
                         () -> DriveConstants.FIELD_CENTRIC, DriverIOConstants.SQUARE_INPUTS));
         // superstructure.setDefaultCommand(new SuperstructureStateCommand(superstructure, RobotConstants.INTAKE_STATE));
         // coral.setDefaultCommand(new CoralCommand(coral, scoreLevel));

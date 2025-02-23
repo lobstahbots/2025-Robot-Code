@@ -105,8 +105,8 @@ public class Robot extends LoggedRobot {
         CANStatus canStatus = RobotController.getCANStatus();
         if (canStatus.receiveErrorCount > 0 || canStatus.transmitErrorCount > 0) {
             canAlert.set(true);
-            canAlert.setText(String.format("CAN error: %d receive errors, %d transmit errors, %d%% utilization",
-                    canStatus.receiveErrorCount, canStatus.transmitErrorCount, canStatus.percentBusUtilization));
+            // canAlert.setText(String.format("CAN error: %d receive errors, %d transmit errors, %d%% utilization",
+            //         canStatus.receiveErrorCount, canStatus.transmitErrorCount, canStatus.percentBusUtilization));
         } else
             canAlert.set(false);
     }

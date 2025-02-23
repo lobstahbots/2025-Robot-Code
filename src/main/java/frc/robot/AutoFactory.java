@@ -126,7 +126,6 @@ public class AutoFactory {
                 default:
                     path = PathPlannerPath.fromChoreoTrajectory(pathname, segment);
             }
-
             return AutoBuilder.pathfindThenFollowPath(path, PathConstants.CONSTRAINTS);
         } catch (Exception exception) {
             DriverStation.reportError("Could not load path " + pathname + ". Error: " + exception.getMessage(), false);
@@ -148,7 +147,23 @@ public class AutoFactory {
      * @return The constructed path following command
      */
     public Command getPathFindToPathCommand(String pathname, PathType pathType) {
-        return getPathFindToPathCommand(pathname, pathType, 0);
+        PathPlannerPath path;
+        try {
+            switch (pathType) {
+                case CHOREO:
+                    path = PathPlannerPath.fromChoreoTrajectory(pathname);
+                    break;
+                case PATHPLANNER:
+                    path = PathPlannerPath.fromPathFile(pathname);
+                    break;
+                default:
+                    path = PathPlannerPath.fromChoreoTrajectory(pathname);
+            }
+            return AutoBuilder.pathfindThenFollowPath(path, PathConstants.CONSTRAINTS);
+        } catch (Exception exception) {
+            DriverStation.reportError("Could not load path " + pathname + ". Error: " + exception.getMessage(), false);
+            return Commands.none();
+        }
     }
 
     /**
@@ -212,8 +227,7 @@ public class AutoFactory {
      * @return The constructed command
      */
     public Command getStartCommand(StartingPosition startingPosition, char pipe) {
-        return Commands.runOnce(() -> driveBase.resetPose(startingPosition.pose))
-                .andThen(getPathFindToPathCommand(startingPosition.name() + "_" + pipe, PathType.CHOREO));
+        return getPathFindToPathCommand(startingPosition.name() + "_" + pipe, PathType.CHOREO);
                 // .alongWith(new SuperstructureStateCommand(superstructure, RobotConstants.L2_STATE))
                 // .andThen(new CoralCommand(coral, CoralEndEffectorConstants.MOTOR_SPEED).withTimeout(1));
     }
@@ -253,7 +267,10 @@ public class AutoFactory {
      * @return the constructed command
      */
     public Command getAuto(StartingPosition startingPosition, CoralStation coralStation, String pipes) {
+        if (pipes.length() == 0) return Commands.none();
         Command result = getStartCommand(startingPosition, pipes.charAt(0));
+        System.out.println(result);
+        if (pipes.length() == 1) return result;
         for (int i = 1; i < pipes.length(); i++) {
             result = result.andThen(getCoralStationCommand(coralStation, pipes.charAt(i - 1)))
                     .andThen(getScoreCommand(coralStation, pipes.charAt(i)));
