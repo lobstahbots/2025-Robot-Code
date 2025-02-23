@@ -81,8 +81,8 @@ public final class Constants {
         public static final double DRIVE_GEAR_RATIO = ChoreoVariables.get("DRIVE_GEAR_RATIO");
         public static final double ANGLE_GEAR_RATIO = 9424 / 203;
         public static final double MAX_DRIVE_SPEED = 5.23; // from https://www.reca.lc/drive
-        public static final Mass WEIGHT = Pounds.of(40);
-        public static final MomentOfInertia MOI = KilogramSquareMeters.of(1.4988172);
+        public static final Mass WEIGHT = Pounds.of(150);
+        public static final MomentOfInertia MOI = KilogramSquareMeters.of(6);
 
         public static final SuperstructureState INTAKE_STATE = new SuperstructureState(Rotation2d.fromDegrees(-90), ElevatorConstants.BOTTOM_HEIGHT, 0, 0);
         public static final SuperstructureState L1_STATE = new SuperstructureState(Rotation2d.fromDegrees(0), ElevatorConstants.BOTTOM_HEIGHT, 0, 0);

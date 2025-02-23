@@ -24,6 +24,7 @@ import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.PathConstants;
 import frc.robot.commands.driveCommands.SwerveDriveStopCommand;
 import frc.robot.subsystems.drive.DriveBase;
+import frc.robot.util.choreo.ChoreoVariables;
 import frc.robot.util.sysId.CharacterizableSubsystem;
 
 public class AutoFactory {
@@ -145,7 +146,33 @@ public class AutoFactory {
         return pathCommand;
     }
 
-    public enum CharacterizationRoutine {
+    /**
+     * Which coral station we are using
+     */
+    public static enum CoralStation {
+        /**
+         * The left-hand coral station
+         */
+        LEFT,
+        /**
+         * The right-hand-coral station
+         */
+        RIGHT
+    }
+
+    public static enum StartingPosition {
+        START_LL(ChoreoVariables.getPose("START_LL")), START_LC(ChoreoVariables.getPose("START_LC")),
+        START_LR(ChoreoVariables.getPose("START_LR")), START_RL(ChoreoVariables.getPose("START_RL")),
+        START_RC(ChoreoVariables.getPose("START_RC")), START_RR(ChoreoVariables.getPose("START_RR"));
+
+        public final Pose2d pose;
+
+        private StartingPosition(Pose2d pose) {
+            this.pose = pose;
+        }
+    }
+
+    public static enum CharacterizationRoutine {
         QUASISTATIC_FORWARD, QUASISTATIC_BACKWARD, DYNAMIC_FORWARD, DYNAMIC_BACKWARD,
     }
 
