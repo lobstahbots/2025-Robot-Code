@@ -70,7 +70,7 @@ public class RobotContainer {
 
     private final JoystickButton l1Button = new JoystickButton(operatorJoystick, OperatorIOConstants.L1_BUTTON);
     private final JoystickButton l2Button = new JoystickButton(operatorJoystick, OperatorIOConstants.L2_BUTTON);
-    
+
     private final Trigger manualArm = new Trigger(
             () -> operatorJoystick.getRawAxis(OperatorIOConstants.MANUAL_ARM_AXIS) > 0.1);
 
@@ -136,7 +136,7 @@ public class RobotContainer {
 
         coral = new CoralEndEffector(new CoralEndEffectorIOSparkMax(CoralEndEffectorConstants.ID));
 
-        this.autoFactory = new AutoFactory(driveBase, autoChooser::getResponses);
+        this.autoFactory = new AutoFactory(driveBase, coral, superstructure, autoChooser::getResponses);
 
         setDefaultCommands();
         smartDashSetup();
@@ -169,12 +169,11 @@ public class RobotContainer {
     }
 
     public void configureButtonBindings() {
-        scoreButton
-                .onTrue(new SelectCommand<Integer>(
-                        Map.ofEntries(Map.entry(1, new SuperstructureStateCommand(superstructure, RobotConstants.L1_STATE)),
-                                Map.entry(2, new SuperstructureStateCommand(superstructure, RobotConstants.L2_STATE))),
-                        () -> scoreLevel)
-                                .andThen(new CoralCommand(coral, -CoralEndEffectorConstants.MOTOR_SPEED).withTimeout(1)));
+        scoreButton.onTrue(new SelectCommand<Integer>(
+                Map.ofEntries(Map.entry(1, new SuperstructureStateCommand(superstructure, RobotConstants.L1_STATE)),
+                        Map.entry(2, new SuperstructureStateCommand(superstructure, RobotConstants.L2_STATE))),
+                () -> scoreLevel)
+                        .andThen(new CoralCommand(coral, -CoralEndEffectorConstants.MOTOR_SPEED).withTimeout(1)));
         l1Button.onTrue(new StartEndCommand(() -> scoreLevel = 1, () -> {
         }));
         l2Button.onTrue(new StartEndCommand(() -> scoreLevel = 2, () -> {

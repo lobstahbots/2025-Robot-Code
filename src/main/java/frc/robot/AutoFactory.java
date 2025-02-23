@@ -20,16 +20,24 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.Constants.CoralEndEffectorConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.PathConstants;
+import frc.robot.Constants.RobotConstants;
+import frc.robot.commands.coralEndEffectorCommands.CoralCommand;
 import frc.robot.commands.driveCommands.SwerveDriveStopCommand;
+import frc.robot.commands.superstructureCommands.SuperstructureStateCommand;
 import frc.robot.subsystems.drive.DriveBase;
+import frc.robot.subsystems.endEffector.coral.CoralEndEffector;
+import frc.robot.subsystems.superstructure.Superstructure;
 import frc.robot.util.choreo.ChoreoVariables;
 import frc.robot.util.sysId.CharacterizableSubsystem;
 
 public class AutoFactory {
     private final Supplier<List<Object>> responses;
     private final DriveBase driveBase;
+    private final CoralEndEffector coral;
+    private final Superstructure superstructure;
 
     /**
      * Create a new auto factory.
@@ -38,9 +46,12 @@ public class AutoFactory {
      * @param responsesSupplier Responses to auto chooser questions.
      * @see frc.robot.util.auto.AutonSelector
      */
-    public AutoFactory(DriveBase driveBase, Supplier<List<Object>> responsesSupplier) {
+    public AutoFactory(DriveBase driveBase, CoralEndEffector coral, Superstructure superstructure,
+            Supplier<List<Object>> responsesSupplier) {
         this.responses = responsesSupplier;
         this.driveBase = driveBase;
+        this.coral = coral;
+        this.superstructure = superstructure;
 
         AutoBuilder.configure(driveBase::getPose, driveBase::resetPose, driveBase::getRobotRelativeSpeeds,
                 (chassisSpeeds, driveFeedforwards) -> driveBase.driveRobotRelative(chassisSpeeds),
@@ -99,20 +110,21 @@ public class AutoFactory {
      *                 trajectory. Files ending in .path should be imported as
      *                 PATHPLANNER, while files ending in .traj should be imported
      *                 as CHOREO.
+     * @param segment  The segment of the Choreo path to choose, zero-indexed
      * @return The constructed path following command
      */
-    public Command getPathFindToPathCommand(String pathname, PathType pathType) {
+    public Command getPathFindToPathCommand(String pathname, PathType pathType, int segment) {
         PathPlannerPath path;
         try {
             switch (pathType) {
                 case CHOREO:
-                    path = PathPlannerPath.fromChoreoTrajectory(pathname);
+                    path = PathPlannerPath.fromChoreoTrajectory(pathname, segment);
                     break;
                 case PATHPLANNER:
                     path = PathPlannerPath.fromPathFile(pathname);
                     break;
                 default:
-                    path = PathPlannerPath.fromChoreoTrajectory(pathname);
+                    path = PathPlannerPath.fromChoreoTrajectory(pathname, segment);
             }
 
             return AutoBuilder.pathfindThenFollowPath(path, PathConstants.CONSTRAINTS);
@@ -120,6 +132,23 @@ public class AutoFactory {
             DriverStation.reportError("Could not load path " + pathname + ". Error: " + exception.getMessage(), false);
             return Commands.none();
         }
+    }
+
+    /**
+     * Constructs a path following command to a preset path from the deploy
+     * directory Path can be PathPlanner or Choreo-constructed. If it is a Choreo
+     * path, get the first split segment.
+     * 
+     * @param pathname A String containing the name of the file with the path (leave
+     *                 out the .traj or .path ending).
+     * @param pathType A {@link PathType} determining the format of the inputted
+     *                 trajectory. Files ending in .path should be imported as
+     *                 PATHPLANNER, while files ending in .traj should be imported
+     *                 as CHOREO.
+     * @return The constructed path following command
+     */
+    public Command getPathFindToPathCommand(String pathname, PathType pathType) {
+        return getPathFindToPathCommand(pathname, pathType, 0);
     }
 
     /**
@@ -170,6 +199,49 @@ public class AutoFactory {
         private StartingPosition(Pose2d pose) {
             this.pose = pose;
         }
+    }
+
+    /**
+     * Get the command to go and score the first coral in auto.
+     * 
+     * @param startingPosition the starting position the robot is in; odometry pose
+     *                         will be automatically reset to this at the beginning
+     *                         of auto
+     * @param pipe             the pipe to score on, as a character ('A', 'C', 'G',
+     *                         et cetera)
+     * @return The constructed command
+     */
+    public Command getStartCommand(StartingPosition startingPosition, char pipe) {
+        return Commands.runOnce(() -> driveBase.resetPose(startingPosition.pose))
+                .andThen(getPathFindToPathCommand(startingPosition.name() + "_" + pipe, PathType.CHOREO))
+                .alongWith(new SuperstructureStateCommand(superstructure, RobotConstants.L2_STATE))
+                .andThen(new CoralCommand(coral, CoralEndEffectorConstants.MOTOR_SPEED).withTimeout(1));
+    }
+
+    /**
+     * Get the command to go back and intake a coral
+     * 
+     * @param coralStation coral station to go to
+     * @param pipe         pipe to go from
+     * @return The constructed command
+     */
+    public Command getCoralStationCommand(CoralStation coralStation, char pipe) {
+        return getPathFindToPathCommand(coralStation.name() + "_" + pipe, PathType.CHOREO, 1)
+                .alongWith(new SuperstructureStateCommand(superstructure, RobotConstants.INTAKE_STATE))
+                .andThen(new CoralCommand(coral, -CoralEndEffectorConstants.MOTOR_SPEED).withTimeout(1));
+    }
+
+    /**
+     * Get the command to score a coral from a coral station
+     * 
+     * @param coralStation the coral station to start at
+     * @param pipe         the pipe to end at
+     * @return the constructed command
+     */
+    public Command getScoreCommand(CoralStation coralStation, char pipe) {
+        return getPathFindToPathCommand(coralStation.name() + "_" + pipe, PathType.CHOREO, 0)
+                .alongWith(new SuperstructureStateCommand(superstructure, RobotConstants.INTAKE_STATE))
+                .andThen(new CoralCommand(coral, CoralEndEffectorConstants.MOTOR_SPEED).withTimeout(1));
     }
 
     public static enum CharacterizationRoutine {
