@@ -289,7 +289,7 @@ public class DriveBase extends CharacterizableSubsystem {
         MathUtil.clamp(getPose().getY(), RobotConstants.TRACK_WIDTH / 2, 8 - RobotConstants.TRACK_WIDTH / 2),
         getPose().getRotation()));
         */
-    resetPose(new Pose2d(ChoreoVariables.get("RIGHT_STATION.x"), ChoreoVariables.get("RIGHT_STATION.x"), Rotation2d.fromDegrees(ChoreoVariables.get("RIGHT_STATION.x"))));
+    // resetPose(new Pose2d(ChoreoVariables.get("RIGHT_STATION.x"), ChoreoVariables.get("RIGHT_STATION.x"), Rotation2d.fromDegrees(ChoreoVariables.get("RIGHT_STATION.x"))));
     field.setRobotPose(getPose());
     Logger.recordOutput("Odometry", getPose());
     Logger.recordOutput("Vision Less", visionLessOdometry.getEstimatedPosition());
