@@ -36,8 +36,8 @@ import frc.robot.util.sysId.CharacterizableSubsystem;
 public class AutoFactory {
     private final Supplier<List<Object>> responses;
     private final DriveBase driveBase;
-    private final CoralEndEffector coral;
-    private final Superstructure superstructure;
+    // private final CoralEndEffector coral;
+    // private final Superstructure superstructure;
 
     /**
      * Create a new auto factory.
@@ -46,12 +46,12 @@ public class AutoFactory {
      * @param responsesSupplier Responses to auto chooser questions.
      * @see frc.robot.util.auto.AutonSelector
      */
-    public AutoFactory(DriveBase driveBase, CoralEndEffector coral, Superstructure superstructure,
+    public AutoFactory(DriveBase driveBase,
             Supplier<List<Object>> responsesSupplier) {
         this.responses = responsesSupplier;
         this.driveBase = driveBase;
-        this.coral = coral;
-        this.superstructure = superstructure;
+        // this.coral = coral;
+        // this.superstructure = superstructure;
 
         AutoBuilder.configure(driveBase::getPose, driveBase::resetPose, driveBase::getRobotRelativeSpeeds,
                 (chassisSpeeds, driveFeedforwards) -> driveBase.driveRobotRelative(chassisSpeeds),
@@ -213,9 +213,9 @@ public class AutoFactory {
      */
     public Command getStartCommand(StartingPosition startingPosition, char pipe) {
         return Commands.runOnce(() -> driveBase.resetPose(startingPosition.pose))
-                .andThen(getPathFindToPathCommand(startingPosition.name() + "_" + pipe, PathType.CHOREO))
-                .alongWith(new SuperstructureStateCommand(superstructure, RobotConstants.L2_STATE))
-                .andThen(new CoralCommand(coral, CoralEndEffectorConstants.MOTOR_SPEED).withTimeout(1));
+                .andThen(getPathFindToPathCommand(startingPosition.name() + "_" + pipe, PathType.CHOREO));
+                // .alongWith(new SuperstructureStateCommand(superstructure, RobotConstants.L2_STATE))
+                // .andThen(new CoralCommand(coral, CoralEndEffectorConstants.MOTOR_SPEED).withTimeout(1));
     }
 
     /**
@@ -226,9 +226,9 @@ public class AutoFactory {
      * @return The constructed command
      */
     public Command getCoralStationCommand(CoralStation coralStation, char pipe) {
-        return getPathFindToPathCommand(coralStation.name() + "_" + pipe, PathType.CHOREO, 1)
-                .alongWith(new SuperstructureStateCommand(superstructure, RobotConstants.INTAKE_STATE))
-                .andThen(new CoralCommand(coral, -CoralEndEffectorConstants.MOTOR_SPEED).withTimeout(1));
+        return getPathFindToPathCommand(coralStation.name() + "_" + pipe, PathType.CHOREO, 1);
+                // .alongWith(new SuperstructureStateCommand(superstructure, RobotConstants.INTAKE_STATE))
+                // .andThen(new CoralCommand(coral, -CoralEndEffectorConstants.MOTOR_SPEED).withTimeout(1));
     }
 
     /**
@@ -239,9 +239,9 @@ public class AutoFactory {
      * @return the constructed command
      */
     public Command getScoreCommand(CoralStation coralStation, char pipe) {
-        return getPathFindToPathCommand(coralStation.name() + "_" + pipe, PathType.CHOREO, 0)
-                .alongWith(new SuperstructureStateCommand(superstructure, RobotConstants.INTAKE_STATE))
-                .andThen(new CoralCommand(coral, CoralEndEffectorConstants.MOTOR_SPEED).withTimeout(1));
+        return getPathFindToPathCommand(coralStation.name() + "_" + pipe, PathType.CHOREO, 0);
+                // .alongWith(new SuperstructureStateCommand(superstructure, RobotConstants.INTAKE_STATE))
+                // .andThen(new CoralCommand(coral, CoralEndEffectorConstants.MOTOR_SPEED).withTimeout(1));
     }
 
     /**

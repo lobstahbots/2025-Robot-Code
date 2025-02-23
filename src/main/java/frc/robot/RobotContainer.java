@@ -77,9 +77,9 @@ public class RobotContainer {
             () -> Commands.none());
     private final AutoFactory autoFactory;
 
-    private final Superstructure superstructure;
+    // private final Superstructure superstructure;
 
-    private final CoralEndEffector coral;
+    // private final CoralEndEffector coral;
 
     private SwerveDriveSimulation driveSimulation = null;
 
@@ -108,9 +108,9 @@ public class RobotContainer {
             cameras.add(new Camera(new CameraIOPhoton(VisionConstants.REAR_CAMERA_NAME)));
             driveBase = new DriveBase(new GyroIONavX(), cameras, frontLeft, frontRight, backLeft, backRight, false);
 
-            superstructure = new Superstructure(
-                    new ElevatorIOTalonFX(ElevatorConstants.LEFT_ELEVATOR_ID, ElevatorConstants.RIGHT_ELEVATOR_ID),
-                    new PivotIOTalonFX(PivotConstants.MOTOR_ID, PivotConstants.ENCODER_ID));
+            // superstructure = new Superstructure(
+            //         new ElevatorIOTalonFX(ElevatorConstants.LEFT_ELEVATOR_ID, ElevatorConstants.RIGHT_ELEVATOR_ID),
+            //         new PivotIOTalonFX(PivotConstants.MOTOR_ID, PivotConstants.ENCODER_ID));
         } else {
             driveSimulation = new SwerveDriveSimulation(DriveConstants.MAPLE_SIM_CONFIG,
                     new Pose2d(3, 3, new Rotation2d()));
@@ -130,12 +130,12 @@ public class RobotContainer {
             driveBase = new DriveBase(new GyroIOSim(driveSimulation.getGyroSimulation()) {}, cameras, frontLeft,
                     frontRight, backLeft, backRight, false);
 
-            superstructure = new Superstructure(new ElevatorIOSim(), new PivotIOSim());
+            // superstructure = new Superstructure(new ElevatorIOSim(), new PivotIOSim());
         }
 
-        coral = new CoralEndEffector(new CoralEndEffectorIOSparkMax(CoralEndEffectorConstants.ID));
+        // coral = new CoralEndEffector(new CoralEndEffectorIOSparkMax(CoralEndEffectorConstants.ID));
 
-        this.autoFactory = new AutoFactory(driveBase, coral, superstructure, autoChooser::getResponses);
+        this.autoFactory = new AutoFactory(driveBase, autoChooser::getResponses);
 
         setDefaultCommands();
         smartDashSetup();
@@ -148,8 +148,8 @@ public class RobotContainer {
                         () -> -driverJoystick.getRawAxis(DriverIOConstants.STRAFE_X_AXIS),
                         () -> driverJoystick.getRawAxis(DriverIOConstants.ROTATION_AXIS),
                         () -> DriveConstants.FIELD_CENTRIC, DriverIOConstants.SQUARE_INPUTS));
-        superstructure.setDefaultCommand(new SuperstructureStateCommand(superstructure, RobotConstants.INTAKE_STATE));
-        coral.setDefaultCommand(new CoralCommand(coral, scoreLevel));
+        // superstructure.setDefaultCommand(new SuperstructureStateCommand(superstructure, RobotConstants.INTAKE_STATE));
+        // coral.setDefaultCommand(new CoralCommand(coral, scoreLevel));
     }
 
     /**
@@ -162,11 +162,11 @@ public class RobotContainer {
     }
 
     public void configureButtonBindings() {
-        scoreButton.onTrue(new SelectCommand<Integer>(
-                Map.ofEntries(Map.entry(1, new SuperstructureStateCommand(superstructure, RobotConstants.L1_STATE)),
-                        Map.entry(2, new SuperstructureStateCommand(superstructure, RobotConstants.L2_STATE))),
-                () -> scoreLevel)
-                        .andThen(new CoralCommand(coral, -CoralEndEffectorConstants.MOTOR_SPEED).withTimeout(1)));
+        // scoreButton.onTrue(new SelectCommand<Integer>(
+        //         Map.ofEntries(Map.entry(1, new SuperstructureStateCommand(superstructure, RobotConstants.L1_STATE)),
+        //                 Map.entry(2, new SuperstructureStateCommand(superstructure, RobotConstants.L2_STATE))),
+        //         () -> scoreLevel)
+        //                 .andThen(new CoralCommand(coral, -CoralEndEffectorConstants.MOTOR_SPEED).withTimeout(1)));
         /*
         scoreButton
                 .onTrue(new SelectCommand<Integer>(
@@ -180,7 +180,7 @@ public class RobotContainer {
         }));
         */
 
-        scoreButton.whileTrue(new CoralCommand(coral, scoreLevel));
+        // scoreButton.whileTrue(new CoralCommand(coral, scoreLevel));
     }
 
     public boolean getOperatorConnected() {
