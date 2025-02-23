@@ -244,6 +244,23 @@ public class AutoFactory {
                 .andThen(new CoralCommand(coral, CoralEndEffectorConstants.MOTOR_SPEED).withTimeout(1));
     }
 
+    /**
+     * Construct a command to do an auto routine
+     * 
+     * @param startingPosition the position to start at
+     * @param coralStation     the coral station to use
+     * @param pipes            pipes, as a string, e.g. "ALG" or "FBC"
+     * @return the constructed command
+     */
+    public Command getAuto(StartingPosition startingPosition, CoralStation coralStation, String pipes) {
+        Command result = getStartCommand(startingPosition, pipes.charAt(0));
+        for (int i = 1; i < pipes.length(); i++) {
+            result = result.andThen(getCoralStationCommand(coralStation, pipes.charAt(i - 1)))
+                    .andThen(getScoreCommand(coralStation, pipes.charAt(i)));
+        }
+        return result;
+    }
+
     public static enum CharacterizationRoutine {
         QUASISTATIC_FORWARD, QUASISTATIC_BACKWARD, DYNAMIC_FORWARD, DYNAMIC_BACKWARD,
     }
