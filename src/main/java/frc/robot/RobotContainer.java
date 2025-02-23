@@ -11,21 +11,20 @@ import java.util.Map;
 import org.ironmaple.simulation.SimulatedArena;
 import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
 import org.littletonrobotics.junction.Logger;
-
-import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.path.PathPlannerPath;
+import org.littletonrobotics.junction.networktables.LoggedNetworkString;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SelectCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.AutoFactory.CharacterizationRoutine;
+import frc.robot.AutoFactory.CoralStation;
+import frc.robot.AutoFactory.StartingPosition;
 import frc.robot.Constants.CoralEndEffectorConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.DriveConstants.BackLeftModuleConstants;
@@ -159,13 +158,7 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
-        try {
-            return AutoBuilder.followPath(PathPlannerPath.fromPathFile("New New Path"))
-                    .alongWith(new RunCommand(() -> superstructure.setExtension(1.5, 0), superstructure));
-        } catch (Exception exception) {
-            return new RunCommand(() -> {
-            });
-        }
+        return autoChooser.getCommand();
     }
 
     public void configureButtonBindings() {
@@ -189,7 +182,6 @@ public class RobotContainer {
     }
 
     public void smartDashSetup() {
-
         autoChooser.addRoutine("Characterize",
                 List.of(new AutoQuestion<>("Which Subsystem?", Map.of("DriveBase", driveBase)),
                         new AutoQuestion<>("Which Routine",
@@ -198,6 +190,16 @@ public class RobotContainer {
                                         "Dynamic Forward", CharacterizationRoutine.DYNAMIC_FORWARD, "Dynamic Backward",
                                         CharacterizationRoutine.DYNAMIC_BACKWARD))),
                 autoFactory::getCharacterizationRoutine);
+
+        LoggedNetworkString autoInput = new LoggedNetworkString("SmartDashboard/AutoPipes", "");
+
+        autoChooser.addRoutine("L2 Auto", List.of(
+                new AutoQuestion<>("Starting Postion",
+                        Map.of("Left Left", StartingPosition.START_LL, "Left Center", StartingPosition.START_LC,
+                                "Left Right", StartingPosition.START_LR, "Right Left", StartingPosition.START_RL,
+                                "Right Center", StartingPosition.START_RC, "Right Right", StartingPosition.START_RR)),
+                new AutoQuestion<>("Coral Station", Map.of("Left", CoralStation.LEFT, "Right", CoralStation.RIGHT))),
+                autoFactory.getChosenAuto(autoInput::get));
     }
 
     public void displaySimField() {

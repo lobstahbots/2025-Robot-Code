@@ -261,6 +261,17 @@ public class AutoFactory {
         return result;
     }
 
+    /**
+     * For use in auto chooser
+     * 
+     * @param pipes supplier for pipes
+     * @return supplier to construct command
+     */
+    public Supplier<Command> getChosenAuto(Supplier<String> pipes) {
+        return () -> getAuto((StartingPosition) responses.get().get(0), (CoralStation) responses.get().get(1),
+                pipes.get());
+    }
+
     public static enum CharacterizationRoutine {
         QUASISTATIC_FORWARD, QUASISTATIC_BACKWARD, DYNAMIC_FORWARD, DYNAMIC_BACKWARD,
     }

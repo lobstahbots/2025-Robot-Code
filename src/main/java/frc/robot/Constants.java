@@ -117,7 +117,7 @@ public final class Constants {
 
         public static final double TURN_DEADBAND = Units.degreesToRadians(5);
 
-        public static final double WHEEL_COF = 1;
+        public static final double WHEEL_COF = 1.5;
 
         public static final RobotConfig ROBOT_CONFIG = new RobotConfig(RobotConstants.WEIGHT, // Robot mass
                 RobotConstants.MOI, // Robot moment of inertia
@@ -133,8 +133,8 @@ public final class Constants {
 
         public static final DriveTrainSimulationConfig MAPLE_SIM_CONFIG = DriveTrainSimulationConfig.Default()
                 .withCustomModuleTranslations(MODULE_LOCATIONS).withGyro(COTS.ofNav2X())
-                .withRobotMass(RobotConstants.WEIGHT)
-                .withSwerveModule(COTS.ofMAXSwerve(DCMotor.getNEO(1), DCMotor.getNeo550(1), WHEEL_COF, 3));
+                .withRobotMass(Pounds.of(40))
+                .withSwerveModule(COTS.ofMAXSwerve(DCMotor.getNEO(1), DCMotor.getNeo550(1), WHEEL_COF, 1));
 
         public static class FrontLeftModuleConstants {
             public static final int moduleID = 0;
@@ -335,9 +335,9 @@ public final class Constants {
 
         public static final int CURRENT_LIMIT = 40;
 
-        public static final double PIVOT_GEARING = 0;
-        public static final double ARM_LENGTH = 0;
-        public static final double PIVOT_MASS = 0;
+        public static final double PIVOT_GEARING = 2;
+        public static final double ARM_LENGTH = 1;
+        public static final double PIVOT_MASS = 3;
         public static final double MIN_ANGLE = 0;
         public static final double MAX_ANGLE = 0;
 

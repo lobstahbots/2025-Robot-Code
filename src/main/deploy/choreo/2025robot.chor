@@ -84,8 +84,8 @@
    "DRIVE_GEAR_RATIO":{
     "dimension":"Number",
     "var":{
-     "exp":"4.71",
-     "val":4.71
+     "exp":"5.5",
+     "val":5.5
     }
    },
    "EDGE_TO_MODULE_CENTER":{
@@ -592,7 +592,7 @@
   },
   "gearing":{
    "exp":"DRIVE_GEAR_RATIO",
-   "val":4.71
+   "val":5.5
   },
   "radius":{
    "exp":"WHEEL_DIAMETER / 2",
