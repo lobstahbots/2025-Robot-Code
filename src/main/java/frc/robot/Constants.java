@@ -82,8 +82,8 @@ public final class Constants {
         public static final double DRIVE_GEAR_RATIO = ChoreoVariables.get("DRIVE_GEAR_RATIO");
         public static final double ANGLE_GEAR_RATIO = 9424 / 203;
         public static final double MAX_DRIVE_SPEED = 5.23; // from https://www.reca.lc/drive
-        public static final Mass WEIGHT = Pounds.of(40);
-        public static final MomentOfInertia MOI = KilogramSquareMeters.of(1.4988172);
+        public static final Mass WEIGHT = Pounds.of(150);
+        public static final MomentOfInertia MOI = KilogramSquareMeters.of(6);
 
         public static final SuperstructureState INTAKE_STATE = new SuperstructureState(Rotation2d.fromDegrees(-90), ElevatorConstants.BOTTOM_HEIGHT, 0, 0);
         public static final SuperstructureState L1_STATE = new SuperstructureState(Rotation2d.fromDegrees(0), ElevatorConstants.BOTTOM_HEIGHT, 0, 0);
@@ -118,7 +118,7 @@ public final class Constants {
 
         public static final double TURN_DEADBAND = Units.degreesToRadians(5);
 
-        public static final double WHEEL_COF = 1;
+        public static final double WHEEL_COF = 1.5;
 
         public static final RobotConfig ROBOT_CONFIG = new RobotConfig(RobotConstants.WEIGHT, // Robot mass
                 RobotConstants.MOI, // Robot moment of inertia
@@ -134,8 +134,8 @@ public final class Constants {
 
         public static final DriveTrainSimulationConfig MAPLE_SIM_CONFIG = DriveTrainSimulationConfig.Default()
                 .withCustomModuleTranslations(MODULE_LOCATIONS).withGyro(COTS.ofNav2X())
-                .withRobotMass(RobotConstants.WEIGHT)
-                .withSwerveModule(COTS.ofMAXSwerve(DCMotor.getNEO(1), DCMotor.getNeo550(1), WHEEL_COF, 3));
+                .withRobotMass(Pounds.of(40))
+                .withSwerveModule(COTS.ofMAXSwerve(DCMotor.getNEO(1), DCMotor.getNeo550(1), WHEEL_COF, 1));
 
         public static class FrontLeftModuleConstants {
             public static final int moduleID = 0;
