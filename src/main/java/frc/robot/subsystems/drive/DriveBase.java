@@ -53,6 +53,7 @@ public class DriveBase extends CharacterizableSubsystem {
   private Rotation2d simRotation = new Rotation2d();
   private final List<Camera> cameras;
   private boolean hasSeenTag = false;
+  private boolean gyroNeedsZero = true;
 
   private Field2d field;
 
@@ -76,7 +77,7 @@ public class DriveBase extends CharacterizableSubsystem {
 
     this.gyro = gyroIO;
 
-    gyro.zeroGyro();
+    // gyro.zeroGyro();
     this.cameras = cameras;
     swerveOdometry = new SwerveDrivePoseEstimator(DriveConstants.KINEMATICS, gyroInputs.yawPosition, getPositions(),
         new Pose2d());
@@ -316,6 +317,11 @@ public class DriveBase extends CharacterizableSubsystem {
       for (var module : modules) {
         module.stop();
       }
+    }
+
+    if (gyroNeedsZero && !gyro.isCalibrating()) {
+        gyroNeedsZero = false;
+        gyro.zeroGyro();
     }
 
     Logger.recordOutput("SwerveStates/Measured", getStates());

@@ -24,5 +24,7 @@ public interface GyroIO {
     /* Zeroes the gyro. */
     public default void zeroGyro() {}
 
+    public default boolean isCalibrating() { return false; }
+
     public default void updateInputs(GyroIOInputs inputs) {}
   }
