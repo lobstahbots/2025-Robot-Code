@@ -193,12 +193,15 @@ public class RobotContainer {
 
         LoggedNetworkString autoInput = new LoggedNetworkString("SmartDashboard/AutoPipes", "");
 
-        autoChooser.addRoutine("L2 Auto", List.of(
-                new AutoQuestion<>("Starting Postion",
-                        Map.of("Left Left", StartingPosition.START_LL, "Left Center", StartingPosition.START_LC,
-                                "Left Right", StartingPosition.START_LR, "Right Left", StartingPosition.START_RL,
-                                "Right Center", StartingPosition.START_RC, "Right Right", StartingPosition.START_RR)),
-                new AutoQuestion<>("Coral Station", Map.of("Left", CoralStation.LEFT, "Right", CoralStation.RIGHT))),
+        autoChooser.addRoutine(
+                "L2 Auto", List.of(
+                        new AutoQuestion<>("Starting Postion",
+                                Map.of("Left side left cage", StartingPosition.START_LL, "Left side middle cage",
+                                        StartingPosition.START_LC, "Left side right cage", StartingPosition.START_LR,
+                                        "Right side left age", StartingPosition.START_RL, "Right side middle cage",
+                                        StartingPosition.START_RC, "Right side right cage", StartingPosition.START_RR)),
+                        new AutoQuestion<>("Coral Station",
+                                Map.of("Left", CoralStation.LEFT, "Right", CoralStation.RIGHT))),
                 autoFactory.getChosenAuto(autoInput::get));
     }
 

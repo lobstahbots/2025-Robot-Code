@@ -189,10 +189,40 @@ public class AutoFactory {
         RIGHT
     }
 
+    /**
+     * Represents the starting position of a robot.
+     */
     public static enum StartingPosition {
-        START_LL(ChoreoVariables.getPose("START_LL")), START_LC(ChoreoVariables.getPose("START_LC")),
-        START_LR(ChoreoVariables.getPose("START_LR")), START_RL(ChoreoVariables.getPose("START_RL")),
-        START_RC(ChoreoVariables.getPose("START_RC")), START_RR(ChoreoVariables.getPose("START_RR"));
+        /*
+         * Pose on the left-most cage, with bumpers but not robot perimeter intersecting
+         * the auto start line, facing the driver station wall.
+         */
+        START_LL(ChoreoVariables.getPose("START_LL")),
+        /**
+         * Pose on the center cage on the left, with bumpers but not robot perimeter
+         * intersecting the auto start line, facing the driver station wall.
+         */
+        START_LC(ChoreoVariables.getPose("START_LC")),
+        /**
+         * Pose on the left cage closest to the center, with bumpers but not robot
+         * perimeter intersecting the auto start line, facing the driver station wall.
+         */
+        START_LR(ChoreoVariables.getPose("START_LR")),
+        /**
+         * Pose on the right cage closest to the center, with bumpers but not robot
+         * perimeter intersecting the auto start line, facing the driver station wall.
+         */
+        START_RL(ChoreoVariables.getPose("START_RL")),
+        /**
+         * Pose on the center cage on the right, with bumpers but not robot perimeter
+         * intersecting the auto start line, facing the driver station wall.
+         */
+        START_RC(ChoreoVariables.getPose("START_RC")),
+        /**
+         * Pose on the right-most cage, with bumpers but not robot perimeter
+         * intersecting the auto start line, facing the driver station wall.
+         */
+        START_RR(ChoreoVariables.getPose("START_RR"));
 
         public final Pose2d pose;
 
