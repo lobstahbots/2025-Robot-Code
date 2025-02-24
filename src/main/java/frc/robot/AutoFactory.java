@@ -256,7 +256,8 @@ public class AutoFactory {
      */
     public Command getCoralStationCommand(CoralStation coralStation, char pipe) {
         return getPathFindToPathCommand(coralStation.name() + "_" + pipe, PathType.CHOREO, 1)
-                .alongWith(new SuperstructureStateCommand(superstructure, RobotConstants.INTAKE_STATE))
+                .alongWith(Commands.waitSeconds(0.5)
+                        .andThen(new SuperstructureStateCommand(superstructure, RobotConstants.INTAKE_STATE)))
                 .andThen(new CoralCommand(coral, -CoralEndEffectorConstants.MOTOR_SPEED).withTimeout(1));
     }
 
