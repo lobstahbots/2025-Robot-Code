@@ -24,7 +24,7 @@ public class SuperstructureStateCommand extends Command {
 
   @Override
   public void execute() {
-    superstructure.setGoal(goal);
+    superstructure.setState(goal);
   }
 
   @Override

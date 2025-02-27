@@ -12,9 +12,6 @@ import org.ironmaple.simulation.SimulatedArena;
 import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
 import org.littletonrobotics.junction.Logger;
 
-import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.path.PathPlannerPath;
-
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -38,10 +35,7 @@ import frc.robot.Constants.PivotConstants;
 import frc.robot.Constants.SimConstants;
 import frc.robot.Constants.VisionConstants;
 import frc.robot.commands.driveCommands.SwerveDriveCommand;
-import frc.robot.util.command.TimedCommand;
-import frc.robot.commands.superstructureCommands.PivotCommand;
 import frc.robot.commands.superstructureCommands.PivotPositionCommand;
-import frc.robot.commands.superstructureCommands.SuperstructureStateCommand;
 import frc.robot.subsystems.drive.DriveBase;
 import frc.robot.subsystems.drive.GyroIONavX;
 import frc.robot.subsystems.drive.GyroIOSim;
@@ -55,7 +49,6 @@ import frc.robot.subsystems.superstructure.PivotIOSim;
 import frc.robot.subsystems.superstructure.PivotIOTalonFX;
 import frc.robot.subsystems.superstructure.Superstructure;
 import frc.robot.subsystems.vision.Camera;
-import frc.robot.subsystems.vision.CameraIOPhoton;
 import frc.robot.subsystems.vision.CameraIOSim;
 import frc.robot.util.auto.AutonSelector;
 import frc.robot.util.auto.AutonSelector.AutoQuestion;

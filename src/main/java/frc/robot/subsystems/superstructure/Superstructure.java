@@ -41,7 +41,7 @@ public class Superstructure extends SubsystemBase {
     private final MechanismLigament2d pivotLigament = elevatorLigament
             .append(new MechanismLigament2d("pivot", PivotConstants.ARM_LENGTH, 90));
 
-    private final ProfiledPIDController pivotPID = new ProfiledPIDController(PivotConstants.kP, PivotConstants.kI,
+    private final ProfiledPIDController armPID = new ProfiledPIDController(PivotConstants.kP, PivotConstants.kI,
             PivotConstants.kD, PivotConstants.CONSTRAINTS);
     private final ArmFeedforward armFeedforward = new ArmFeedforward(PivotConstants.kS, PivotConstants.kG,
             PivotConstants.kV, PivotConstants.kA);
@@ -59,7 +59,7 @@ public class Superstructure extends SubsystemBase {
     }
 
     public void setRotation(Rotation2d rotation, double velocity) {
-        pivotPID.setGoal(new TrapezoidProfile.State(rotation.getRotations(), velocity));
+        armPID.setGoal(new TrapezoidProfile.State(rotation.getRotations(), velocity));
     }
 
     public void stopMotion() {
@@ -73,7 +73,7 @@ public class Superstructure extends SubsystemBase {
     }
 
     public void setRotation(Rotation2d rotation) {
-        pivotPID.setGoal(rotation.getRotations());
+        armPID.setGoal(rotation.getRotations());
     }
 
     public SuperstructureState getState() {
@@ -97,7 +97,7 @@ public class Superstructure extends SubsystemBase {
     }
 
     public void reset(SuperstructureState state) {
-        pivotPID.reset(state.pivotRotation.getRotations());
+        armPID.reset(state.pivotRotation.getRotations());
         elevatorIO.resetEncoder(state.elevatorHeight);
     }
 
@@ -110,7 +110,7 @@ public class Superstructure extends SubsystemBase {
     }
 
     public boolean atPivotSetpoint() {
-        return pivotPID.atGoal();
+        return armPID.atGoal();
     }
 
     /**
@@ -149,11 +149,11 @@ public class Superstructure extends SubsystemBase {
         pivotLigament.setAngle(getRotation());
         SmartDashboard.putData("Superstructure", mechanism);
         Logger.recordOutput("Superstructure", pivotInputs.position);
-        Logger.recordOutput("Setpoint", pivotPID.getSetpoint());
-        Logger.recordOutput("PID", pivotPID.calculate(getPivotRotation().getRotations(), pivotPID.getSetpoint()));
-        pivotIO.setVoltage(pivotPID.calculate(getPivotRotation().getRotations(), pivotPID.getSetpoint()));
+        Logger.recordOutput("Setpoint", armPID.getSetpoint());
+        Logger.recordOutput("PID", armPID.calculate(getPivotRotation().getRotations(), armPID.getSetpoint()));
+        pivotIO.setVoltage(armPID.calculate(getPivotRotation().getRotations(), armPID.getSetpoint()));
         
-        setPivotVoltage(pivotPID.calculate(pivotInputs.position.getRotations())
-            + armFeedforward.calculate(pivotPID.getSetpoint().position, pivotPID.getSetpoint().velocity));
+        setPivotVoltage(armPID.calculate(pivotInputs.position.getRotations())
+            + armFeedforward.calculate(armPID.getSetpoint().position, armPID.getSetpoint().velocity));
     }
 }

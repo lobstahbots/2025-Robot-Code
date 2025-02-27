@@ -322,14 +322,6 @@ public final class Constants {
         public static final int CURRENT_THRESHOLD = 10;
     }
 
-    public static class RampConstants{
-        public static final double MOTOR_SPEED = 0.1;
-        public static final int CURRENT_LIMIT = 20;
-        public static final int LEFT_ID = 44;
-        public static final int RIGHT_ID = 45;
-        public static final int CURRENT_THRESHOLD = 10;
-    }
-
     public static class CoralEndEffectorConstants {
         public static final double MOTOR_SPEED = 0.1;
         public static final int CURRENT_LIMIT = 20;
