@@ -18,7 +18,6 @@ public class PivotIOSim implements PivotIO{
         PivotConstants.MIN_ANGLE, 
         PivotConstants.MAX_ANGLE, 
         true, 
-        0, 
         0);
 
     public PivotIOSim() {}

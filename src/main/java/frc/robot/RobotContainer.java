@@ -11,6 +11,8 @@ import java.util.Map;
 import org.ironmaple.simulation.SimulatedArena;
 import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
 import org.littletonrobotics.junction.Logger;
+import org.littletonrobotics.junction.networktables.LoggedNetworkString;
+
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -18,10 +20,11 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.AutoFactory.CharacterizationRoutine;
+import frc.robot.AutoFactory.CoralStation;
+import frc.robot.AutoFactory.StartingPosition;
 import frc.robot.Constants.CoralEndEffectorConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.DriveConstants.BackLeftModuleConstants;
@@ -68,7 +71,7 @@ public class RobotContainer {
     //private final JoystickButton stowButton = new JoystickButton(operatorJoystick, OperatorIOConstants.STOW_BUTTON_ID);
     private final JoystickButton l1Button = new JoystickButton(operatorJoystick, OperatorIOConstants.L1_BUTTON);
     private final JoystickButton l2Button = new JoystickButton(operatorJoystick, OperatorIOConstants.L2_BUTTON);
-    
+
     private final Trigger manualArm = new Trigger(
             () -> operatorJoystick.getRawAxis(OperatorIOConstants.MANUAL_ARM_AXIS) > 0.1);
 
@@ -134,7 +137,7 @@ public class RobotContainer {
 
         coral = new CoralEndEffector(new CoralEndEffectorIOSparkMax(CoralEndEffectorConstants.LEFT_ID));
 
-        this.autoFactory = new AutoFactory(driveBase, autoChooser::getResponses);
+        this.autoFactory = new AutoFactory(driveBase, coral, superstructure, autoChooser::getResponses);
 
         setDefaultCommands();
         smartDashSetup();
@@ -164,14 +167,7 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
-        try {
-            return new TimedCommand(3, new SwerveDriveCommand(driveBase, -0.2, 0, 0, true, false));
-            // return AutoBuilder.followPath(PathPlannerPath.fromPathFile("New Path"));
-                    // .alongWith(new RunCommand(() -> superstructure.setExtension(1.5), superstructure));
-        } catch (Exception exception) {
-            return new RunCommand(() -> {                                     
-            }); 
-        }
+        return autoChooser.getCommand();
     }
 
     public void configureButtonBindings() {
@@ -205,7 +201,6 @@ public class RobotContainer {
     }
 
     public void smartDashSetup() {
-
         autoChooser.addRoutine("Characterize",
                 List.of(new AutoQuestion<>("Which Subsystem?", Map.of("DriveBase", driveBase)),
                         new AutoQuestion<>("Which Routine",
@@ -214,6 +209,19 @@ public class RobotContainer {
                                         "Dynamic Forward", CharacterizationRoutine.DYNAMIC_FORWARD, "Dynamic Backward",
                                         CharacterizationRoutine.DYNAMIC_BACKWARD))),
                 autoFactory::getCharacterizationRoutine);
+
+        LoggedNetworkString autoInput = new LoggedNetworkString("SmartDashboard/AutoPipes", "");
+
+        autoChooser.addRoutine(
+                "L2 Auto", List.of(
+                        new AutoQuestion<>("Starting Postion",
+                                Map.of("Left side left cage", StartingPosition.START_LL, "Left side middle cage",
+                                        StartingPosition.START_LC, "Left side right cage", StartingPosition.START_LR,
+                                        "Right side left age", StartingPosition.START_RL, "Right side middle cage",
+                                        StartingPosition.START_RC, "Right side right cage", StartingPosition.START_RR)),
+                        new AutoQuestion<>("Coral Station",
+                                Map.of("Left", CoralStation.LEFT, "Right", CoralStation.RIGHT))),
+                autoFactory.getChosenAuto(autoInput::get));
     }
  
     public void displaySimField() {
