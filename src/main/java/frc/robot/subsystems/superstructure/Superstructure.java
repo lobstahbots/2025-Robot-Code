@@ -3,7 +3,6 @@ package frc.robot.subsystems.superstructure;
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.controller.ArmFeedforward;
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
@@ -54,7 +53,7 @@ public class Superstructure extends SubsystemBase {
     }
 
     public void setState(SuperstructureState state) {
-        // setExtension(state.elevatorHeight);
+        setExtension(state.elevatorHeight, state.elevatorVelocity);
         setRotation(state.pivotRotation);
     }
 
@@ -69,7 +68,7 @@ public class Superstructure extends SubsystemBase {
     }
 
     public void setExtension(double height, double velocity) {
-        // elevatorIO.setPosition(height);
+        elevatorIO.setPosition(new TrapezoidProfile.State(height, velocity));
     }
 
     public void setRotation(Rotation2d rotation) {
@@ -77,14 +76,15 @@ public class Superstructure extends SubsystemBase {
     }
 
     public SuperstructureState getState() {
-        return new SuperstructureState(pivotInputs.position, getExtension());
+        return new SuperstructureState(pivotInputs.position, getExtension(), pivotInputs.velocity,
+                elevatorInputs.rightVelocity);
     }
 
     public void setElevatorVoltage(double voltage) {
-        // elevatorIO.setVoltage(voltage);
+        elevatorIO.setVoltage(voltage);
     }
 
-    public void setPivotVoltage (double voltage) {
+    public void setPivotVoltage(double voltage) {
         pivotIO.setVoltage(voltage);
     }
 
@@ -114,17 +114,20 @@ public class Superstructure extends SubsystemBase {
     }
 
     /**
-     * Returns a command that moves the superstructure to the given setpoint with avoidance of danger zones.
+     * Returns a command that moves the superstructure to the given setpoint with
+     * avoidance of danger zones.
+     * 
      * @param setpoint The setpoint to move to.
      */
     public Command getSetpointCommand(SuperstructureState setpoint) {
         Command superstructureCommand = new SuperstructureStateCommand(this, setpoint);
 
-        if(setpoint == RobotConstants.INTAKE_STATE) {
-            superstructureCommand = new ElevatorToPositionCommand(this, RobotConstants.INTAKE_STATE.elevatorHeight).andThen(superstructureCommand);
+        if (setpoint == RobotConstants.INTAKE_STATE) {
+            superstructureCommand = new ElevatorToPositionCommand(this, RobotConstants.INTAKE_STATE.elevatorHeight)
+                    .andThen(superstructureCommand);
         }
 
-        if(getRotation().getRotations() > PivotConstants.LOWER_DANGER_ZONE.getRotations()) {
+        if (getRotation().getRotations() > PivotConstants.LOWER_DANGER_ZONE.getRotations()) {
             return new PivotToPositionCommand(this, PivotConstants.LOWER_DANGER_ZONE).andThen(superstructureCommand);
         } else if (getRotation().getRotations() < PivotConstants.UPPER_DANGER_ZONE.getRotations()) {
             return new PivotToPositionCommand(this, PivotConstants.UPPER_DANGER_ZONE).andThen(superstructureCommand);
@@ -149,11 +152,11 @@ public class Superstructure extends SubsystemBase {
         pivotLigament.setAngle(getRotation());
         SmartDashboard.putData("Superstructure", mechanism);
         Logger.recordOutput("Superstructure", pivotInputs.position);
-        Logger.recordOutput("Setpoint", armPID.getSetpoint());
+        Logger.recordOutput("Setpoint", armPID.getSetpoint().toString());
         Logger.recordOutput("PID", armPID.calculate(getPivotRotation().getRotations(), armPID.getSetpoint()));
         pivotIO.setVoltage(armPID.calculate(getPivotRotation().getRotations(), armPID.getSetpoint()));
-        
+
         setPivotVoltage(armPID.calculate(pivotInputs.position.getRotations())
-            + armFeedforward.calculate(armPID.getSetpoint().position, armPID.getSetpoint().velocity));
+                + armFeedforward.calculate(armPID.getSetpoint().position, armPID.getSetpoint().velocity));
     }
 }
