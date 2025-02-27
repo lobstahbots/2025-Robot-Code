@@ -13,20 +13,18 @@ import edu.wpi.first.math.geometry.Rotation2d;
 public class GyroIONavX implements GyroIO {
     private final AHRS gyro = new AHRS(NavXComType.kMXP_SPI);
 
-    public GyroIONavX() {   
-
-    }
+    public GyroIONavX(){}
 
     public Rotation2d getYaw() {
-        return Rotation2d.fromDegrees(-gyro.getYaw());
+        return Rotation2d.fromDegrees(gyro.getYaw());
       }
 
     public Rotation2d getPitch() {
-        return Rotation2d.fromDegrees(-gyro.getPitch());
+        return Rotation2d.fromDegrees(gyro.getPitch());
     }
 
     public Rotation2d getRoll() {
-        return Rotation2d.fromDegrees(-gyro.getRoll());
+        return Rotation2d.fromDegrees(gyro.getRoll());
     }
 
     public double getYawVelocity() {
@@ -43,6 +41,10 @@ public class GyroIONavX implements GyroIO {
 
     public void zeroGyro() {
         gyro.reset();
+    }
+
+    public boolean isCalibrating() {
+        return gyro.isCalibrating();
     }
 
     public void updateInputs(GyroIOInputs inputs) {

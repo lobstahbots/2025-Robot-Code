@@ -13,7 +13,6 @@ import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedNetworkString;
 
-
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -52,10 +51,10 @@ import frc.robot.subsystems.superstructure.PivotIOSim;
 import frc.robot.subsystems.superstructure.PivotIOTalonFX;
 import frc.robot.subsystems.superstructure.Superstructure;
 import frc.robot.subsystems.vision.Camera;
+import frc.robot.subsystems.vision.CameraIOPhoton;
 import frc.robot.subsystems.vision.CameraIOSim;
 import frc.robot.util.auto.AutonSelector;
 import frc.robot.util.auto.AutonSelector.AutoQuestion;
-import frc.robot.util.command.TimedCommand;
 
 public class RobotContainer {
     private final DriveBase driveBase;
@@ -106,7 +105,7 @@ public class RobotContainer {
                     BackRightModuleConstants.angleOffset, BackRightModuleConstants.inverted);
 
             List<Camera> cameras = new ArrayList<>();
-            // cameras.add(new Camera(new CameraIOPhoton(VisionConstants.FRONT_CAMERA_NAME)));
+            cameras.add(new Camera(new CameraIOPhoton(VisionConstants.FRONT_CAMERA_NAME)));
             // cameras.add(new Camera(new CameraIOPhoton(VisionConstants.REAR_CAMERA_NAME)));
             driveBase = new DriveBase(new GyroIONavX(), cameras, frontLeft, frontRight, backLeft, backRight, false);
 
@@ -127,7 +126,7 @@ public class RobotContainer {
             List<Camera> cameras = new ArrayList<>();
             if (SimConstants.VISION_SIM) {
                 cameras.add(new Camera(new CameraIOSim(VisionConstants.FRONT_CAMERA_NAME)));
-                cameras.add(new Camera(new CameraIOSim(VisionConstants.REAR_CAMERA_NAME)));
+                // cameras.add(new Camera(new CameraIOSim(VisionConstants.REAR_CAMERA_NAME)));
             }
             driveBase = new DriveBase(new GyroIOSim(driveSimulation.getGyroSimulation()) {}, cameras, frontLeft,
                     frontRight, backLeft, backRight, false);
@@ -171,7 +170,12 @@ public class RobotContainer {
     }
 
     public void configureButtonBindings() {
-        /* Note: post week 0 shenanigans; needs editing so that there isn't an invisible toggle
+        // scoreButton.onTrue(new SelectCommand<Integer>(
+        //         Map.ofEntries(Map.entry(1, new SuperstructureStateCommand(superstructure, RobotConstants.L1_STATE)),
+        //                 Map.entry(2, new SuperstructureStateCommand(superstructure, RobotConstants.L2_STATE))),
+        //         () -> scoreLevel)
+        //                 .andThen(new CoralCommand(coral, -CoralEndEffectorConstants.MOTOR_SPEED).withTimeout(1)));
+        /*
         scoreButton
                 .whileTrue(new SelectCommand<Integer>(
                         Map.ofEntries(Map.entry(1, superstructure.setStateCommand(RobotConstants.L1_STATE)),

@@ -10,7 +10,6 @@ import org.littletonrobotics.junction.Logger;
 
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
@@ -280,7 +279,7 @@ public class DriveBase extends CharacterizableSubsystem {
       camera.periodic();
       Pose estimatedPose = camera.getEstimatedPose(getPose());
       if (estimatedPose.pose().isPresent() && (hasSeenTag == false
-          || LobstahMath.getDistBetweenPoses(estimatedPose.pose().get().toPose2d(), getPose()) <= 1)) {
+          || LobstahMath.getDistBetweenPoses(estimatedPose.pose().get().toPose2d(), getPose()) <= 8)) {
         if (hasSeenTag == false) {
           resetPose(new Pose2d(estimatedPose.pose().get().getX(), estimatedPose.pose().get().getY(), getGyroAngle()));
           hasSeenTag = true;
@@ -289,10 +288,13 @@ public class DriveBase extends CharacterizableSubsystem {
             estimatedPose.stdev().get());
       }
     }
+    /* 
     resetPose(new Pose2d(
         MathUtil.clamp(getPose().getX(), RobotConstants.TRACK_WIDTH / 2, 16.5 - RobotConstants.TRACK_WIDTH / 2),
         MathUtil.clamp(getPose().getY(), RobotConstants.TRACK_WIDTH / 2, 8 - RobotConstants.TRACK_WIDTH / 2),
         getPose().getRotation()));
+        */
+    // resetPose(new Pose2d(ChoreoVariables.get("RIGHT_STATION.x"), ChoreoVariables.get("RIGHT_STATION.x"), Rotation2d.fromDegrees(ChoreoVariables.get("RIGHT_STATION.x"))));
     field.setRobotPose(getPose());
     Logger.recordOutput("Odometry", getPose());
     Logger.recordOutput("Vision Less", visionLessOdometry.getEstimatedPosition());

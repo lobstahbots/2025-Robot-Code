@@ -126,7 +126,6 @@ public class AutoFactory {
                 default:
                     path = PathPlannerPath.fromChoreoTrajectory(pathname, segment);
             }
-
             return AutoBuilder.pathfindThenFollowPath(path, PathConstants.CONSTRAINTS);
         } catch (Exception exception) {
             DriverStation.reportError("Could not load path " + pathname + ". Error: " + exception.getMessage(), false);
@@ -148,7 +147,23 @@ public class AutoFactory {
      * @return The constructed path following command
      */
     public Command getPathFindToPathCommand(String pathname, PathType pathType) {
-        return getPathFindToPathCommand(pathname, pathType, 0);
+        PathPlannerPath path;
+        try {
+            switch (pathType) {
+                case CHOREO:
+                    path = PathPlannerPath.fromChoreoTrajectory(pathname);
+                    break;
+                case PATHPLANNER:
+                    path = PathPlannerPath.fromPathFile(pathname);
+                    break;
+                default:
+                    path = PathPlannerPath.fromChoreoTrajectory(pathname);
+            }
+            return AutoBuilder.pathfindThenFollowPath(path, PathConstants.CONSTRAINTS);
+        } catch (Exception exception) {
+            DriverStation.reportError("Could not load path " + pathname + ". Error: " + exception.getMessage(), false);
+            return Commands.none();
+        }
     }
 
     /**

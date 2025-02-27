@@ -47,7 +47,7 @@ import frc.robot.util.choreo.ChoreoVariables;
  */
 public final class Constants {
     public static class PathConstants {
-        public static final PathConstraints CONSTRAINTS = new PathConstraints(1, 1, Units.degreesToRadians(540),
+        public static final PathConstraints CONSTRAINTS = new PathConstraints(4, 4, Units.degreesToRadians(540),
                 Units.degreesToRadians(720));
     }
 
@@ -131,8 +131,8 @@ public final class Constants {
                         DRIVE_MOTOR_CURRENT_LIMIT, // current limit for drive motors
                         1 // number of drive motors per module
                 ), MODULE_LOCATIONS);
-        public static final PIDConstants ROTATION_PID_CONSTANTS = new PIDConstants(0.55, 0.0, 0);
-        public static final PIDConstants TRANSLATION_PID_CONSTANTS = new PIDConstants(6, 0.0, 0);
+        public static final PIDConstants ROTATION_PID_CONSTANTS = new PIDConstants(10, 0.0, 0);
+        public static final PIDConstants TRANSLATION_PID_CONSTANTS = new PIDConstants(13, 0.0, 0);
 
         public static final DriveTrainSimulationConfig MAPLE_SIM_CONFIG = DriveTrainSimulationConfig.Default()
                 .withCustomModuleTranslations(MODULE_LOCATIONS).withGyro(COTS.ofNav2X())
@@ -213,22 +213,17 @@ public final class Constants {
         public static final int[] ELEVATOR_CHANNELS = { 9, 10 };
         public static final int PIVOT_CHANNEL = 11;
 
-        public static final boolean VISION_SIM = false;
+        public static final boolean VISION_SIM = true;
     }
 
     public static class VisionConstants {
         public static final PoseStrategy POSE_STRATEGY = PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR;
-        public static final String FRONT_CAMERA_NAME = "photonvision2";
-        public static final String REAR_CAMERA_NAME = "photonvision1";
+        public static final String FRONT_CAMERA_NAME = "photonvision1";
         public static final Map<String, Transform3d> CAMERA_TRANSFORMS = new HashMap<>();
         static {
-            CAMERA_TRANSFORMS.put(REAR_CAMERA_NAME,
-                    new Transform3d(Units.inchesToMeters(-13.193037), Units.inchesToMeters(-9.543),
-                            Units.inchesToMeters(7.820),
-                            new Rotation3d(0, Units.degreesToRadians(-35), Units.degreesToRadians(180))));
             CAMERA_TRANSFORMS.put(FRONT_CAMERA_NAME,
-                    new Transform3d(Units.inchesToMeters(13.916), Units.inchesToMeters(3.102475),
-                            Units.inchesToMeters(7.820), new Rotation3d(0, Units.degreesToRadians(-35), 0)));
+                    new Transform3d(Units.inchesToMeters(5.5), Units.inchesToMeters(-5.75),
+                            Units.inchesToMeters(7.5), new Rotation3d(0, -0.3858165, 0)));
         }
         public static final double VISION_ODOMETRY_DIFFERENCE_FILTER_THRESHOLD = 5;
         public static final int CAMERA_RES_WIDTH = 1280;
@@ -248,7 +243,7 @@ public final class Constants {
                                                                           // AprilTags
                                                                           // See https://www.desmos.com/calculator/i5z7ddbjy4
 
-        public static final double REPROJ_TO_STDEV_EXP = 1;
+        public static final double REPROJ_TO_STDEV_EXP = 0.01;
         public static final Vector<N3> BASE_STDEV = VecBuilder.fill(0.1, 0.1, 1000.0); // x, y, angle
         public static final double AMBIGUITY_ACCEPTANCE_THRESHOLD = 0.2;
         public static final double REPROJECTION_ERROR_REJECTION_THRESHOLD = 0.8;
@@ -346,9 +341,9 @@ public final class Constants {
 
         public static final int CURRENT_LIMIT = 40;
 
-        public static final double PIVOT_GEARING = 2;
-        public static final double ARM_LENGTH = 1;
-        public static final double PIVOT_MASS = 3;
+        public static final double PIVOT_GEARING = 12;
+        public static final double ARM_LENGTH = Units.inchesToMeters(12);
+        public static final double PIVOT_MASS = Units.lbsToKilograms(15);
         public static final double MIN_ANGLE = 0;
         public static final double MAX_ANGLE = 0.52;
 
