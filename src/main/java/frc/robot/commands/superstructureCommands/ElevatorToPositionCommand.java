@@ -9,18 +9,18 @@ import java.util.function.DoubleSupplier;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.superstructure.Superstructure;
 
-public class ElevatorPositionCommand extends Command {
-  private final Superstructure elevator;
+public class ElevatorToPositionCommand extends Command {
+  private final Superstructure superstructure;
   private final DoubleSupplier elevatorPosition;
   /** Creates a new ElevatorPositionCommand. */
-  public ElevatorPositionCommand(Superstructure elevator, DoubleSupplier elevatorPosition) {
-    this.elevator = elevator;
+  public ElevatorToPositionCommand(Superstructure superstructure, DoubleSupplier elevatorPosition) {
+    this.superstructure = superstructure;
     this.elevatorPosition = elevatorPosition;
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(elevator);
+    addRequirements(superstructure);
   }
-  public ElevatorPositionCommand(Superstructure elevator, double elevatorPosition) {
-    this(elevator, ()->elevatorPosition);
+  public ElevatorToPositionCommand(Superstructure superstructure, double elevatorPosition) {
+    this(superstructure, () -> elevatorPosition);
   }
 
   // Called when the command is initially scheduled.
@@ -30,7 +30,7 @@ public class ElevatorPositionCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    elevator.setExtension(elevatorPosition.getAsDouble());
+    superstructure.setExtension(elevatorPosition.getAsDouble(), 0);
   }
 
   // Called once the command ends or is interrupted.
@@ -40,6 +40,6 @@ public class ElevatorPositionCommand extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return superstructure.atElevatorSetpoint();
   }
 }

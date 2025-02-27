@@ -31,14 +31,17 @@ import frc.robot.Constants.DriveConstants.BackLeftModuleConstants;
 import frc.robot.Constants.DriveConstants.BackRightModuleConstants;
 import frc.robot.Constants.DriveConstants.FrontLeftModuleConstants;
 import frc.robot.Constants.DriveConstants.FrontRightModuleConstants;
+import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.IOConstants.DriverIOConstants;
 import frc.robot.Constants.IOConstants.OperatorIOConstants;
 import frc.robot.Constants.PivotConstants;
 import frc.robot.Constants.SimConstants;
 import frc.robot.Constants.VisionConstants;
 import frc.robot.commands.driveCommands.SwerveDriveCommand;
+import frc.robot.util.command.TimedCommand;
 import frc.robot.commands.superstructureCommands.PivotCommand;
 import frc.robot.commands.superstructureCommands.PivotPositionCommand;
+import frc.robot.commands.superstructureCommands.SuperstructureStateCommand;
 import frc.robot.subsystems.drive.DriveBase;
 import frc.robot.subsystems.drive.GyroIONavX;
 import frc.robot.subsystems.drive.GyroIOSim;
@@ -46,6 +49,8 @@ import frc.robot.subsystems.drive.SwerveModuleIOSim;
 import frc.robot.subsystems.drive.SwerveModuleIOSparkMax;
 import frc.robot.subsystems.endEffector.coral.CoralEndEffector;
 import frc.robot.subsystems.endEffector.coral.CoralEndEffectorIOSparkMax;
+import frc.robot.subsystems.superstructure.ElevatorIOSim;
+import frc.robot.subsystems.superstructure.ElevatorIOTalonFX;
 import frc.robot.subsystems.superstructure.PivotIOSim;
 import frc.robot.subsystems.superstructure.PivotIOTalonFX;
 import frc.robot.subsystems.superstructure.Superstructure;
@@ -110,7 +115,7 @@ public class RobotContainer {
             driveBase = new DriveBase(new GyroIONavX(), cameras, frontLeft, frontRight, backLeft, backRight, false);
 
             superstructure = new Superstructure(
-                    // new ElevatorIOTalonFX(ElevatorConstants.LEFT_ELEVATOR_ID, ElevatorConstants.RIGHT_ELEVATOR_ID),
+                    new ElevatorIOTalonFX(ElevatorConstants.LEFT_ELEVATOR_ID, ElevatorConstants.RIGHT_ELEVATOR_ID),
                     new PivotIOTalonFX(PivotConstants.MOTOR_ID, PivotConstants.ENCODER_ID));
         } else {
             driveSimulation = new SwerveDriveSimulation(DriveConstants.MAPLE_SIM_CONFIG,
@@ -131,7 +136,7 @@ public class RobotContainer {
             driveBase = new DriveBase(new GyroIOSim(driveSimulation.getGyroSimulation()) {}, cameras, frontLeft,
                     frontRight, backLeft, backRight, false);
 
-            superstructure = new Superstructure(/* new ElevatorIOSim(), */ new PivotIOSim());
+            superstructure = new Superstructure(new ElevatorIOSim(), new PivotIOSim());
         }
 
         coral = new CoralEndEffector(new CoralEndEffectorIOSparkMax(CoralEndEffectorConstants.LEFT_ID));
