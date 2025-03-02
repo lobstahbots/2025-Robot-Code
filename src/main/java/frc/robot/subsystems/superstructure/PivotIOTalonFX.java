@@ -6,6 +6,7 @@ package frc.robot.subsystems.superstructure;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.reduxrobotics.sensors.canandmag.Canandmag;
 
@@ -19,12 +20,19 @@ public class PivotIOTalonFX implements PivotIO {
 
     /** Creates a new Pivot. */
     public PivotIOTalonFX(int pivotMotorID, int encoderID) {
+        this.encoder = new Canandmag(encoderID);
         TalonFXConfiguration config = new TalonFXConfiguration();
         pivotMotor = new TalonFX(pivotMotorID);
         config.CurrentLimits.SupplyCurrentLimit = PivotConstants.CURRENT_LIMIT;
         config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+        config.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
+        config.Feedback.SensorToMechanismRatio = PivotConstants.PIVOT_GEARING;
+        // config.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
+        // config.SoftwareLimitSwitch.ReverseSoftLimitEnable = true; 
+        // config.SoftwareLimitSwitch.ForwardSoftLimitThreshold = PivotConstants.MAX_ANGLE;
+        // config.SoftwareLimitSwitch.ReverseSoftLimitThreshold = PivotConstants.MIN_ANGLE;
         pivotMotor.getConfigurator().apply(config);
-        this.encoder = new Canandmag(encoderID);
+        pivotMotor.setPosition(encoder.getAbsPosition());
     }
 
     public void setIdleMode(NeutralModeValue idleMode) {
@@ -46,7 +54,7 @@ public class PivotIOTalonFX implements PivotIO {
     @Override
     public void updateInputs(PivotIOInputs inputs) {
         inputs.position = Rotation2d.fromRotations(encoder.getAbsPosition());
-        inputs.velocity = pivotMotor.getVelocity().getValueAsDouble();
+        inputs.velocity = encoder.getVelocity();
         inputs.supplyCurrent = pivotMotor.getSupplyCurrent().getValueAsDouble();
         inputs.statorCurrent = pivotMotor.getStatorCurrent().getValueAsDouble();
         inputs.torqueCurrent = pivotMotor.getTorqueCurrent().getValueAsDouble();

@@ -20,14 +20,17 @@ import frc.robot.Constants.RobotConstants;
 import frc.robot.commands.superstructureCommands.ElevatorToPositionCommand;
 import frc.robot.commands.superstructureCommands.PivotToPositionCommand;
 import frc.robot.commands.superstructureCommands.SuperstructureStateCommand;
+import frc.robot.util.sysId.CharacterizableSubsystem;
 
-public class Superstructure extends SubsystemBase {
+public class Superstructure extends CharacterizableSubsystem {
 
     private final ElevatorIO elevatorIO;
     private final ElevatorIOInputsAutoLogged elevatorInputs = new ElevatorIOInputsAutoLogged();
 
     private final PivotIO pivotIO;
     private final PivotIOInputsAutoLogged pivotInputs = new PivotIOInputsAutoLogged();
+
+    private boolean openLoop = false;
 
     public final Trigger limitSwitch = new Trigger(() -> elevatorInputs.limitSwitchHit);
 
@@ -73,6 +76,7 @@ public class Superstructure extends SubsystemBase {
 
     public void setRotation(Rotation2d rotation) {
         armPID.setGoal(rotation.getRotations());
+        openLoop = false;
     }
 
     public SuperstructureState getState() {
@@ -86,6 +90,11 @@ public class Superstructure extends SubsystemBase {
 
     public void setPivotVoltage(double voltage) {
         pivotIO.setVoltage(voltage);
+        openLoop = true;
+    }
+
+    public void runVolts(double voltage) {
+        setPivotVoltage(voltage);
     }
 
     public double getExtension() {
@@ -153,10 +162,8 @@ public class Superstructure extends SubsystemBase {
         SmartDashboard.putData("Superstructure", mechanism);
         Logger.recordOutput("Superstructure", pivotInputs.position);
         Logger.recordOutput("Setpoint", armPID.getSetpoint().toString());
-        Logger.recordOutput("PID", armPID.calculate(getPivotRotation().getRotations(), armPID.getSetpoint()));
-        pivotIO.setVoltage(armPID.calculate(getPivotRotation().getRotations(), armPID.getSetpoint()));
 
-        setPivotVoltage(armPID.calculate(pivotInputs.position.getRotations())
+        if (!openLoop) pivotIO.setVoltage(armPID.calculate(pivotInputs.position.getRotations())
                 + armFeedforward.calculate(armPID.getSetpoint().position, armPID.getSetpoint().velocity));
     }
 }

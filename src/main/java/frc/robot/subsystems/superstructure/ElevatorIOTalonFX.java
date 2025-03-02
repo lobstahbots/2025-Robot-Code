@@ -76,7 +76,7 @@ public class ElevatorIOTalonFX implements ElevatorIO {
     leftElevatorMotor.getConfigurator().apply(config);
     rightElevatorMotor.getConfigurator().apply(config);
 
-    leftElevatorMotor.setControl(new Follower(rightElevatorID, true));
+    leftElevatorMotor.setControl(new Follower(rightElevatorID, false));
 
     rightPosition = rightElevatorMotor.getPosition();
     rightVelocity = rightElevatorMotor.getVelocity();
