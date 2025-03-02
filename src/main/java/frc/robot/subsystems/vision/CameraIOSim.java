@@ -32,7 +32,7 @@ import frc.robot.Constants.VisionConstants;
 
 public class CameraIOSim implements CameraIO {
     private static final AprilTagFieldLayout aprilTagFieldLayout = AprilTagFieldLayout
-            .loadField(AprilTagFields.k2025Reefscape);
+            .loadField(AprilTagFields.k2025ReefscapeAndyMark);
     private final PhotonCamera camera;
     private final SimCameraProperties cameraProp = new SimCameraProperties();
     private final PhotonCameraSim cameraSim;

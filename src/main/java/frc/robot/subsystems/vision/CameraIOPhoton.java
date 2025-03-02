@@ -19,7 +19,7 @@ import frc.robot.Constants.VisionConstants;
 public class CameraIOPhoton implements CameraIO {
     private final PhotonCamera camera;
     private static final AprilTagFieldLayout aprilTagFieldLayout = AprilTagFieldLayout
-            .loadField(AprilTagFields.k2025Reefscape);
+            .loadField(AprilTagFields.k2025ReefscapeAndyMark);
     private final LobstahPoseEstimator poseEstimator;
     private LobstahEstimatedRobotPose estimatedPose = new LobstahEstimatedRobotPose(null, null, 0, 0, 0, 0,
             new ArrayList<>(), VisionConstants.POSE_STRATEGY);
