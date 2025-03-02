@@ -144,7 +144,7 @@ public class ElevatorIOSim implements ElevatorIO {
         inputs.leftTorqueCurrent = leftTorqueCurrent.getValueAsDouble();
         inputs.leftTempCelsius = leftTempCelsius.getValueAsDouble();
         inputs.limitSwitchHit = elevatorSim.hasHitLowerLimit();
-        inputs.atSetpoint = MathUtil.applyDeadband(rightMotor.getClosedLoopError().getValueAsDouble(), ElevatorConstants.HEIHGT_DEADBAND) == 0;
+        inputs.atSetpoint = MathUtil.applyDeadband(rightMotor.getClosedLoopError().getValueAsDouble(), ElevatorConstants.HEIGHT_DEADBAND) == 0;
 
         SimShared.powerDistributionSim.setCurrent(SimConstants.ELEVATOR_CHANNELS[0], inputs.leftSupplyCurrent);
         SimShared.powerDistributionSim.setCurrent(SimConstants.ELEVATOR_CHANNELS[1], inputs.rightSupplyCurrent);

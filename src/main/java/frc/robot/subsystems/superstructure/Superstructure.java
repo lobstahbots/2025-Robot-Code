@@ -45,6 +45,8 @@ public class Superstructure extends SubsystemBase {
     private final ArmFeedforward armFeedforward = new ArmFeedforward(PivotConstants.kS, PivotConstants.kG,
             PivotConstants.kV, PivotConstants.kA);
 
+    private boolean pivotIsClosedLoop = true;
+
     public final Trigger atSetpoint = new Trigger(this::atSetpoint);
 
     public Superstructure(ElevatorIO elevatorIO, PivotIO pivotIO) {
@@ -54,16 +56,17 @@ public class Superstructure extends SubsystemBase {
 
     public void setState(SuperstructureState state) {
         setExtension(state.elevatorHeight, state.elevatorVelocity);
-        setRotation(state.pivotRotation);
+        setRotation(state.pivotRotation, state.pivotVelocity);
     }
 
     public void setRotation(Rotation2d rotation, double velocity) {
-        armPID.setGoal(new TrapezoidProfile.State(rotation.getRotations(), velocity));
+        armPID.setGoal(new TrapezoidProfile.State(rotation.getRadians(), velocity));
+        pivotIsClosedLoop = true;
     }
 
     public void stopMotion() {
         setState(getState());
-        // elevatorIO.stop();
+        elevatorIO.stop();
         pivotIO.stop();
     }
 
@@ -86,6 +89,7 @@ public class Superstructure extends SubsystemBase {
 
     public void setPivotVoltage(double voltage) {
         pivotIO.setVoltage(voltage);
+        pivotIsClosedLoop = false;
     }
 
     public double getExtension() {
@@ -153,10 +157,8 @@ public class Superstructure extends SubsystemBase {
         SmartDashboard.putData("Superstructure", mechanism);
         Logger.recordOutput("Superstructure", pivotInputs.position);
         Logger.recordOutput("Setpoint", armPID.getSetpoint().toString());
-        Logger.recordOutput("PID", armPID.calculate(getPivotRotation().getRotations(), armPID.getSetpoint()));
-        pivotIO.setVoltage(armPID.calculate(getPivotRotation().getRotations(), armPID.getSetpoint()));
 
-        setPivotVoltage(armPID.calculate(pivotInputs.position.getRotations())
+        if (pivotIsClosedLoop) pivotIO.setVoltage(armPID.calculate(pivotInputs.position.getRadians())
                 + armFeedforward.calculate(armPID.getSetpoint().position, armPID.getSetpoint().velocity));
     }
 }

@@ -23,123 +23,125 @@ import frc.robot.Constants.ElevatorConstants;
 
 public class ElevatorIOTalonFX implements ElevatorIO {
 
-  private final TalonFX leftElevatorMotor;
-  private final TalonFX rightElevatorMotor;
+    private final TalonFX leftElevatorMotor;
+    private final TalonFX rightElevatorMotor;
 
-  private final StatusSignal<Angle> rightPosition;
-  private final StatusSignal<AngularVelocity> rightVelocity;
-  private final StatusSignal<Voltage> rightAppliedVoltage;
-  private final StatusSignal<Current> rightSupplyCurrent;
-  private final StatusSignal<Current> rightStatorCurrent;
-  private final StatusSignal<Current> rightTorqueCurrent;
-  private final StatusSignal<Temperature> rightTempCelsius;
-  private final StatusSignal<Angle> leftPosition;
-  private final StatusSignal<AngularVelocity> leftVelocity;
-  private final StatusSignal<Voltage> leftAppliedVoltage;
-  private final StatusSignal<Current> leftSupplyCurrent;
-  private final StatusSignal<Current> leftStatorCurrent;
-  private final StatusSignal<Current> leftTorqueCurrent;
-  private final StatusSignal<Temperature> leftTempCelsius;
+    private final StatusSignal<Angle> rightPosition;
+    private final StatusSignal<AngularVelocity> rightVelocity;
+    private final StatusSignal<Voltage> rightAppliedVoltage;
+    private final StatusSignal<Current> rightSupplyCurrent;
+    private final StatusSignal<Current> rightStatorCurrent;
+    private final StatusSignal<Current> rightTorqueCurrent;
+    private final StatusSignal<Temperature> rightTempCelsius;
+    private final StatusSignal<Angle> leftPosition;
+    private final StatusSignal<AngularVelocity> leftVelocity;
+    private final StatusSignal<Voltage> leftAppliedVoltage;
+    private final StatusSignal<Current> leftSupplyCurrent;
+    private final StatusSignal<Current> leftStatorCurrent;
+    private final StatusSignal<Current> leftTorqueCurrent;
+    private final StatusSignal<Temperature> leftTempCelsius;
 
-  private final MotionMagicVoltage positionVoltage = new MotionMagicVoltage(
-      ElevatorConstants.MOTION_MAGIC_POSITION_VOLTAGE);
-  private final VoltageOut voltageOut = new VoltageOut(ElevatorConstants.VOLTAGE_OUTPUT).withEnableFOC(false);
-  
-  private final DigitalInput limitSwitch = new DigitalInput(ElevatorConstants.LIMIT_SWITCH_CHANNEL);
+    private final MotionMagicVoltage positionVoltage = new MotionMagicVoltage(
+            ElevatorConstants.MOTION_MAGIC_POSITION_VOLTAGE);
+    private final VoltageOut voltageOut = new VoltageOut(ElevatorConstants.VOLTAGE_OUTPUT).withEnableFOC(false);
 
-  public ElevatorIOTalonFX(int leftElevatorID, int rightElevatorID) {
-    leftElevatorMotor = new TalonFX(leftElevatorID);
-    rightElevatorMotor = new TalonFX(rightElevatorID);
+    private final DigitalInput limitSwitch = new DigitalInput(ElevatorConstants.LIMIT_SWITCH_CHANNEL);
 
-    TalonFXConfiguration config = new TalonFXConfiguration();
+    public ElevatorIOTalonFX(int leftElevatorID, int rightElevatorID) {
+        leftElevatorMotor = new TalonFX(leftElevatorID);
+        rightElevatorMotor = new TalonFX(rightElevatorID);
 
-    config.CurrentLimits.SupplyCurrentLimit = ElevatorConstants.SUPPLY_CURRENT_LIMIT;
-    config.CurrentLimits.SupplyCurrentLimitEnable = true;
-    config.CurrentLimits.StatorCurrentLimit = ElevatorConstants.STATOR_CURRENT_LIMIT;
-    config.CurrentLimits.StatorCurrentLimitEnable = true;
+        TalonFXConfiguration config = new TalonFXConfiguration();
 
-    config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-    config.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
-    config.Feedback.SensorToMechanismRatio = ElevatorConstants.GEAR_RATIO * ElevatorConstants.PITCH_DIAMETER * Math.PI;
+        config.CurrentLimits.SupplyCurrentLimit = ElevatorConstants.SUPPLY_CURRENT_LIMIT;
+        config.CurrentLimits.SupplyCurrentLimitEnable = true;
+        config.CurrentLimits.StatorCurrentLimit = ElevatorConstants.STATOR_CURRENT_LIMIT;
+        config.CurrentLimits.StatorCurrentLimitEnable = true;
 
-    config.Slot0.kP = ElevatorConstants.kP;
-    config.Slot0.kI = ElevatorConstants.kI;
-    config.Slot0.kD = ElevatorConstants.kD;
-    config.Slot0.kS = ElevatorConstants.kS;
-    config.Slot0.kV = ElevatorConstants.kV;
-    config.Slot0.kA = ElevatorConstants.kA;
-    config.Slot0.kG = ElevatorConstants.kG;
-    config.MotionMagic.MotionMagicAcceleration = ElevatorConstants.MOTION_MAGIC_ACCELERATION;
-    config.MotionMagic.MotionMagicCruiseVelocity = ElevatorConstants.MOTION_MAGIC_CRUISE_VELOCITY;
-    config.Slot0.GravityType = GravityTypeValue.Elevator_Static;
+        config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+        config.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
+        config.Feedback.SensorToMechanismRatio = ElevatorConstants.GEAR_RATIO * ElevatorConstants.PITCH_DIAMETER
+                * Math.PI;
 
-    leftElevatorMotor.getConfigurator().apply(config);
-    rightElevatorMotor.getConfigurator().apply(config);
+        config.Slot0.kP = ElevatorConstants.kP;
+        config.Slot0.kI = ElevatorConstants.kI;
+        config.Slot0.kD = ElevatorConstants.kD;
+        config.Slot0.kS = ElevatorConstants.kS;
+        config.Slot0.kV = ElevatorConstants.kV;
+        config.Slot0.kA = ElevatorConstants.kA;
+        config.Slot0.kG = ElevatorConstants.kG;
+        config.MotionMagic.MotionMagicAcceleration = ElevatorConstants.MOTION_MAGIC_ACCELERATION;
+        config.MotionMagic.MotionMagicCruiseVelocity = ElevatorConstants.MOTION_MAGIC_CRUISE_VELOCITY;
+        config.Slot0.GravityType = GravityTypeValue.Elevator_Static;
 
-    leftElevatorMotor.setControl(new Follower(rightElevatorID, true));
+        leftElevatorMotor.getConfigurator().apply(config);
+        rightElevatorMotor.getConfigurator().apply(config);
 
-    rightPosition = rightElevatorMotor.getPosition();
-    rightVelocity = rightElevatorMotor.getVelocity();
-    rightAppliedVoltage = rightElevatorMotor.getMotorVoltage();
-    rightSupplyCurrent = rightElevatorMotor.getSupplyCurrent();
-    rightStatorCurrent = rightElevatorMotor.getStatorCurrent();
-    rightTorqueCurrent = rightElevatorMotor.getTorqueCurrent();
-    rightTempCelsius = rightElevatorMotor.getDeviceTemp();
-    leftPosition = leftElevatorMotor.getPosition();
-    leftVelocity = leftElevatorMotor.getVelocity();
-    leftAppliedVoltage = leftElevatorMotor.getMotorVoltage();
-    leftSupplyCurrent = leftElevatorMotor.getSupplyCurrent();
-    leftStatorCurrent = leftElevatorMotor.getStatorCurrent();
-    leftTorqueCurrent = leftElevatorMotor.getTorqueCurrent();
-    leftTempCelsius = leftElevatorMotor.getDeviceTemp();
+        leftElevatorMotor.setControl(new Follower(rightElevatorID, false)); // it should be true because they are opposed but phoenix 6 a[[ears to do the opposite of what we tell it to do
 
-    BaseStatusSignal.setUpdateFrequencyForAll(ElevatorConstants.BASE_STATUS_SIGNAL_FREQUENCY, rightPosition,
-        rightVelocity, rightAppliedVoltage, rightSupplyCurrent, rightTorqueCurrent, rightTempCelsius, leftPosition,
-        leftVelocity, leftAppliedVoltage, leftSupplyCurrent, leftTorqueCurrent, leftTempCelsius);
-    rightElevatorMotor.optimizeBusUtilization();
-    leftElevatorMotor.optimizeBusUtilization();
-  }
+        rightPosition = rightElevatorMotor.getPosition();
+        rightVelocity = rightElevatorMotor.getVelocity();
+        rightAppliedVoltage = rightElevatorMotor.getMotorVoltage();
+        rightSupplyCurrent = rightElevatorMotor.getSupplyCurrent();
+        rightStatorCurrent = rightElevatorMotor.getStatorCurrent();
+        rightTorqueCurrent = rightElevatorMotor.getTorqueCurrent();
+        rightTempCelsius = rightElevatorMotor.getDeviceTemp();
+        leftPosition = leftElevatorMotor.getPosition();
+        leftVelocity = leftElevatorMotor.getVelocity();
+        leftAppliedVoltage = leftElevatorMotor.getMotorVoltage();
+        leftSupplyCurrent = leftElevatorMotor.getSupplyCurrent();
+        leftStatorCurrent = leftElevatorMotor.getStatorCurrent();
+        leftTorqueCurrent = leftElevatorMotor.getTorqueCurrent();
+        leftTempCelsius = leftElevatorMotor.getDeviceTemp();
 
-  @Override
-  public void updateInputs(ElevatorIOInputs inputs) {
-    BaseStatusSignal.refreshAll(rightPosition, rightVelocity, rightAppliedVoltage, rightSupplyCurrent,
-        rightStatorCurrent, rightTorqueCurrent, rightTempCelsius, leftPosition, leftVelocity, leftAppliedVoltage,
-        leftSupplyCurrent, leftStatorCurrent, leftTorqueCurrent, leftTempCelsius);
-    inputs.rightPosition = rightPosition.getValueAsDouble();
-    inputs.rightVelocity = rightVelocity.getValueAsDouble();
-    inputs.rightAppliedVoltage = rightAppliedVoltage.getValueAsDouble();
-    inputs.rightSupplyCurrent = rightSupplyCurrent.getValueAsDouble();
-    inputs.rightStatorCurrent = rightStatorCurrent.getValueAsDouble();
-    inputs.rightTorqueCurrent = rightTorqueCurrent.getValueAsDouble();
-    inputs.rightTempCelsius = rightTempCelsius.getValueAsDouble();
-    inputs.leftPosition = leftPosition.getValueAsDouble();
-    inputs.leftVelocity = leftVelocity.getValueAsDouble();
-    inputs.leftAppliedVoltage = leftAppliedVoltage.getValueAsDouble();
-    inputs.leftSupplyCurrent = leftSupplyCurrent.getValueAsDouble();
-    inputs.leftStatorCurrent = leftStatorCurrent.getValueAsDouble();
-    inputs.leftTorqueCurrent = leftTorqueCurrent.getValueAsDouble();
-    inputs.leftTempCelsius = leftTempCelsius.getValueAsDouble();
-    inputs.limitSwitchHit = limitSwitch.get();
-    inputs.atSetpoint = MathUtil.applyDeadband(rightElevatorMotor.getClosedLoopError().getValueAsDouble(), ElevatorConstants.HEIHGT_DEADBAND) == 0;
-  }
+        BaseStatusSignal.setUpdateFrequencyForAll(ElevatorConstants.BASE_STATUS_SIGNAL_FREQUENCY, rightPosition,
+                rightVelocity, rightAppliedVoltage, rightSupplyCurrent, rightTorqueCurrent, rightTempCelsius,
+                leftPosition, leftVelocity, leftAppliedVoltage, leftSupplyCurrent, leftTorqueCurrent, leftTempCelsius);
+        rightElevatorMotor.optimizeBusUtilization();
+        leftElevatorMotor.optimizeBusUtilization();
+    }
 
-  @Override
-  public void setPosition(TrapezoidProfile.State state) {
-    rightElevatorMotor.setControl(positionVoltage.withPosition(state.position));
-  }
+    @Override
+    public void updateInputs(ElevatorIOInputs inputs) {
+        BaseStatusSignal.refreshAll(rightPosition, rightVelocity, rightAppliedVoltage, rightSupplyCurrent,
+                rightStatorCurrent, rightTorqueCurrent, rightTempCelsius, leftPosition, leftVelocity,
+                leftAppliedVoltage, leftSupplyCurrent, leftStatorCurrent, leftTorqueCurrent, leftTempCelsius);
+        inputs.rightPosition = rightPosition.getValueAsDouble();
+        inputs.rightVelocity = rightVelocity.getValueAsDouble();
+        inputs.rightAppliedVoltage = rightAppliedVoltage.getValueAsDouble();
+        inputs.rightSupplyCurrent = rightSupplyCurrent.getValueAsDouble();
+        inputs.rightStatorCurrent = rightStatorCurrent.getValueAsDouble();
+        inputs.rightTorqueCurrent = rightTorqueCurrent.getValueAsDouble();
+        inputs.rightTempCelsius = rightTempCelsius.getValueAsDouble();
+        inputs.leftPosition = leftPosition.getValueAsDouble();
+        inputs.leftVelocity = leftVelocity.getValueAsDouble();
+        inputs.leftAppliedVoltage = leftAppliedVoltage.getValueAsDouble();
+        inputs.leftSupplyCurrent = leftSupplyCurrent.getValueAsDouble();
+        inputs.leftStatorCurrent = leftStatorCurrent.getValueAsDouble();
+        inputs.leftTorqueCurrent = leftTorqueCurrent.getValueAsDouble();
+        inputs.leftTempCelsius = leftTempCelsius.getValueAsDouble();
+        inputs.limitSwitchHit = limitSwitch.get();
+        inputs.atSetpoint = MathUtil.applyDeadband(rightElevatorMotor.getClosedLoopError().getValueAsDouble(),
+                ElevatorConstants.HEIGHT_DEADBAND) == 0;
+    }
 
-  @Override
-  public void setVoltage(double voltage) {
-    rightElevatorMotor.setControl(voltageOut.withOutput(voltage));
-  }
+    @Override
+    public void setPosition(TrapezoidProfile.State state) {
+        rightElevatorMotor.setControl(positionVoltage.withPosition(state.position));
+    }
 
-  @Override
-  public void resetEncoder(double position) {
-    rightElevatorMotor.setPosition(position);
-  }
+    @Override
+    public void setVoltage(double voltage) {
+        rightElevatorMotor.setControl(voltageOut.withOutput(voltage));
+    }
 
-  @Override
-  public void stop() {
-    rightElevatorMotor.stopMotor();
-  }
+    @Override
+    public void resetEncoder(double position) {
+        rightElevatorMotor.setPosition(position);
+    }
+
+    @Override
+    public void stop() {
+        rightElevatorMotor.stopMotor();
+    }
 }
