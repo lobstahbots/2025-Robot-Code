@@ -8,12 +8,10 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.Constants.FieldConstants.Poses;
+import frc.robot.util.trajectory.AlliancePoseMirror;
 
 /**
  * This class stores relevant methods for mathematical operations, conversions,
@@ -165,20 +163,6 @@ public class LobstahMath {
     }
 
     /**
-     * Flip a pose from blue alliance origin to current alliance origin (ot vice
-     * versa I suppose)
-     * 
-     * @param pose pose to flip
-     * @return flipped pose
-     */
-    public static Pose2d flipPose(Pose2d pose) {
-        var alliance = DriverStation.getAlliance();
-        if (alliance.isEmpty() || alliance.get() == Alliance.Blue) { return pose; }
-        return Poses.FIELD_CENTER.plus(new Transform2d(pose.minus(Poses.FIELD_CENTER).getTranslation().unaryMinus(),
-                pose.getRotation().unaryMinus()));
-    }
-
-    /**
      * Get the nearest scoring pose from {@link Poses#REEF_POSES} to the current
      * robot pose
      * 
@@ -189,7 +173,11 @@ public class LobstahMath {
      * @return nearest scoring pose, blue alliance origin
      */
     public static Pose2d getNearestScoringPose(Pose2d currentPose, boolean ccw) {
-        return flipPose(Poses.REEF_POSES[(int) wrapValue(flipPose(currentPose).minus(Poses.REEF_CENTER).getTranslation()
-                .getAngle().minus(Rotation2d.fromRadians(5 * Math.PI / 6)).getRotations() * 6, 0, 6) + (ccw ? 1 : 0)]);
+        return AlliancePoseMirror
+                .mirrorPose2d(
+                        Poses.REEF_POSES[(int) wrapValue(
+                                AlliancePoseMirror.mirrorPose2d(currentPose).minus(Poses.REEF_CENTER).getTranslation()
+                                        .getAngle().minus(Rotation2d.fromRadians(5 * Math.PI / 6)).getRotations() * 6,
+                                0, 6) + (ccw ? 1 : 0)]);
     }
 }
