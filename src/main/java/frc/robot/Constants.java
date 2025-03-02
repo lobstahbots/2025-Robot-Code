@@ -28,6 +28,9 @@ import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
+
+import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.KilogramSquareMeters;
 import static edu.wpi.first.units.Units.Pounds;
 import edu.wpi.first.units.measure.Mass;
@@ -90,9 +93,12 @@ public final class Constants {
         public static final Mass WEIGHT = Pounds.of(150);
         public static final MomentOfInertia MOI = KilogramSquareMeters.of(6);
 
-        public static final SuperstructureState INTAKE_STATE = new SuperstructureState(Rotation2d.fromDegrees(-90), ElevatorConstants.BOTTOM_HEIGHT, 0, 0);
-        public static final SuperstructureState L1_STATE = new SuperstructureState(Rotation2d.fromDegrees(0), ElevatorConstants.BOTTOM_HEIGHT, 0, 0);
-        public static final SuperstructureState L2_STATE = new SuperstructureState(Rotation2d.fromDegrees(45), ElevatorConstants.BOTTOM_HEIGHT, 0, 0);
+        public static final SuperstructureState INTAKE_STATE = new SuperstructureState(Rotation2d.fromDegrees(-90),
+                ElevatorConstants.BOTTOM_HEIGHT, 0, 0);
+        public static final SuperstructureState L1_STATE = new SuperstructureState(Rotation2d.fromDegrees(0),
+                ElevatorConstants.BOTTOM_HEIGHT, 0, 0);
+        public static final SuperstructureState L2_STATE = new SuperstructureState(Rotation2d.fromDegrees(45),
+                ElevatorConstants.BOTTOM_HEIGHT, 0, 0);
     }
 
     public static class DriveConstants {
@@ -138,8 +144,7 @@ public final class Constants {
         public static final PIDConstants TRANSLATION_PID_CONSTANTS = new PIDConstants(13, 0.0, 0);
 
         public static final DriveTrainSimulationConfig MAPLE_SIM_CONFIG = DriveTrainSimulationConfig.Default()
-                .withCustomModuleTranslations(MODULE_LOCATIONS).withGyro(COTS.ofNav2X())
-                .withRobotMass(Pounds.of(40))
+                .withCustomModuleTranslations(MODULE_LOCATIONS).withGyro(COTS.ofNav2X()).withRobotMass(Pounds.of(40))
                 .withSwerveModule(COTS.ofMAXSwerve(DCMotor.getNEO(1), DCMotor.getNeo550(1), WHEEL_COF, 1));
 
         public static class FrontLeftModuleConstants {
@@ -221,12 +226,12 @@ public final class Constants {
 
     public static class VisionConstants {
         public static final PoseStrategy POSE_STRATEGY = PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR;
-        public static final String FRONT_CAMERA_NAME = "photonvision1";
         public static final Map<String, Transform3d> CAMERA_TRANSFORMS = new HashMap<>();
         static {
-            CAMERA_TRANSFORMS.put(FRONT_CAMERA_NAME,
-                    new Transform3d(Units.inchesToMeters(5.5), Units.inchesToMeters(-5.75),
-                            Units.inchesToMeters(7.5), new Rotation3d(0, -0.3858165, 0)));
+            CAMERA_TRANSFORMS.put("frontleft", new Transform3d(Inches.of(11.2435), Inches.of(13.42), Inches.of(7.308),
+                    new Rotation3d(Degrees.of(0), Degrees.of(-20), Degrees.of(-35))));
+            CAMERA_TRANSFORMS.put("frontright", new Transform3d(Inches.of(11.2435), Inches.of(-13.42), Inches.of(7.164),
+                    new Rotation3d(Degrees.of(0), Degrees.of(-20), Degrees.of(35))));
         }
         public static final double VISION_ODOMETRY_DIFFERENCE_FILTER_THRESHOLD = 5;
         public static final int CAMERA_RES_WIDTH = 1280;

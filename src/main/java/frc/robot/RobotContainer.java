@@ -109,9 +109,8 @@ public class RobotContainer {
                     "Back right", BackRightModuleConstants.angleID, BackRightModuleConstants.driveID,
                     BackRightModuleConstants.angleOffset, BackRightModuleConstants.inverted);
 
-            List<Camera> cameras = new ArrayList<>();
-            cameras.add(new Camera(new CameraIOPhoton(VisionConstants.FRONT_CAMERA_NAME)));
-            // cameras.add(new Camera(new CameraIOPhoton(VisionConstants.REAR_CAMERA_NAME)));
+            List<Camera> cameras = VisionConstants.CAMERA_TRANSFORMS.keySet().stream()
+                    .map(name -> new Camera(new CameraIOPhoton(name))).toList();
             driveBase = new DriveBase(new GyroIONavX(), cameras, frontLeft, frontRight, backLeft, backRight, false);
 
             superstructure = new Superstructure(
@@ -128,10 +127,12 @@ public class RobotContainer {
             SwerveModuleIOSim backLeft = new SwerveModuleIOSim(BackLeftModuleConstants.angleOffset, modules[2], 2);
             SwerveModuleIOSim backRight = new SwerveModuleIOSim(BackRightModuleConstants.angleOffset, modules[3], 3);
 
-            List<Camera> cameras = new ArrayList<>();
+            List<Camera> cameras;
             if (SimConstants.VISION_SIM) {
-                cameras.add(new Camera(new CameraIOSim(VisionConstants.FRONT_CAMERA_NAME)));
-                // cameras.add(new Camera(new CameraIOSim(VisionConstants.REAR_CAMERA_NAME)));
+                cameras = VisionConstants.CAMERA_TRANSFORMS.keySet().stream()
+                        .map(name -> new Camera(new CameraIOSim(name))).toList();
+            } else {
+                cameras = new ArrayList<>();
             }
             driveBase = new DriveBase(new GyroIOSim(driveSimulation.getGyroSimulation()) {}, cameras, frontLeft,
                     frontRight, backLeft, backRight, false);
