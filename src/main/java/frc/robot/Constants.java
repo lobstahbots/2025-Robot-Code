@@ -66,11 +66,11 @@ public final class Constants {
         public static class OperatorIOConstants {
             public static final int OPERATOR_CONTROLLER_PORT = 1;
             public static final int MANUAL_ARM_AXIS = 1;
-            public static final int L1_BUTTON = 1; //Should be X
-            public static final int L2_BUTTON = 1; //Should be Y
-            public static final int SPIN_INTAKE_BUTTON_ID = 7; //Should be LT
+            public static final int L1_BUTTON = 0; //Should be X
+            public static final int L2_BUTTON = 0; //Should be Y
+            public static final int SPIN_INTAKE_BUTTON_ID = 5; //Should be LT
             public static final int SCORE_BUTTON = 6;
-            public static final int STOW_BUTTON_ID = 1; //Should be RT
+            public static final int STOW_BUTTON_ID = 0; //Should be RT
         }
     }
 
@@ -310,7 +310,7 @@ public final class Constants {
         public static final double ELEVATOR_MASS = 4;
     }
 
-    public static class RampConstants{
+    public static class RampConstants {
         public static final double MOTOR_SPEED = 0.1;
         public static final int CURRENT_LIMIT = 20;
         public static final int ID = 0;
@@ -318,7 +318,7 @@ public final class Constants {
     }
 
     public static class CoralEndEffectorConstants {
-        public static final double MOTOR_SPEED = 0.1;
+        public static final double MOTOR_SPEED = 1;
         public static final int CURRENT_LIMIT = 20;
         public static final int LEFT_ID = 44;
         public static final int RIGHT_ID = 45;
@@ -333,10 +333,10 @@ public final class Constants {
         public static final double kP = 10;
         public static final double kI = 0;
         public static final double kD = 0;
-        public static final double kS = 0;
-        public static final double kG = 0;
-        public static final double kV = 0;
-        public static final double kA = 0;
+        public static final double kS = 1.3843;
+        public static final double kG = 1.0129;
+        public static final double kV = 1.0491;
+        public static final double kA = 0.50095;
         public static final TrapezoidProfile.Constraints CONSTRAINTS = new TrapezoidProfile.Constraints(0.1, 0.1);
 
         public static final int CURRENT_LIMIT = 40;
@@ -344,17 +344,15 @@ public final class Constants {
         public static final double PIVOT_GEARING = 12;
         public static final double ARM_LENGTH = Units.inchesToMeters(12);
         public static final double PIVOT_MASS = Units.lbsToKilograms(15);
-        public static final double MIN_ANGLE = 0;
-        public static final double MAX_ANGLE = 0.52;
+        public static final Rotation2d MIN_ANGLE = new Rotation2d(4 - 2 * Math.PI);
+        public static final Rotation2d MAX_ANGLE = new Rotation2d(Math.PI / 4);
 
         public static final int MOTOR_ID = 22;
         public static final int ENCODER_ID = 55;
 
         public static final Rotation2d INTAKE_SETPOINT_ANGLE = Rotation2d.fromDegrees(0); //TODO: figure this out
         public static final Rotation2d L1_ANGLE = Rotation2d.fromDegrees(0.3); //TODO: figure this out
-        public static final Rotation2d L2_ANGLE = Rotation2d.fromDegrees(0);; //TODO: figure this out
-        public static final double L1_VOLTS = 10; //TODO: figure this out
-        public static final double L2_VOLTS = 10; //TODO: figure this out
+        public static final Rotation2d L2_ANGLE = Rotation2d.fromDegrees(0); //TODO: figure this out
         public static final double JOYSTICK_SCALING = 0.25; //TODO: figure this out
 
         public static final Rotation2d UPPER_DANGER_ZONE = Rotation2d.fromDegrees(175);
