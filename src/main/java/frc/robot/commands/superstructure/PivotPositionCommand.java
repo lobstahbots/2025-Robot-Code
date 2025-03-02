@@ -2,15 +2,17 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands.superstructureCommands;
+package frc.robot.commands.superstructure;
 
 import java.util.function.Supplier;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants.PivotConstants;
 import frc.robot.subsystems.superstructure.Superstructure;
 
-public class PivotToPositionCommand extends Command {
+public class PivotPositionCommand extends Command {
     private final Superstructure superstructure;
     private final Supplier<Rotation2d> pivotAngle;
 
@@ -19,7 +21,7 @@ public class PivotToPositionCommand extends Command {
      * @param superstructure The {@link Superstructure} to control.
      * @param pivotAngle The angle to rotate to, as a supplier for a {@link Rotation2d}. 
      */
-    public PivotToPositionCommand(Superstructure superstructure, Supplier<Rotation2d> pivotAngle) {
+    public PivotPositionCommand(Superstructure superstructure, Supplier<Rotation2d> pivotAngle) {
         // Use addRequirements() here to declare subsystem dependencies.
         this.superstructure = superstructure;
         this.pivotAngle = pivotAngle;
@@ -31,14 +33,14 @@ public class PivotToPositionCommand extends Command {
      * @param superstructure The {@link Superstructure} to control.
      * @param pivotAngle The angle to rotate to, as a {@link Rotation2d}
      */
-    public PivotToPositionCommand(Superstructure superstructure, Rotation2d pivotAngle) {
+    public PivotPositionCommand(Superstructure superstructure, Rotation2d pivotAngle) {
         this(superstructure, () -> pivotAngle);
     }
 
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        superstructure.setRotation(pivotAngle.get(), 0);
+        superstructure.setRotation(Rotation2d.fromRotations(MathUtil.clamp(pivotAngle.get().getRadians(), PivotConstants.MIN_ANGLE.getRadians(), PivotConstants.MAX_ANGLE.getRadians())));
     }
 
     // Called once the command ends or is interrupted.
@@ -48,6 +50,6 @@ public class PivotToPositionCommand extends Command {
     // Returns true when the command should end.
     @Override
     public boolean isFinished() {
-        return superstructure.atPivotSetpoint();
+        return false;
     }
 }

@@ -36,8 +36,9 @@ import frc.robot.Constants.IOConstants.OperatorIOConstants;
 import frc.robot.Constants.PivotConstants;
 import frc.robot.Constants.SimConstants;
 import frc.robot.Constants.VisionConstants;
-import frc.robot.commands.driveCommands.SwerveDriveCommand;
-import frc.robot.commands.superstructureCommands.PivotPositionCommand;
+import frc.robot.commands.drivebase.AlignToReefCommand;
+import frc.robot.commands.drivebase.SwerveDriveCommand;
+import frc.robot.commands.superstructure.PivotPositionCommand;
 import frc.robot.subsystems.drive.DriveBase;
 import frc.robot.subsystems.drive.GyroIONavX;
 import frc.robot.subsystems.drive.GyroIOSim;
@@ -68,7 +69,10 @@ public class RobotContainer {
     private final JoystickButton adjustButton = new JoystickButton(operatorJoystick, OperatorIOConstants.SCORE_BUTTON);
     private final JoystickButton intakeButton = new JoystickButton(operatorJoystick,
             OperatorIOConstants.SPIN_INTAKE_BUTTON_ID);
-    //private final JoystickButton stowButton = new JoystickButton(operatorJoystick, OperatorIOConstants.STOW_BUTTON_ID);
+    //private final JoystickButton stowButton = new JoystickButton(operatorJoystick, OperatorIOConstants.STOW_BUTTON_ID);    private final JoystickButton leftButton = new JoystickButton(driverJoystick, DriverIOConstants.LEFT_BUTTON);
+    private final JoystickButton leftButton = new JoystickButton(driverJoystick, DriverIOConstants.LEFT_BUTTON);
+    private final JoystickButton rightButton = new JoystickButton(driverJoystick, DriverIOConstants.RIGHT_BUTTON);
+
     private final JoystickButton l1Button = new JoystickButton(operatorJoystick, OperatorIOConstants.L1_BUTTON);
     private final JoystickButton l2Button = new JoystickButton(operatorJoystick, OperatorIOConstants.L2_BUTTON);
 
@@ -195,6 +199,8 @@ public class RobotContainer {
         // // stowButton.whileTrue(new PivotPositionCommand(superstructure, PivotConstants.INTAKE_SETPOINT_ANGLE));
         l1Button.whileTrue(new PivotPositionCommand(superstructure, PivotConstants.INTAKE_SETPOINT_ANGLE));
         l2Button.whileTrue(new PivotPositionCommand(superstructure, PivotConstants.L2_ANGLE));
+        leftButton.onTrue(new AlignToReefCommand(driveBase, false));
+        rightButton.onTrue(new AlignToReefCommand(driveBase, true));
     }
 
     public boolean getOperatorConnected() {

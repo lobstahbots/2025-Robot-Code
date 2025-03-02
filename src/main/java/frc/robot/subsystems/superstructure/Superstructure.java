@@ -17,9 +17,9 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.PivotConstants;
 import frc.robot.Constants.RobotConstants;
-import frc.robot.commands.superstructureCommands.ElevatorToPositionCommand;
-import frc.robot.commands.superstructureCommands.PivotToPositionCommand;
-import frc.robot.commands.superstructureCommands.SuperstructureStateCommand;
+import frc.robot.commands.superstructure.ElevatorPositionCommand;
+import frc.robot.commands.superstructure.PivotPositionCommand;
+import frc.robot.commands.superstructure.SuperstructureStateCommand;
 
 public class Superstructure extends SubsystemBase {
 
@@ -127,14 +127,14 @@ public class Superstructure extends SubsystemBase {
         Command superstructureCommand = new SuperstructureStateCommand(this, setpoint);
 
         if (setpoint == RobotConstants.INTAKE_STATE) {
-            superstructureCommand = new ElevatorToPositionCommand(this, RobotConstants.INTAKE_STATE.elevatorHeight)
+            superstructureCommand = new ElevatorPositionCommand(this, RobotConstants.INTAKE_STATE.elevatorHeight)
                     .andThen(superstructureCommand);
         }
 
         if (getRotation().getRotations() > PivotConstants.LOWER_DANGER_ZONE.getRotations()) {
-            return new PivotToPositionCommand(this, PivotConstants.LOWER_DANGER_ZONE).andThen(superstructureCommand);
+            return new PivotPositionCommand(this, PivotConstants.LOWER_DANGER_ZONE).andThen(superstructureCommand);
         } else if (getRotation().getRotations() < PivotConstants.UPPER_DANGER_ZONE.getRotations()) {
-            return new PivotToPositionCommand(this, PivotConstants.UPPER_DANGER_ZONE).andThen(superstructureCommand);
+            return new PivotPositionCommand(this, PivotConstants.UPPER_DANGER_ZONE).andThen(superstructureCommand);
         }
 
         return superstructureCommand;

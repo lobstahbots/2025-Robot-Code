@@ -1,4 +1,4 @@
-package frc.robot.commands.algaeIntakeCommands;
+package frc.robot.commands.algaeIntake;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.algaeIntake.AlgaeIntake;

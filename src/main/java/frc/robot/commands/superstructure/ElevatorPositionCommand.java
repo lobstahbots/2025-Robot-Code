@@ -2,24 +2,24 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands.superstructureCommands;
+package frc.robot.commands.superstructure;
 
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.superstructure.Superstructure;
 
-public class ElevatorToPositionCommand extends Command {
+public class ElevatorPositionCommand extends Command {
   private final Superstructure superstructure;
   private final DoubleSupplier elevatorPosition;
   /** Creates a new ElevatorPositionCommand. */
-  public ElevatorToPositionCommand(Superstructure superstructure, DoubleSupplier elevatorPosition) {
+  public ElevatorPositionCommand(Superstructure superstructure, DoubleSupplier elevatorPosition) {
     this.superstructure = superstructure;
     this.elevatorPosition = elevatorPosition;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(superstructure);
   }
-  public ElevatorToPositionCommand(Superstructure superstructure, double elevatorPosition) {
+  public ElevatorPositionCommand(Superstructure superstructure, double elevatorPosition) {
     this(superstructure, () -> elevatorPosition);
   }
 
