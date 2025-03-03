@@ -12,7 +12,6 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.numbers.N3;
 import frc.robot.Constants.VisionConstants;
-import frc.robot.util.math.LobstahMath;
 
 public class Camera {
     private final CameraIO io;
@@ -38,29 +37,14 @@ public class Camera {
         Pose3d resolvedPose = null;
         double resolvedReprojErr = 0;
 
-        double bestDistanceToCurrPose = LobstahMath.getDistBetweenPoses(inputs.bestEstimatedPose, odometryPose);
-        double altDistanceToCurrPose = LobstahMath.getDistBetweenPoses(inputs.altEstimatedPose, odometryPose);
-        double bestRotationDiff = Math.abs(
-                inputs.bestEstimatedPose.toPose2d().getRotation().minus(odometryPose.getRotation()).getRotations());
-        double altRotationDiff = Math
-                .abs(inputs.altEstimatedPose.toPose2d().getRotation().minus(odometryPose.getRotation()).getRotations());
-
-        // Select pose if closest to robot pose or better rotation, reject if reprojection error > 0.4 * alternative pose reprojection error
-        // if (bestDistanceToCurrPose <= altDistanceToCurrPose || bestRotationDiff <= altRotationDiff) {
+        if (inputs.ambiguity > VisionConstants.AMBIGUITY_ACCEPTANCE_THRESHOLD) {
             resolvedPose = inputs.bestEstimatedPose;
             resolvedReprojErr = inputs.bestReprojErr;
-        // }
-        // // Otherwise, select alt pose if ambiguity is low enough and alt solution is closest to robot pose and better rotation
-        // // harder to use more ambiguous pose so has to be both closer and better rotation
-        // // Reprojection error of alternate pose will always be higher than that of alternate pose
-        // else if (inputs.ambiguity <= VisionConstants.AMBIGUITY_ACCEPTANCE_THRESHOLD
-        //         && altDistanceToCurrPose <= bestDistanceToCurrPose && bestRotationDiff <= altRotationDiff) {
-        //     resolvedPose = inputs.altEstimatedPose;
-        //     resolvedReprojErr = inputs.altReprojErr;
-        // }
+        }
 
         Vector<N3> stdev = VisionConstants.BASE_STDEV
                 .times(Math.pow(resolvedReprojErr, VisionConstants.REPROJ_TO_STDEV_EXP) // Start with reprojection error
+                        * 10 * inputs.ambiguity // multiply by ambiguity
                         * Math.exp(1 / inputs.visibleFiducialIDs.length)
                         * Math.pow(inputs.visibleFiducialIDs.length, VisionConstants.APRIL_TAG_NUMBER_EXPONENT) // Multiply by the scaling for the number of AprilTags
                         * Math.pow(inputs.totalArea, 1 / VisionConstants.APRIL_TAG_AREA_CONFIDENCE_SCALE) * Math.log(2)
