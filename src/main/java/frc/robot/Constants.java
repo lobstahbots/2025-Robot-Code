@@ -232,6 +232,10 @@ public final class Constants {
                     new Rotation3d(Degrees.of(0), Degrees.of(-20), Degrees.of(-35))));
             CAMERA_TRANSFORMS.put("frontright", new Transform3d(Inches.of(11.2435), Inches.of(-13.42), Inches.of(7.164),
                     new Rotation3d(Degrees.of(0), Degrees.of(-20), Degrees.of(35))));
+            CAMERA_TRANSFORMS.put("backleft", new Transform3d(Inches.of(2.775), Inches.of(10.5285), Inches.of(37.1935),
+                    new Rotation3d(Degrees.of(0), Degrees.of(20), Degrees.of(35))));
+            CAMERA_TRANSFORMS.put("backright", new Transform3d(Inches.of(2.689), Inches.of(-10.5585), Inches.of(37.0995),
+                    new Rotation3d(Degrees.of(0), Degrees.of(20), Degrees.of(-35))));
         }
         public static final double VISION_ODOMETRY_DIFFERENCE_FILTER_THRESHOLD = 5;
         public static final int CAMERA_RES_WIDTH = 1280;
