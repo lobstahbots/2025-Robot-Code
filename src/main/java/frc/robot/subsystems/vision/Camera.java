@@ -47,8 +47,8 @@ public class Camera {
                         * 10 * inputs.ambiguity // multiply by ambiguity
                         * Math.exp(1 / inputs.visibleFiducialIDs.length)
                         * Math.pow(inputs.visibleFiducialIDs.length, VisionConstants.APRIL_TAG_NUMBER_EXPONENT) // Multiply by the scaling for the number of AprilTags
-                        * Math.pow(inputs.totalArea, 1 / VisionConstants.APRIL_TAG_AREA_CONFIDENCE_SCALE) * Math.log(2)
-                        / Math.log(inputs.totalArea + 1) // Multiply by the scaling for the area of the AprilTags
+                        * Math.pow(inputs.totalArea, -1 / VisionConstants.APRIL_TAG_AREA_CONFIDENCE_SCALE) * Math.log(2)
+                        / Math.log(inputs.totalArea + Math.E) // Multiply by the scaling for the area of the AprilTags
                 );
 
         Logger.recordOutput("Vision/" + cameraName + "/ResolvedPose", resolvedPose);
