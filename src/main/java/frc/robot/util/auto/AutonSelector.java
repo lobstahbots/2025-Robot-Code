@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -85,13 +86,13 @@ public class AutonSelector<V> extends SubsystemBase {
                     questionPublishers.get(i).set(questions.get(i).question());
                     // you can't change the options so we just replace the one in the list with a new one and let the old one get garbage collected
                     questionChoosers.set(i,
-                            new LoggedDashboardChooser<>(key + "/Question #" + Integer.toString(i + 1) + "Chooser"));
+                            new LoggedDashboardChooser<>(key + "/Question #" + Integer.toString(i + 1) + " Chooser"));
                     final var chooser = questionChoosers.get(i);
                     questions.get(i).responses().keySet().forEach(option -> chooser.addOption(option, option));
                 } else {
                     questionPublishers.get(i).set("");
                     questionChoosers.set(i,
-                            new LoggedDashboardChooser<>(key + "/Question #" + Integer.toString(i + 1) + "Chooser"));
+                            new LoggedDashboardChooser<>(key + "/Question #" + Integer.toString(i + 1) + " Chooser"));
                     questionChoosers.get(i).addDefaultOption("N/A", "N/A");
                 }
             }

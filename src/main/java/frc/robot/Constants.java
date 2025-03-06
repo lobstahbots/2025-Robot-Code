@@ -72,11 +72,12 @@ public final class Constants {
         public static class OperatorIOConstants {
             public static final int OPERATOR_CONTROLLER_PORT = 1;
             public static final int MANUAL_ARM_AXIS = 1;
-            public static final int L1_BUTTON = 0; //Should be X
-            public static final int L2_BUTTON = 0; //Should be Y
+            public static final int L1_BUTTON = 1; //Should be X
+            public static final int L2_BUTTON = 2; //Should be Y
             public static final int SPIN_INTAKE_BUTTON_ID = 5; //Should be LT
             public static final int SCORE_BUTTON = 6;
             public static final int STOW_BUTTON_ID = 0; //Should be RT
+            public static final int MANUAL_ELEVATOR_AXIS = 5;
         }
     }
 
@@ -96,9 +97,10 @@ public final class Constants {
         public static final SuperstructureState INTAKE_STATE = new SuperstructureState(Rotation2d.fromDegrees(-90),
                 ElevatorConstants.BOTTOM_HEIGHT, 0, 0);
         public static final SuperstructureState L1_STATE = new SuperstructureState(Rotation2d.fromDegrees(0),
-                ElevatorConstants.BOTTOM_HEIGHT, 0, 0);
+                10, 0, 0);
         public static final SuperstructureState L2_STATE = new SuperstructureState(Rotation2d.fromDegrees(45),
                 ElevatorConstants.BOTTOM_HEIGHT, 0, 0);
+        public static final SuperstructureState L3_STATE = new SuperstructureState(Rotation2d.fromDegrees(45), 10, 0, 0);
     }
 
     public static class DriveConstants {
@@ -307,19 +309,50 @@ public final class Constants {
         public static final double LOG_ALERT_INTERVAL = 5; // Interval (in s) between logs of an alert if its text doesn't change
     }
 
+    
+    public static class PivotConstants {
+        public static final double kP = 0;
+        public static final double kI = 0;
+        public static final double kD = 0;
+        public static final double kS = 0;
+        public static final double kG = 0.15; //NOTE: 1.0129
+        public static final double kV = 0; //NOTE: 1.0491
+        public static final double kA = 0; //NOTE: 0.50095
+        public static final TrapezoidProfile.Constraints CONSTRAINTS = new TrapezoidProfile.Constraints(25, 10);
+
+        public static final int CURRENT_LIMIT = 40;
+
+        public static final double PIVOT_GEARING = 12;
+        public static final double ARM_LENGTH = Units.inchesToMeters(12);
+        public static final double PIVOT_MASS = Units.lbsToKilograms(15);
+        public static final Rotation2d MIN_ANGLE = new Rotation2d(4 - 2 * Math.PI);
+        public static final Rotation2d MAX_ANGLE = new Rotation2d(Math.PI / 4);
+
+        public static final int MOTOR_ID = 22;
+        public static final int ENCODER_ID = 55;
+
+        public static final Rotation2d INTAKE_SETPOINT_ANGLE = Rotation2d.fromDegrees(-90); //TODO: figure this out
+        public static final Rotation2d L1_ANGLE = Rotation2d.fromDegrees(0.3); //TODO: figure this out
+        public static final Rotation2d L2_ANGLE = Rotation2d.fromDegrees(45); //TODO: figure this out
+        public static final double JOYSTICK_SCALING = 0.25; //TODO: figure this out
+
+        public static final Rotation2d UPPER_DANGER_ZONE = Rotation2d.fromDegrees(175);
+        public static final Rotation2d LOWER_DANGER_ZONE = Rotation2d.fromDegrees(300);
+    }
+
     public static class ElevatorConstants {
-        public static final double GEAR_RATIO = 64 / 16 * 2;
+        public static final double GEAR_RATIO = 64 / 16 / 2;
         public static final double PITCH_DIAMETER = Units.inchesToMeters(1.273);
 
-        public static final double kP = 40; // TODO: Find actual value
+        public static final double kP = 0.5; // TODO: Find actual value NOTE: was 3.596
         public static final double kI = 0; // TODO: Find actual value
-        public static final double kD = 0.1; // TODO: Find actual value
+        public static final double kD = 0; //TODO: Find actual value
 
-        public static final double kS = 0.1; // TODO: Find actual value
-        public static final double kV = 0.5; // TODO: Find actual value
-        public static final double kA = 0.2; // TODO: Find actual value
-        public static final double kG = 2; // TODO: Find actual value
-        public static final TrapezoidProfile.Constraints CONSTRAINTS = new TrapezoidProfile.Constraints(0.1, 0.1);
+        public static final double kS = 1.2256; // TODO: Find actual value NOTE: 1.2256
+        public static final double kV = 0.03; // TODO: Find actual value NOTE: 0.034454
+        public static final double kA = 0.2; // TODO: Find actual value NOTE: 0.2
+        public static final double kG = 0.28946; // TODO: Find actual value NOTE: 0.28946
+        public static final TrapezoidProfile.Constraints CONSTRAINTS = new TrapezoidProfile.Constraints(20, 5);
 
         public static final double SUPPLY_CURRENT_LIMIT = 40;
         public static final double STATOR_CURRENT_LIMIT = 80;
@@ -327,17 +360,17 @@ public final class Constants {
         public static final double VOLTAGE_OUTPUT = 0;
 
         public static final double MOTION_MAGIC_POSITION_VOLTAGE = 12;
-        public static final double MOTION_MAGIC_ACCELERATION = 3; // TODO: Find actual acceleration
-        public static final double MOTION_MAGIC_CRUISE_VELOCITY = 3; // TODO: Find actual cruise velocity
+        public static final double MOTION_MAGIC_ACCELERATION = 5; // TODO: Find actual acceleration
+        public static final double MOTION_MAGIC_CRUISE_VELOCITY = 15; // TODO: Find actual cruise velocity
         public static final double HEIGHT_DEADBAND = 0.2;
 
         public static final double BASE_STATUS_SIGNAL_FREQUENCY = 50.0;
 
         public static final int LEFT_ELEVATOR_ID = 33; // TODO: Find actual motor ID
         public static final int RIGHT_ELEVATOR_ID = 34; // TODO: Find actual motor ID
-        public static final int LIMIT_SWITCH_CHANNEL = 0; // TODO: Find actual channel
+        public static final int LIMIT_SWITCH_CHANNEL = 6; // TODO: Find actual channel
 
-        public static final double BOTTOM_HEIGHT = 0;
+        public static final double BOTTOM_HEIGHT = 10;
         public static final double TOP_HEIGHT = 2;
 
         public static final double ELEVATOR_MASS = 4;
@@ -351,7 +384,7 @@ public final class Constants {
     }
 
     public static class CoralEndEffectorConstants {
-        public static final double MOTOR_SPEED = 1;
+        public static final double MOTOR_SPEED = 0.5;
         public static final int CURRENT_LIMIT = 20;
         public static final int LEFT_ID = 44;
         public static final int RIGHT_ID = 45;
@@ -362,33 +395,4 @@ public final class Constants {
         public static final int CURRENT_LIMIT = 20;
     }
 
-    public static class PivotConstants {
-        public static final double kP = 10;
-        public static final double kI = 0;
-        public static final double kD = 0;
-        public static final double kS = 1.3843;
-        public static final double kG = 1.0129;
-        public static final double kV = 1.0491;
-        public static final double kA = 0.50095;
-        public static final TrapezoidProfile.Constraints CONSTRAINTS = new TrapezoidProfile.Constraints(0.1, 0.1);
-
-        public static final int CURRENT_LIMIT = 40;
-
-        public static final double PIVOT_GEARING = 12;
-        public static final double ARM_LENGTH = Units.inchesToMeters(12);
-        public static final double PIVOT_MASS = Units.lbsToKilograms(15);
-        public static final Rotation2d MIN_ANGLE = new Rotation2d(4 - 2 * Math.PI);
-        public static final Rotation2d MAX_ANGLE = new Rotation2d(Math.PI / 4);
-
-        public static final int MOTOR_ID = 22;
-        public static final int ENCODER_ID = 55;
-
-        public static final Rotation2d INTAKE_SETPOINT_ANGLE = Rotation2d.fromDegrees(0); //TODO: figure this out
-        public static final Rotation2d L1_ANGLE = Rotation2d.fromDegrees(0.3); //TODO: figure this out
-        public static final Rotation2d L2_ANGLE = Rotation2d.fromDegrees(0); //TODO: figure this out
-        public static final double JOYSTICK_SCALING = 0.25; //TODO: figure this out
-
-        public static final Rotation2d UPPER_DANGER_ZONE = Rotation2d.fromDegrees(175);
-        public static final Rotation2d LOWER_DANGER_ZONE = Rotation2d.fromDegrees(300);
-    }
 }

@@ -34,11 +34,15 @@ import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.IOConstants.DriverIOConstants;
 import frc.robot.Constants.IOConstants.OperatorIOConstants;
 import frc.robot.Constants.PivotConstants;
+import frc.robot.Constants.RobotConstants;
 import frc.robot.Constants.SimConstants;
 import frc.robot.Constants.VisionConstants;
 import frc.robot.commands.drivebase.AlignToReefCommand;
 import frc.robot.commands.drivebase.SwerveDriveCommand;
+import frc.robot.commands.superstructure.ElevatorCommand;
+import frc.robot.commands.superstructure.ElevatorPositionCommand;
 import frc.robot.commands.superstructure.PivotPositionCommand;
+import frc.robot.commands.superstructure.SuperstructureStateCommand;
 import frc.robot.subsystems.drive.DriveBase;
 import frc.robot.subsystems.drive.GyroIONavX;
 import frc.robot.subsystems.drive.GyroIOSim;
@@ -158,13 +162,20 @@ public class RobotContainer {
                         () -> -driverJoystick.getRawAxis(DriverIOConstants.ROTATION_AXIS),
                         () -> DriveConstants.FIELD_CENTRIC, DriverIOConstants.SQUARE_INPUTS));
         // superstructure.setDefaultCommand(new PivotCommand(superstructure, () -> driverJoystick.getRawAxis(OperatorIOConstants.MANUAL_ARM_AXIS)));
-        superstructure.setDefaultCommand(new PivotPositionCommand(superstructure, () -> Rotation2d.fromRotations(
-                superstructure.getPivotRotation().getRotations() + PivotConstants.JOYSTICK_SCALING * MathUtil
-                        .applyDeadband(-operatorJoystick.getRawAxis(OperatorIOConstants.MANUAL_ARM_AXIS), 0.1))));
+        // superstructure.setDefaultCommand(new PivotPositionCommand(superstructure, () -> Rotation2d.fromRotations(
+        //         superstructure.getPivotRotation().getRotations() + PivotConstants.JOYSTICK_SCALING * MathUtil
+        //                 .applyDeadband(-operatorJoystick.getRawAxis(OperatorIOConstants.MANUAL_ARM_AXIS), 0.1))));
+        // superstructure.setDefaultCommand(new SuperstructureStateCommand(superstructure, () -> Rotation2d.fromRotations(superstructure.getPivotRotation().getRotations() + PivotConstants.JOYSTICK_SCALING * MathUtil.applyDeadband(-operatorJoystick.getRawAxis(OperatorIOConstants.MANUAL_ARM_AXIS), 0.1))));
+        // superstructure.setDefaultCommand(superstructure.run(() -> {
+        //     superstructure.setRotation(superstructure.getPivotRotation().plus(Rotation2d.fromRotations(PivotConstants.JOYSTICK_SCALING * MathUtil.applyDeadband(-operatorJoystick.getRawAxis(OperatorIOConstants.MANUAL_ARM_AXIS), 0.1))));
+        //     superstructure.setExtension(superstructure.getExtension() + MathUtil.applyDeadband(operatorJoystick.getRawAxis(OperatorIOConstants.MANUAL_ELEVATOR_AXIS), 0.1), 0);
+        // }));
+        // superstructure.setDefaultCommand(Commands.run(() -> superstructure.setState(superstructure.getState()), superstructure));
         //  coral.setDefaultCommand(coral.spinCommand(CoralEndEffectorConstants.MOTOR_SPEED)
         //  .until(() -> coral.getCurrent() > CoralEndEffectorConstants.CURRENT_THRESHOLD)
         //  .andThen(new RunCommand(() -> {
         //  })));
+        superstructure.setDefaultCommand(new SuperstructureStateCommand(superstructure, superstructure.getState()));
         coral.setDefaultCommand(coral.stopCommand());
 
     }
@@ -198,8 +209,10 @@ public class RobotContainer {
         adjustButton.whileTrue(coral.spinCommand(1));
         intakeButton.whileTrue(coral.spinCommand(-1));
         // // stowButton.whileTrue(new PivotPositionCommand(superstructure, PivotConstants.INTAKE_SETPOINT_ANGLE));
-        l1Button.whileTrue(new PivotPositionCommand(superstructure, PivotConstants.INTAKE_SETPOINT_ANGLE));
-        l2Button.whileTrue(new PivotPositionCommand(superstructure, PivotConstants.L2_ANGLE));
+        //l1Button.whileTrue(new ElevatorCommand(superstructure, -1).until(superstructure.limitSwitch));
+        // l2Button.whileTrue(new PivotPositionCommand(superstructure, PivotConstants.L2_ANGLE));
+        l2Button.whileTrue(new SuperstructureStateCommand(superstructure, RobotConstants.L3_STATE));
+        l1Button.whileTrue(new SuperstructureStateCommand(superstructure, RobotConstants.L1_STATE));
         leftButton.onTrue(new AlignToReefCommand(driveBase, false));
         rightButton.onTrue(new AlignToReefCommand(driveBase, true));
     }
@@ -214,9 +227,9 @@ public class RobotContainer {
 
     public void smartDashSetup() {
         autoChooser.addRoutine("Characterize",
-                List.of(new AutoQuestion<>("Which Subsystem?", Map.of("DriveBase", driveBase)),
+                List.of(new AutoQuestion<>("Which Subsystem?", Map.of("DriveBase", driveBase, "Elevator", superstructure)),
                         new AutoQuestion<>("Which Routine",
-                                Map.of("Quasistatic Foward", CharacterizationRoutine.QUASISTATIC_FORWARD,
+                                Map.of("Quasistatic Forward", CharacterizationRoutine.QUASISTATIC_FORWARD,
                                         "Quasistatic Backward", CharacterizationRoutine.QUASISTATIC_BACKWARD,
                                         "Dynamic Forward", CharacterizationRoutine.DYNAMIC_FORWARD, "Dynamic Backward",
                                         CharacterizationRoutine.DYNAMIC_BACKWARD))),

@@ -19,7 +19,7 @@ public class SuperstructureStateCommand extends Command {
 
   @Override
   public void initialize() {
-    superstructure.reset(superstructure.getState());
+    // superstructure.reset(superstructure.getState());
   }
 
   @Override

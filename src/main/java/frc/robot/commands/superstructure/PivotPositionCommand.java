@@ -37,10 +37,14 @@ public class PivotPositionCommand extends Command {
         this(superstructure, () -> pivotAngle);
     }
 
+    public void initialize() {
+        superstructure.resetRotations(superstructure.getState());
+    }
+
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        superstructure.setRotation(Rotation2d.fromRotations(MathUtil.clamp(pivotAngle.get().getRadians(), PivotConstants.MIN_ANGLE.getRadians(), PivotConstants.MAX_ANGLE.getRadians())));
+        superstructure.setRotation(pivotAngle.get());
     }
 
     // Called once the command ends or is interrupted.
@@ -50,6 +54,6 @@ public class PivotPositionCommand extends Command {
     // Returns true when the command should end.
     @Override
     public boolean isFinished() {
-        return false;
+        return superstructure.atPivotSetpoint();
     }
 }

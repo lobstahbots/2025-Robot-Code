@@ -151,11 +151,6 @@ public class ElevatorIOSim implements ElevatorIO {
     }
 
     @Override
-    public void setPosition(TrapezoidProfile.State state) {
-        rightMotor.setControl(positionVoltage.withPosition(state.position));
-    }
-
-    @Override
     public void setVoltage(double voltage) {
         rightMotor.setControl(voltageOut.withOutput(voltage));
     }

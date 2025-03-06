@@ -4,15 +4,11 @@ import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
-import com.ctre.phoenix6.controls.MotionMagicVoltage;
-import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
-import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
@@ -41,10 +37,6 @@ public class ElevatorIOTalonFX implements ElevatorIO {
     private final StatusSignal<Current> leftTorqueCurrent;
     private final StatusSignal<Temperature> leftTempCelsius;
 
-    private final MotionMagicVoltage positionVoltage = new MotionMagicVoltage(
-            ElevatorConstants.MOTION_MAGIC_POSITION_VOLTAGE);
-    private final VoltageOut voltageOut = new VoltageOut(ElevatorConstants.VOLTAGE_OUTPUT).withEnableFOC(false);
-
     private final DigitalInput limitSwitch = new DigitalInput(ElevatorConstants.LIMIT_SWITCH_CHANNEL);
 
     public ElevatorIOTalonFX(int leftElevatorID, int rightElevatorID) {
@@ -62,17 +54,6 @@ public class ElevatorIOTalonFX implements ElevatorIO {
         config.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
         config.Feedback.SensorToMechanismRatio = ElevatorConstants.GEAR_RATIO * ElevatorConstants.PITCH_DIAMETER
                 * Math.PI;
-
-        config.Slot0.kP = ElevatorConstants.kP;
-        config.Slot0.kI = ElevatorConstants.kI;
-        config.Slot0.kD = ElevatorConstants.kD;
-        config.Slot0.kS = ElevatorConstants.kS;
-        config.Slot0.kV = ElevatorConstants.kV;
-        config.Slot0.kA = ElevatorConstants.kA;
-        config.Slot0.kG = ElevatorConstants.kG;
-        config.MotionMagic.MotionMagicAcceleration = ElevatorConstants.MOTION_MAGIC_ACCELERATION;
-        config.MotionMagic.MotionMagicCruiseVelocity = ElevatorConstants.MOTION_MAGIC_CRUISE_VELOCITY;
-        config.Slot0.GravityType = GravityTypeValue.Elevator_Static;
 
         leftElevatorMotor.getConfigurator().apply(config);
         rightElevatorMotor.getConfigurator().apply(config);
@@ -99,6 +80,9 @@ public class ElevatorIOTalonFX implements ElevatorIO {
                 leftPosition, leftVelocity, leftAppliedVoltage, leftSupplyCurrent, leftTorqueCurrent, leftTempCelsius);
         rightElevatorMotor.optimizeBusUtilization();
         leftElevatorMotor.optimizeBusUtilization();
+
+        leftElevatorMotor.setPosition(0.0);
+        rightElevatorMotor.setPosition(0.0);
     }
 
     @Override
@@ -120,19 +104,14 @@ public class ElevatorIOTalonFX implements ElevatorIO {
         inputs.leftStatorCurrent = leftStatorCurrent.getValueAsDouble();
         inputs.leftTorqueCurrent = leftTorqueCurrent.getValueAsDouble();
         inputs.leftTempCelsius = leftTempCelsius.getValueAsDouble();
-        inputs.limitSwitchHit = limitSwitch.get();
+        inputs.limitSwitchHit = !limitSwitch.get();
         inputs.atSetpoint = MathUtil.applyDeadband(rightElevatorMotor.getClosedLoopError().getValueAsDouble(),
                 ElevatorConstants.HEIGHT_DEADBAND) == 0;
     }
 
     @Override
-    public void setPosition(TrapezoidProfile.State state) {
-        rightElevatorMotor.setControl(positionVoltage.withPosition(state.position));
-    }
-
-    @Override
     public void setVoltage(double voltage) {
-        rightElevatorMotor.setControl(voltageOut.withOutput(voltage));
+        rightElevatorMotor.setVoltage(voltage);
     }
 
     @Override
