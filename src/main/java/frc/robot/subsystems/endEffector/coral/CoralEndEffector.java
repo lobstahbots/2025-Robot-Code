@@ -22,27 +22,15 @@ public class CoralEndEffector extends SubsystemBase {
     }
 
     /**
-     * construct a command to spin the end effector
+     * Construct a command to spin the end effector
      * 
-     * @param leftSpeed  speed for left motor
-     * @param rightSpeed speed for right motor
+     * @param speed speed to spin the motor at
      * @return constructed command
      */
     public Command spinCommand(double speed) {
         return runEnd(() -> io.setSpeed(speed), io::stopMotor);
     }
 
-    /**
-     * construct a command to spin the end effector
-     * 
-     * @param speed speed to spin it at
-     * @return constructed command
-     */
-    /* 
-    public Command spinCommand(double speed) {
-        return spinCommand(speed, speed);
-    }
-    */
     /**
      * Construct a command to stop the end effector
      * 

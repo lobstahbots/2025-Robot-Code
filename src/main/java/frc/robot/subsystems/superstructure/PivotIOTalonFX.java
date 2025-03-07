@@ -6,6 +6,7 @@ package frc.robot.subsystems.superstructure;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.reduxrobotics.sensors.canandmag.Canandmag;
 
@@ -19,12 +20,16 @@ public class PivotIOTalonFX implements PivotIO {
 
     /** Creates a new Pivot. */
     public PivotIOTalonFX(int pivotMotorID, int encoderID) {
+        this.encoder = new Canandmag(encoderID);
         TalonFXConfiguration config = new TalonFXConfiguration();
         pivotMotor = new TalonFX(pivotMotorID);
         config.CurrentLimits.SupplyCurrentLimit = PivotConstants.CURRENT_LIMIT;
         config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+        config.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
+        config.Feedback.SensorToMechanismRatio = PivotConstants.PIVOT_GEARING;
         pivotMotor.getConfigurator().apply(config);
-        this.encoder = new Canandmag(encoderID);
+        pivotMotor
+                .setPosition(Rotation2d.fromRotations(encoder.getAbsPosition()).plus(Rotation2d.kZero).getRotations()); // use the plus method to clamp between -pi and pi
     }
 
     public void setIdleMode(NeutralModeValue idleMode) {
@@ -45,8 +50,8 @@ public class PivotIOTalonFX implements PivotIO {
 
     @Override
     public void updateInputs(PivotIOInputs inputs) {
-        inputs.position = Rotation2d.fromRotations(encoder.getAbsPosition());
-        inputs.velocity = pivotMotor.getVelocity().getValueAsDouble();
+        inputs.position = Rotation2d.fromRotations(encoder.getAbsPosition()).plus(Rotation2d.kZero); // add Rotation2d.kZero to bound between -pi and pi
+        inputs.velocity = encoder.getVelocity() * 2 * Math.PI;
         inputs.supplyCurrent = pivotMotor.getSupplyCurrent().getValueAsDouble();
         inputs.statorCurrent = pivotMotor.getStatorCurrent().getValueAsDouble();
         inputs.torqueCurrent = pivotMotor.getTorqueCurrent().getValueAsDouble();

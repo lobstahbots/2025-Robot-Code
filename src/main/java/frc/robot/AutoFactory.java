@@ -24,9 +24,11 @@ import frc.robot.Constants.CoralEndEffectorConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.PathConstants;
 import frc.robot.Constants.RobotConstants;
+import frc.robot.Constants.FieldConstants.Poses;
 import frc.robot.commands.coralEndEffectorCommands.CoralCommand;
-import frc.robot.commands.driveCommands.SwerveDriveStopCommand;
-import frc.robot.commands.superstructureCommands.SuperstructureStateCommand;
+import frc.robot.commands.drivebase.DriveToPoseCommand;
+import frc.robot.commands.drivebase.SwerveDriveStopCommand;
+import frc.robot.commands.superstructure.SuperstructureStateCommand;
 import frc.robot.subsystems.drive.DriveBase;
 import frc.robot.subsystems.endEffector.coral.CoralEndEffector;
 import frc.robot.subsystems.superstructure.Superstructure;
@@ -247,6 +249,32 @@ public class AutoFactory {
     }
 
     /**
+     * Get a command to auto align to a specified pipe. This is not for pathfinding;
+     * it utilizes {@link DriveToPoseCommand} to PID drive to the final pose. Use
+     * only after pathfinding to the general area of the pose.
+     * 
+     * @param pipe the character representing the pipe
+     * @return the constructed command
+     */
+    public Command getAutoAlignToPipeCommand(char pipe) {
+        return new DriveToPoseCommand(driveBase, switch (pipe) {
+            case 'A' -> Poses.A;
+            case 'B' -> Poses.B;
+            case 'C' -> Poses.C;
+            case 'D' -> Poses.D;
+            case 'E' -> Poses.E;
+            case 'F' -> Poses.F;
+            case 'G' -> Poses.G;
+            case 'H' -> Poses.H;
+            case 'I' -> Poses.I;
+            case 'J' -> Poses.J;
+            case 'K' -> Poses.K;
+            case 'L' -> Poses.L;
+            default -> driveBase.getPose();
+        });
+    }
+
+    /**
      * Get the command to go and score the first coral in auto.
      * 
      * @param startingPosition the starting position the robot is in; odometry pose
@@ -259,6 +287,7 @@ public class AutoFactory {
     public Command getStartCommand(StartingPosition startingPosition, char pipe) {
         return getPathFindToPathCommand(startingPosition.name() + "_" + pipe, PathType.CHOREO)
                 .alongWith(new SuperstructureStateCommand(superstructure, RobotConstants.L2_STATE))
+                .andThen(getAutoAlignToPipeCommand(pipe))
                 .andThen(new CoralCommand(coral, CoralEndEffectorConstants.MOTOR_SPEED).withTimeout(1));
     }
 
@@ -286,6 +315,7 @@ public class AutoFactory {
     public Command getScoreCommand(CoralStation coralStation, char pipe) {
         return getPathFindToPathCommand(coralStation.name() + "_" + pipe, PathType.CHOREO, 0)
                 .alongWith(new SuperstructureStateCommand(superstructure, RobotConstants.L2_STATE))
+                .andThen(getAutoAlignToPipeCommand(pipe))
                 .andThen(new CoralCommand(coral, CoralEndEffectorConstants.MOTOR_SPEED).withTimeout(1));
     }
 

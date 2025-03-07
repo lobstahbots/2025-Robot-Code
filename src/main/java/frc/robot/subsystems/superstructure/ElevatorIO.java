@@ -83,13 +83,6 @@ public interface ElevatorIO {
     public void setVoltage(double voltage);
 
     /**
-     * Set the internal PIDF loop to aim for this position.
-     * 
-     * @param position the position setpoint
-     */
-    public void setPosition(TrapezoidProfile.State state);
-
-    /**
      * Stop all elevator motion
      */
     public void stop();

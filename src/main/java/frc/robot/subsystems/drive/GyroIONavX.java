@@ -48,7 +48,6 @@ public class GyroIONavX implements GyroIO {
     }
 
     public void updateInputs(GyroIOInputs inputs) {
-        System.out.println(gyro.getYaw());
         inputs.connected = gyro.isConnected();
         inputs.rollPosition = getRoll();
         inputs.pitchPosition = getPitch();
