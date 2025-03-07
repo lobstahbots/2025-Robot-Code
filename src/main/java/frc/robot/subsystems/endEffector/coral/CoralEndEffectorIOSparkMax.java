@@ -24,21 +24,21 @@ public class CoralEndEffectorIOSparkMax implements CoralEndEffectorIO {
         config.idleMode(IdleMode.kBrake);
         config.inverted(false);
         config.encoder.velocityConversionFactor(1.0 / 60);
-        leftMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-        rightMotor.configure(config.follow(leftId, true), ResetMode.kResetSafeParameters,
-                PersistMode.kPersistParameters);
+        rightMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        // rightMotor.configure(config.follow(leftId, true), ResetMode.kResetSafeParameters,
+        //         PersistMode.kPersistParameters);
 
         encoder = leftMotor.getEncoder();
     }
 
     @Override
     public void stopMotor() {
-        leftMotor.stopMotor();
+        rightMotor.stopMotor();
     }
 
     @Override
     public void setSpeed(double speed) {
-        leftMotor.set(speed);
+        rightMotor.set(speed);
     }
 
     @Override

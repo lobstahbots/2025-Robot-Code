@@ -90,6 +90,11 @@ public class Superstructure extends CharacterizableSubsystem {
                 elevatorInputs.rightVelocity);
     }
 
+    public SuperstructureState getGoal() {
+        return new SuperstructureState(Rotation2d.fromRadians(armPID.getGoal().position), elevatorPID.getGoal().position, armPID.getGoal().velocity,
+        elevatorPID.getGoal().velocity);
+    }
+
     public void setElevatorVoltage(double voltage) {
         elevatorIO.setVoltage(voltage);
     }
@@ -184,6 +189,7 @@ public class Superstructure extends CharacterizableSubsystem {
                 + armFeedforward.calculate(armPID.getSetpoint().position, armPID.getSetpoint().velocity));
         
         if (elevatorIsClosedLoop) setElevatorVoltage(elevatorPID.calculate(elevatorInputs.leftPosition) + elevatorFeedforward.calculate(elevatorPID.getSetpoint().velocity));
+        
     }
    
 }
