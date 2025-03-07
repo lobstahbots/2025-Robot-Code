@@ -28,7 +28,6 @@ import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
-
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.KilogramSquareMeters;
@@ -58,14 +57,43 @@ public final class Constants {
     public static class IOConstants {
         public static final double JOYSTICK_DEADBAND = 0.1;
 
+        public static class ControllerIOConstants {
+            public static final int DRIVER_CONTROLLER_PORT = 0;
+            public static final int OPERATOR_CONTROLLER_PORT = 1;
+
+            public static final int LEFT_STICK_HORIZONTAL = 0; //TODO: FIGURE OUT IDs
+            public static final int LEFT_STICK_VERTICAL = 0;
+            public static final int RIGHT_STICK_HORIZONTAL = 0;
+            public static final int RIGHT_STICK_VERTICAL = 0;
+
+            public static final int X_BUTTON = 0;
+            public static final int Y_BUTTON = 0;
+            public static final int A_BUTTON = 0;
+            public static final int B_BUTTON = 0;
+
+            public static final int LT_BUTTON = 0;
+            public static final int RT_BUTTON = 0;
+            
+            public static final int LB_BUTTON = 0;
+            public static final int RB_BUTTON = 0;
+            
+            public static final int RIGHT_PADDLE = 0;
+            public static final int LEFT_PADDLE = 0;
+
+            public static final int D_PAD_UP = 0;
+            public static final int D_PAD_DOWN = 0;
+            public static final int D_PAD_LEFT = 0;
+            public static final int D_PAD_RIGHT = 0;
+        }
+
         public static class DriverIOConstants {
             public static final int DRIVER_CONTROLLER_PORT = 0;
-            public static final int STRAFE_X_AXIS = 1;
-            public static final int STRAFE_Y_AXIS = 0;
+            public static final int STRAFE_X_AXIS = 1; //Fix this to be named the actual axis
+            public static final int STRAFE_Y_AXIS = 0; 
             public static final int ROTATION_AXIS = 4;
             public static final int SCORE_BUTTON = 6; //Should be LT
-            public static final int LEFT_BUTTON = 0;
-            public static final int RIGHT_BUTTON = 0;
+            public static final int LEFT_BACK_BUTTON = 0;
+            public static final int RIGHT_BACK_BUTTON = 0; 
             public static final boolean SQUARE_INPUTS = false;
         }
 
@@ -76,7 +104,7 @@ public final class Constants {
             public static final int L2_BUTTON = 2; //Should be Y
             public static final int SPIN_INTAKE_BUTTON_ID = 5; //Should be LT
             public static final int SCORE_BUTTON = 6;
-            public static final int STOW_BUTTON_ID = 0; //Should be RT
+            public static final int STOW_BUTTON_ID = 0; 
             public static final int MANUAL_ELEVATOR_AXIS = 5;
         }
     }
@@ -393,6 +421,7 @@ public final class Constants {
 
     public static class AlgaeEndEffectorConstants {
         public static final int CURRENT_LIMIT = 20;
+        public static final int MOTOR_ID = 45;
     }
 
 }
