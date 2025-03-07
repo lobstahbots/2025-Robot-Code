@@ -67,6 +67,9 @@ import frc.robot.util.auto.AutonSelector.AutoQuestion;
 
 public class RobotContainer {
     private final DriveBase driveBase;
+    private final Superstructure superstructure;
+    private final CoralEndEffector coral;
+    private final AlgaeEndEffector algae;
 
     //sticks
     private final Joystick driverJoystick = new Joystick(ControllerIOConstants.DRIVER_CONTROLLER_PORT);
@@ -75,11 +78,14 @@ public class RobotContainer {
     //Driver
     private final Trigger driverLTButton = new Trigger(() -> driverJoystick.getRawAxis(ControllerIOConstants.LT_BUTTON) > 0.5);
     private final Trigger driverRTButton = new Trigger(() -> driverJoystick.getRawAxis(ControllerIOConstants.RT_BUTTON) > 0.5);
+
     private final JoystickButton driverLBButton = new JoystickButton(driverJoystick, ControllerIOConstants.LB_BUTTON);
     private final JoystickButton driverRBButton = new JoystickButton(driverJoystick, ControllerIOConstants.RB_BUTTON);
+
     private final JoystickButton driverXButton = new JoystickButton(driverJoystick, ControllerIOConstants.X_BUTTON);
     private final JoystickButton driverYButton = new JoystickButton(driverJoystick, ControllerIOConstants.Y_BUTTON);
     private final JoystickButton driverBButton = new JoystickButton(driverJoystick, ControllerIOConstants.B_BUTTON);
+    
     private final JoystickButton driverLeftPaddle = new JoystickButton(driverJoystick, ControllerIOConstants.LEFT_PADDLE);
     private final JoystickButton driverRightPaddle = new JoystickButton(driverJoystick, ControllerIOConstants.RIGHT_PADDLE);
     private final POVButton driverDpadUp = new POVButton(driverJoystick, ControllerIOConstants.D_PAD_UP);
@@ -88,11 +94,14 @@ public class RobotContainer {
     //Operator
     private final Trigger operatorLTButton = new Trigger(() -> driverJoystick.getRawAxis(ControllerIOConstants.LT_BUTTON) > 0.5);
     private final Trigger operatorRTButton = new Trigger(() -> driverJoystick.getRawAxis(ControllerIOConstants.RT_BUTTON) > 0.5);
+
     private final JoystickButton operatorLBButton = new JoystickButton(operatorJoystick, ControllerIOConstants.LB_BUTTON);
     private final JoystickButton operatorRBButton = new JoystickButton(operatorJoystick, ControllerIOConstants.RB_BUTTON);
+
     private final JoystickButton operatorXButton = new JoystickButton(operatorJoystick, ControllerIOConstants.X_BUTTON);
     private final JoystickButton operatorYButton = new JoystickButton(operatorJoystick, ControllerIOConstants.Y_BUTTON);
     private final JoystickButton operatorBButton = new JoystickButton(operatorJoystick, ControllerIOConstants.B_BUTTON);
+
     private final POVButton operatorDpadUp = new POVButton(operatorJoystick, ControllerIOConstants.D_PAD_UP);
     private final POVButton opeartorDpadDown = new POVButton(operatorJoystick, ControllerIOConstants.D_PAD_DOWN);
 
@@ -102,11 +111,6 @@ public class RobotContainer {
     private final AutonSelector<Object> autoChooser = new AutonSelector<>("Auto Chooser", "Do Nothing", List.of(),
             () -> Commands.none());
     private final AutoFactory autoFactory;
-
-    private final Superstructure superstructure;
-
-    private final CoralEndEffector coral;
-    private final AlgaeEndEffector algae;
 
     private SwerveDriveSimulation driveSimulation = null;
 
