@@ -27,6 +27,7 @@ public class CoralEndEffectorIOSparkMax implements CoralEndEffectorIO {
         //rightMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         // rightMotor.configure(config.follow(leftId, true), ResetMode.kResetSafeParameters,
         //         PersistMode.kPersistParameters);
+        leftMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
         encoder = leftMotor.getEncoder();
     }

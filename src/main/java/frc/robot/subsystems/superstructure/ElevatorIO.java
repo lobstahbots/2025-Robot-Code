@@ -2,8 +2,6 @@ package frc.robot.subsystems.superstructure;
 
 import org.littletonrobotics.junction.AutoLog;
 
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
-
 public interface ElevatorIO {
     @AutoLog
     public static class ElevatorIOInputs {
