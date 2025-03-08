@@ -198,8 +198,8 @@ public class RobotContainer {
         algae.setDefaultCommand(new StopAlgaeCommand(algae));
         superstructure.setDefaultCommand(Commands.run(() -> superstructure.setState(
             new SuperstructureState(
-            superstructure.getGoal().pivotRotation.plus(Rotation2d.fromRadians(operatorJoystick.getRawAxis(ControllerIOConstants.LEFT_STICK_VERTICAL))),
-            superstructure.getGoal().elevatorHeight + operatorJoystick.getRawAxis(ControllerIOConstants.RIGHT_STICK_VERTICAL) * -3, 0, 0
+            superstructure.getGoal().pivotRotation.plus(Rotation2d.fromRadians(0.1 * operatorJoystick.getRawAxis(ControllerIOConstants.LEFT_STICK_VERTICAL))),
+            superstructure.getGoal().elevatorHeight + operatorJoystick.getRawAxis(ControllerIOConstants.RIGHT_STICK_VERTICAL) * -2, 0, 0
             )), superstructure));
     }
 
@@ -217,7 +217,7 @@ public class RobotContainer {
 
         //driver
         driverLTButton.whileTrue(new CoralCommand(coral, 0.75));
-        driverRTButton.whileTrue(superstructure.getSetpointCommand(RobotConstants.INTAKE_STATE).andThen(new CoralCommand(coral, -1)));
+        driverRTButton.onTrue(superstructure.getSetpointCommand(RobotConstants.INTAKE_STATE).andThen(new CoralCommand(coral, -1)));
         driverLBButton.whileTrue(new AlgaeCommand(algae, 1));
         //driverRBButton.whileTrue(superstructure.getSetpointCommand(RobotConstants.INTAKE_STATE)); //NOTE: Fancy collision avoidance that is untested and doesn't necessarily work and is messing things up
         
@@ -242,7 +242,7 @@ public class RobotContainer {
         operatorBButton.whileTrue(superstructure.getSetpointCommand(RobotConstants.L4_STATE));
         
         // TODO: uncoment after the algae states are actually inputed properly
-        // opeartorDpadDown.whileTrue(new SuperstructureStateCommand(superstructure, RobotConstants.L2_ALGAE_STATE));
+        // opeartorDpadDown.whileTrue(new SuperstructureStateCommand(supers                  tructure, RobotConstants.L2_ALGAE_STATE));
         // operatorDpadUp.whileTrue(new SuperstructureStateCommand(superstructure, RobotConstants.L3_ALGAE_STATE));
 
         // //TODO: Fix manual mode
