@@ -185,5 +185,4 @@ public class Superstructure extends CharacterizableSubsystem {
         
         if (elevatorIsClosedLoop) setElevatorVoltage(elevatorPID.calculate(elevatorInputs.leftPosition) + elevatorFeedforward.calculate(elevatorPID.getSetpoint().velocity));
     }
-   
 }

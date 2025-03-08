@@ -13,7 +13,6 @@ import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedNetworkString;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Joystick;
@@ -34,7 +33,6 @@ import frc.robot.Constants.DriveConstants.FrontRightModuleConstants;
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.IOConstants.ControllerIOConstants;
 import frc.robot.Constants.IOConstants.DriverIOConstants;
-import frc.robot.Constants.IOConstants.OperatorIOConstants;
 import frc.robot.Constants.PivotConstants;
 import frc.robot.Constants.RobotConstants;
 import frc.robot.Constants.SimConstants;
@@ -43,7 +41,6 @@ import frc.robot.commands.algaeEndEffector.AlgaeCommand;
 import frc.robot.commands.algaeEndEffector.StopAlgaeCommand;
 import frc.robot.commands.drivebase.AlignToReefCommand;
 import frc.robot.commands.drivebase.SwerveDriveCommand;
-import frc.robot.commands.superstructure.ElevatorCommand;
 import frc.robot.commands.superstructure.ElevatorPositionCommand;
 import frc.robot.commands.superstructure.PivotPositionCommand;
 import frc.robot.commands.superstructure.SuperstructureStateCommand;
@@ -112,7 +109,7 @@ public class RobotContainer {
 
     private SwerveDriveSimulation driveSimulation = null;
 
-    private int scoreLevel = 1;
+    //private int scoreLevel = 1;
 
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
