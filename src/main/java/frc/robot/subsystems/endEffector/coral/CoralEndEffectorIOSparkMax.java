@@ -12,21 +12,21 @@ import frc.robot.Constants.CoralEndEffectorConstants;
 
 public class CoralEndEffectorIOSparkMax implements CoralEndEffectorIO {
     private final SparkMax leftMotor;
-    private final SparkMax rightMotor;
+    //private final SparkMax rightMotor;
     private final RelativeEncoder encoder;
 
-    public CoralEndEffectorIOSparkMax(int leftId, int rightId) {
+    public CoralEndEffectorIOSparkMax(int leftId) {
         leftMotor = new SparkMax(leftId, MotorType.kBrushless);
-        rightMotor = new SparkMax(rightId, MotorType.kBrushless);
+        //rightMotor = new SparkMax(rightId, MotorType.kBrushless);
 
         SparkMaxConfig config = new SparkMaxConfig();
         config.smartCurrentLimit(CoralEndEffectorConstants.CURRENT_LIMIT);
         config.idleMode(IdleMode.kBrake);
         config.inverted(false);
-        config.encoder.velocityConversionFactor(1.0 / 60);
-        leftMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-        rightMotor.configure(config.follow(leftId, true), ResetMode.kResetSafeParameters,
-                PersistMode.kPersistParameters);
+        config.encoder.velocityConversionFactor(1.0);
+        //rightMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        // rightMotor.configure(config.follow(leftId, true), ResetMode.kResetSafeParameters,
+        //         PersistMode.kPersistParameters);
 
         encoder = leftMotor.getEncoder();
     }
@@ -34,6 +34,11 @@ public class CoralEndEffectorIOSparkMax implements CoralEndEffectorIO {
     @Override
     public void stopMotor() {
         leftMotor.stopMotor();
+    }
+
+    @Override
+    public void setVoltage(double voltage) {
+        leftMotor.setVoltage(voltage);
     }
 
     @Override

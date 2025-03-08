@@ -21,23 +21,8 @@ public class CoralEndEffector extends SubsystemBase {
         io.setSpeed(speed);
     }
 
-    /**
-     * Construct a command to spin the end effector
-     * 
-     * @param speed speed to spin the motor at
-     * @return constructed command
-     */
-    public Command spinCommand(double speed) {
-        return runEnd(() -> io.setSpeed(speed), io::stopMotor);
-    }
-
-    /**
-     * Construct a command to stop the end effector
-     * 
-     * @return constructed command
-     */
-    public Command stopCommand() {
-        return run(io::stopMotor);
+    public void setVoltage(double voltage) {
+        io.setVoltage(voltage);
     }
 
     public double getCurrent() {

@@ -28,7 +28,6 @@ import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
-
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.KilogramSquareMeters;
@@ -58,27 +57,59 @@ public final class Constants {
     public static class IOConstants {
         public static final double JOYSTICK_DEADBAND = 0.1;
 
-        public static class DriverIOConstants {
+        public static class ControllerIOConstants {
             public static final int DRIVER_CONTROLLER_PORT = 0;
-            public static final int STRAFE_X_AXIS = 1;
-            public static final int STRAFE_Y_AXIS = 0;
-            public static final int ROTATION_AXIS = 4;
-            public static final int SCORE_BUTTON = 6; //Should be LT
-            public static final int LEFT_BUTTON = 0;
-            public static final int RIGHT_BUTTON = 0;
+            public static final int OPERATOR_CONTROLLER_PORT = 1;
+
+            public static final int LEFT_STICK_HORIZONTAL = 0;
+            public static final int LEFT_STICK_VERTICAL = 1;
+            public static final int RIGHT_STICK_HORIZONTAL = 4;
+            public static final int RIGHT_STICK_VERTICAL = 5;
+            
+            public static final int A_BUTTON = 1;
+            public static final int B_BUTTON = 2;
+            public static final int X_BUTTON = 3;
+            public static final int Y_BUTTON = 4;
+
+            public static final int LT_BUTTON = 2;
+            public static final int RT_BUTTON = 3;
+            
+            public static final int LB_BUTTON = 5;
+            public static final int RB_BUTTON = 6;
+            
+            public static final int RIGHT_PADDLE = 7;
+            public static final int LEFT_PADDLE = 8;
+
+            public static final int D_PAD_UP = 90;
+            public static final int D_PAD_DOWN = 270;
+            public static final int D_PAD_LEFT = 180;
+            public static final int D_PAD_RIGHT = 0;
+            
             public static final boolean SQUARE_INPUTS = false;
         }
+        //NOTE: useless probably
+        // public static class DriverIOConstants {
+        //     public static final int DRIVER_CONTROLLER_PORT = 0;
+        //     public static final int STRAFE_X_AXIS = 1; //Fix this to be named the actual axis
+        //     public static final int STRAFE_Y_AXIS = 0; 
+        //     public static final int ROTATION_AXIS = 4;
+        //     public static final int SCORE_BUTTON = 6; //Should be LT
+        //     public static final int LEFT_BACK_BUTTON = 0;
+        //     public static final int RIGHT_BACK_BUTTON = 0; 
+        //     public static final boolean SQUARE_INPUTS = false;
+        // }
 
-        public static class OperatorIOConstants {
-            public static final int OPERATOR_CONTROLLER_PORT = 1;
-            public static final int MANUAL_ARM_AXIS = 1;
-            public static final int L1_BUTTON = 1; //Should be X
-            public static final int L2_BUTTON = 2; //Should be Y
-            public static final int SPIN_INTAKE_BUTTON_ID = 5; //Should be LT
-            public static final int SCORE_BUTTON = 6;
-            public static final int STOW_BUTTON_ID = 0; //Should be RT
-            public static final int MANUAL_ELEVATOR_AXIS = 5;
-        }
+        // public static class OperatorIOConstants {
+        //     public static final int OPERATOR_CONTROLLER_PORT = 1;
+        //     public static final int MANUAL_ARM_AXIS = 1;
+        //     public static final int L2_BUTTON = 2; //Should be Y
+        //     public static final int L3_BUTTON = 4;
+        //     public static final int L4_BUTTON = 3;
+        //     public static final int SPIN_INTAKE_BUTTON_ID = 5; //Should be LT
+        //     public static final int SCORE_BUTTON = 6;
+        //     public static final int STOW_BUTTON_ID = 0; //Should be RT
+        //     public static final int MANUAL_ELEVATOR_AXIS = 5;
+        // }
     }
 
     public static class RobotConstants {
@@ -94,13 +125,15 @@ public final class Constants {
         public static final Mass WEIGHT = Pounds.of(150);
         public static final MomentOfInertia MOI = KilogramSquareMeters.of(6);
 
-        public static final SuperstructureState INTAKE_STATE = new SuperstructureState(Rotation2d.fromDegrees(-90),
+        public static final SuperstructureState INTAKE_STATE = new SuperstructureState(Rotation2d.fromRadians(-2.615), 0,
+                0, 0);
+        public static final SuperstructureState L2_STATE = new SuperstructureState(Rotation2d.fromRadians(0.81),
                 ElevatorConstants.BOTTOM_HEIGHT, 0, 0);
-        public static final SuperstructureState L1_STATE = new SuperstructureState(Rotation2d.fromDegrees(0),
-                10, 0, 0);
-        public static final SuperstructureState L2_STATE = new SuperstructureState(Rotation2d.fromDegrees(45),
-                ElevatorConstants.BOTTOM_HEIGHT, 0, 0);
-        public static final SuperstructureState L3_STATE = new SuperstructureState(Rotation2d.fromDegrees(45), 10, 0, 0);
+        public static final SuperstructureState L3_STATE = new SuperstructureState(Rotation2d.fromRadians(0.81), 46, 0,
+                0);
+        public static final SuperstructureState L4_STATE = new SuperstructureState(Rotation2d.fromRadians(0.67), 114, 0, 0);
+        public static final SuperstructureState L2_ALGAE_STATE = new SuperstructureState(Rotation2d.fromRadians(0), 0, 0, 0);
+        public static final SuperstructureState L3_ALGAE_STATE = new SuperstructureState(Rotation2d.fromRadians(0), 0, 0, 0);
     }
 
     public static class DriveConstants {
@@ -236,8 +269,8 @@ public final class Constants {
                     new Rotation3d(Degrees.of(0), Degrees.of(-20), Degrees.of(35))));
             CAMERA_TRANSFORMS.put("backleft", new Transform3d(Inches.of(2.775), Inches.of(10.5285), Inches.of(37.1935),
                     new Rotation3d(Degrees.of(0), Degrees.of(20), Degrees.of(35))));
-            CAMERA_TRANSFORMS.put("backright", new Transform3d(Inches.of(2.689), Inches.of(-10.5585), Inches.of(37.0995),
-                    new Rotation3d(Degrees.of(0), Degrees.of(20), Degrees.of(-35))));
+            CAMERA_TRANSFORMS.put("backright", new Transform3d(Inches.of(2.689), Inches.of(-10.5585),
+                    Inches.of(37.0995), new Rotation3d(Degrees.of(0), Degrees.of(20), Degrees.of(-35))));
         }
         public static final double VISION_ODOMETRY_DIFFERENCE_FILTER_THRESHOLD = 5;
         public static final int CAMERA_RES_WIDTH = 1280;
@@ -309,16 +342,15 @@ public final class Constants {
         public static final double LOG_ALERT_INTERVAL = 5; // Interval (in s) between logs of an alert if its text doesn't change
     }
 
-    
     public static class PivotConstants {
-        public static final double kP = 0;
-        public static final double kI = 0;
+        public static final double kP = 3.5;
+        public static final double kI = 0.12;
         public static final double kD = 0;
         public static final double kS = 0;
-        public static final double kG = 0.15; //NOTE: 1.0129
+        public static final double kG = 0.3; //NOTE: 1.0129
         public static final double kV = 0; //NOTE: 1.0491
         public static final double kA = 0; //NOTE: 0.50095
-        public static final TrapezoidProfile.Constraints CONSTRAINTS = new TrapezoidProfile.Constraints(25, 10);
+        public static final TrapezoidProfile.Constraints CONSTRAINTS = new TrapezoidProfile.Constraints(35, 5);
 
         public static final int CURRENT_LIMIT = 40;
 
@@ -330,29 +362,24 @@ public final class Constants {
 
         public static final int MOTOR_ID = 22;
         public static final int ENCODER_ID = 55;
-
-        public static final Rotation2d INTAKE_SETPOINT_ANGLE = Rotation2d.fromDegrees(-90); //TODO: figure this out
-        public static final Rotation2d L1_ANGLE = Rotation2d.fromDegrees(0.3); //TODO: figure this out
-        public static final Rotation2d L2_ANGLE = Rotation2d.fromDegrees(45); //TODO: figure this out
         public static final double JOYSTICK_SCALING = 0.25; //TODO: figure this out
 
-        public static final Rotation2d UPPER_DANGER_ZONE = Rotation2d.fromDegrees(175);
-        public static final Rotation2d LOWER_DANGER_ZONE = Rotation2d.fromDegrees(300);
+        public static final Rotation2d LOWER_DANGER_ZONE = Rotation2d.fromRadians(-1.5);
     }
 
     public static class ElevatorConstants {
         public static final double GEAR_RATIO = 64 / 16 / 2;
         public static final double PITCH_DIAMETER = Units.inchesToMeters(1.273);
 
-        public static final double kP = 0.5; // TODO: Find actual value NOTE: was 3.596
-        public static final double kI = 0; // TODO: Find actual value
+        public static final double kP = 0.2; // TODO: Find actual value NOTE: was 3.596
+        public static final double kI = 0.01; // TODO: Find actual value
         public static final double kD = 0; //TODO: Find actual value
 
-        public static final double kS = 1.2256; // TODO: Find actual value NOTE: 1.2256
-        public static final double kV = 0.03; // TODO: Find actual value NOTE: 0.034454
-        public static final double kA = 0.2; // TODO: Find actual value NOTE: 0.2
-        public static final double kG = 0.28946; // TODO: Find actual value NOTE: 0.28946
-        public static final TrapezoidProfile.Constraints CONSTRAINTS = new TrapezoidProfile.Constraints(20, 5);
+        public static final double kS = 0; // TODO: Find actual value NOTE: 1.2256
+        public static final double kV = 0; // TODO: Find actual value NOTE: 0.034454
+        public static final double kA = 0; // TODO: Find actual value NOTE: 0.2
+        public static final double kG = 0.3; // TODO: Find actual value NOTE: 0.28946
+        public static final TrapezoidProfile.Constraints CONSTRAINTS = new TrapezoidProfile.Constraints(150, 100);
 
         public static final double SUPPLY_CURRENT_LIMIT = 40;
         public static final double STATOR_CURRENT_LIMIT = 80;
@@ -370,7 +397,7 @@ public final class Constants {
         public static final int RIGHT_ELEVATOR_ID = 34; // TODO: Find actual motor ID
         public static final int LIMIT_SWITCH_CHANNEL = 6; // TODO: Find actual channel
 
-        public static final double BOTTOM_HEIGHT = 10;
+        public static final double BOTTOM_HEIGHT = 0;
         public static final double TOP_HEIGHT = 2;
 
         public static final double ELEVATOR_MASS = 4;
@@ -385,14 +412,14 @@ public final class Constants {
 
     public static class CoralEndEffectorConstants {
         public static final double MOTOR_SPEED = 0.5;
-        public static final int CURRENT_LIMIT = 20;
+        public static final int CURRENT_LIMIT = 40;
         public static final int LEFT_ID = 44;
-        public static final int RIGHT_ID = 45;
         public static final int CURRENT_THRESHOLD = 10;
     }
 
     public static class AlgaeEndEffectorConstants {
-        public static final int CURRENT_LIMIT = 20;
+        public static final int CURRENT_LIMIT = 40;
+        public static final int MOTOR_ID = 45;
     }
 
 }

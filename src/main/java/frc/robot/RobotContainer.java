@@ -13,17 +13,19 @@ import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedNetworkString;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.AutoFactory.CharacterizationRoutine;
 import frc.robot.AutoFactory.CoralStation;
 import frc.robot.AutoFactory.StartingPosition;
+import frc.robot.Constants.AlgaeEndEffectorConstants;
 import frc.robot.Constants.CoralEndEffectorConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.DriveConstants.BackLeftModuleConstants;
@@ -31,15 +33,17 @@ import frc.robot.Constants.DriveConstants.BackRightModuleConstants;
 import frc.robot.Constants.DriveConstants.FrontLeftModuleConstants;
 import frc.robot.Constants.DriveConstants.FrontRightModuleConstants;
 import frc.robot.Constants.ElevatorConstants;
-import frc.robot.Constants.IOConstants.DriverIOConstants;
-import frc.robot.Constants.IOConstants.OperatorIOConstants;
+import frc.robot.Constants.IOConstants.ControllerIOConstants;
 import frc.robot.Constants.PivotConstants;
 import frc.robot.Constants.RobotConstants;
 import frc.robot.Constants.SimConstants;
 import frc.robot.Constants.VisionConstants;
+import frc.robot.commands.algaeEndEffector.AlgaeCommand;
+import frc.robot.commands.algaeEndEffector.StopAlgaeCommand;
+import frc.robot.commands.coralEndEffectorCommands.CoralCommand;
+import frc.robot.commands.coralEndEffectorCommands.StopCoralCommand;
 import frc.robot.commands.drivebase.AlignToReefCommand;
 import frc.robot.commands.drivebase.SwerveDriveCommand;
-import frc.robot.commands.superstructure.ElevatorCommand;
 import frc.robot.commands.superstructure.ElevatorPositionCommand;
 import frc.robot.commands.superstructure.PivotPositionCommand;
 import frc.robot.commands.superstructure.SuperstructureStateCommand;
@@ -48,6 +52,8 @@ import frc.robot.subsystems.drive.GyroIONavX;
 import frc.robot.subsystems.drive.GyroIOSim;
 import frc.robot.subsystems.drive.SwerveModuleIOSim;
 import frc.robot.subsystems.drive.SwerveModuleIOSparkMax;
+import frc.robot.subsystems.endEffector.algae.AlgaeEndEffector;
+import frc.robot.subsystems.endEffector.algae.AlgaeEndEffectorIOSparkMax;
 import frc.robot.subsystems.endEffector.coral.CoralEndEffector;
 import frc.robot.subsystems.endEffector.coral.CoralEndEffectorIOSparkMax;
 import frc.robot.subsystems.superstructure.ElevatorIOSim;
@@ -63,37 +69,54 @@ import frc.robot.util.auto.AutonSelector.AutoQuestion;
 
 public class RobotContainer {
     private final DriveBase driveBase;
+    private final Superstructure superstructure;
+    private final CoralEndEffector coral;
+    private final AlgaeEndEffector algae;
 
     //sticks
-    private final Joystick driverJoystick = new Joystick(DriverIOConstants.DRIVER_CONTROLLER_PORT);
-    private final Joystick operatorJoystick = new Joystick(OperatorIOConstants.OPERATOR_CONTROLLER_PORT);
+    private final Joystick driverJoystick = new Joystick(ControllerIOConstants.DRIVER_CONTROLLER_PORT);
+    private final Joystick operatorJoystick = new Joystick(ControllerIOConstants.OPERATOR_CONTROLLER_PORT);
 
-    //Coral Scor
-    private final JoystickButton scoreButton = new JoystickButton(driverJoystick, DriverIOConstants.SCORE_BUTTON);
-    private final JoystickButton adjustButton = new JoystickButton(operatorJoystick, OperatorIOConstants.SCORE_BUTTON);
-    private final JoystickButton intakeButton = new JoystickButton(operatorJoystick,
-            OperatorIOConstants.SPIN_INTAKE_BUTTON_ID);
-    //private final JoystickButton stowButton = new JoystickButton(operatorJoystick, OperatorIOConstants.STOW_BUTTON_ID);    private final JoystickButton leftButton = new JoystickButton(driverJoystick, DriverIOConstants.LEFT_BUTTON);
-    private final JoystickButton leftButton = new JoystickButton(driverJoystick, DriverIOConstants.LEFT_BUTTON);
-    private final JoystickButton rightButton = new JoystickButton(driverJoystick, DriverIOConstants.RIGHT_BUTTON);
+    //Driver
+    private final Trigger driverLTButton = new Trigger(() -> driverJoystick.getRawAxis(ControllerIOConstants.LT_BUTTON) > 0.5);
+    private final Trigger driverRTButton = new Trigger(() -> driverJoystick.getRawAxis(ControllerIOConstants.RT_BUTTON) > 0.5);
 
-    private final JoystickButton l1Button = new JoystickButton(operatorJoystick, OperatorIOConstants.L1_BUTTON);
-    private final JoystickButton l2Button = new JoystickButton(operatorJoystick, OperatorIOConstants.L2_BUTTON);
+    private final JoystickButton driverLBButton = new JoystickButton(driverJoystick, ControllerIOConstants.LB_BUTTON);
+    private final JoystickButton driverRBButton = new JoystickButton(driverJoystick, ControllerIOConstants.RB_BUTTON);
+
+    private final JoystickButton driverXButton = new JoystickButton(driverJoystick, ControllerIOConstants.X_BUTTON);
+    private final JoystickButton driverYButton = new JoystickButton(driverJoystick, ControllerIOConstants.Y_BUTTON);
+    private final JoystickButton driverBButton = new JoystickButton(driverJoystick, ControllerIOConstants.B_BUTTON);
+    
+    private final JoystickButton driverLeftPaddle = new JoystickButton(driverJoystick, ControllerIOConstants.LEFT_PADDLE);
+    private final JoystickButton driverRightPaddle = new JoystickButton(driverJoystick, ControllerIOConstants.RIGHT_PADDLE);
+    private final POVButton driverDpadUp = new POVButton(driverJoystick, ControllerIOConstants.D_PAD_UP);
+    private final POVButton driverDpadDown = new POVButton(driverJoystick, ControllerIOConstants.D_PAD_DOWN);
+
+    //Operator
+    private final Trigger operatorLTButton = new Trigger(() -> operatorJoystick.getRawAxis(ControllerIOConstants.LT_BUTTON) > 0.5);
+    private final Trigger operatorRTButton = new Trigger(() -> operatorJoystick.getRawAxis(ControllerIOConstants.RT_BUTTON) > 0.5);
+
+    private final JoystickButton operatorLBButton = new JoystickButton(operatorJoystick, ControllerIOConstants.LB_BUTTON);
+    private final JoystickButton operatorRBButton = new JoystickButton(operatorJoystick, ControllerIOConstants.RB_BUTTON);
+
+    private final JoystickButton operatorXButton = new JoystickButton(operatorJoystick, ControllerIOConstants.X_BUTTON);
+    private final JoystickButton operatorYButton = new JoystickButton(operatorJoystick, ControllerIOConstants.Y_BUTTON);
+    private final JoystickButton operatorBButton = new JoystickButton(operatorJoystick, ControllerIOConstants.B_BUTTON);
+
+    private final POVButton operatorDpadUp = new POVButton(operatorJoystick, ControllerIOConstants.D_PAD_UP);
+    private final POVButton opeartorDpadDown = new POVButton(operatorJoystick, ControllerIOConstants.D_PAD_DOWN);
 
     private final Trigger manualArm = new Trigger(
-            () -> operatorJoystick.getRawAxis(OperatorIOConstants.MANUAL_ARM_AXIS) > 0.1);
+            () -> operatorJoystick.getRawAxis(ControllerIOConstants.LEFT_STICK_VERTICAL) > 0.1);
 
     private final AutonSelector<Object> autoChooser = new AutonSelector<>("Auto Chooser", "Do Nothing", List.of(),
             () -> Commands.none());
     private final AutoFactory autoFactory;
 
-    private final Superstructure superstructure;
-
-    private final CoralEndEffector coral;
-
     private SwerveDriveSimulation driveSimulation = null;
 
-    private int scoreLevel = 1;
+    //private int scoreLevel = 1;
 
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -120,6 +143,7 @@ public class RobotContainer {
             superstructure = new Superstructure(
                     new ElevatorIOTalonFX(ElevatorConstants.LEFT_ELEVATOR_ID, ElevatorConstants.RIGHT_ELEVATOR_ID),
                     new PivotIOTalonFX(PivotConstants.MOTOR_ID, PivotConstants.ENCODER_ID));
+            
         } else {
             driveSimulation = new SwerveDriveSimulation(DriveConstants.MAPLE_SIM_CONFIG,
                     new Pose2d(3, 3, new Rotation2d()));
@@ -145,7 +169,8 @@ public class RobotContainer {
         }
 
         coral = new CoralEndEffector(
-                new CoralEndEffectorIOSparkMax(CoralEndEffectorConstants.LEFT_ID, CoralEndEffectorConstants.RIGHT_ID));
+                new CoralEndEffectorIOSparkMax(CoralEndEffectorConstants.LEFT_ID));
+        algae = new AlgaeEndEffector(new AlgaeEndEffectorIOSparkMax(AlgaeEndEffectorConstants.MOTOR_ID));
 
         this.autoFactory = new AutoFactory(driveBase, coral, superstructure, autoChooser::getResponses);
 
@@ -157,10 +182,10 @@ public class RobotContainer {
 
     private void setDefaultCommands() {
         driveBase.setDefaultCommand(
-                new SwerveDriveCommand(driveBase, () -> -driverJoystick.getRawAxis(DriverIOConstants.STRAFE_X_AXIS),
-                        () -> -driverJoystick.getRawAxis(DriverIOConstants.STRAFE_Y_AXIS),
-                        () -> -driverJoystick.getRawAxis(DriverIOConstants.ROTATION_AXIS),
-                        () -> DriveConstants.FIELD_CENTRIC, DriverIOConstants.SQUARE_INPUTS));
+                new SwerveDriveCommand(driveBase, () -> -driverJoystick.getRawAxis(ControllerIOConstants.LEFT_STICK_VERTICAL),
+                        () -> -driverJoystick.getRawAxis(ControllerIOConstants.LEFT_STICK_HORIZONTAL),
+                        () -> -driverJoystick.getRawAxis(ControllerIOConstants.RIGHT_STICK_HORIZONTAL),
+                        () -> DriveConstants.FIELD_CENTRIC, ControllerIOConstants.SQUARE_INPUTS));
         // superstructure.setDefaultCommand(new PivotCommand(superstructure, () -> driverJoystick.getRawAxis(OperatorIOConstants.MANUAL_ARM_AXIS)));
         // superstructure.setDefaultCommand(new PivotPositionCommand(superstructure, () -> Rotation2d.fromRotations(
         //         superstructure.getPivotRotation().getRotations() + PivotConstants.JOYSTICK_SCALING * MathUtil
@@ -175,9 +200,10 @@ public class RobotContainer {
         //  .until(() -> coral.getCurrent() > CoralEndEffectorConstants.CURRENT_THRESHOLD)
         //  .andThen(new RunCommand(() -> {
         //  })));
-        superstructure.setDefaultCommand(new SuperstructureStateCommand(superstructure, superstructure.getState()));
-        coral.setDefaultCommand(coral.stopCommand());
-
+        SmartDashboard.putData("thing", superstructure);
+        coral.setDefaultCommand(new StopCoralCommand(coral));
+        algae.setDefaultCommand(new StopAlgaeCommand(algae));
+        superstructure.setDefaultCommand(Commands.run(() -> superstructure.setState(superstructure.getGoal()), superstructure));
     }
 
     /**
@@ -205,16 +231,37 @@ public class RobotContainer {
          * StartEndCommand(() -> scoreLevel = z2, () -> { }));
          */
 
-        scoreButton.whileTrue(coral.spinCommand(1));
-        adjustButton.whileTrue(coral.spinCommand(1));
-        intakeButton.whileTrue(coral.spinCommand(-1));
-        // // stowButton.whileTrue(new PivotPositionCommand(superstructure, PivotConstants.INTAKE_SETPOINT_ANGLE));
-        //l1Button.whileTrue(new ElevatorCommand(superstructure, -1).until(superstructure.limitSwitch));
-        // l2Button.whileTrue(new PivotPositionCommand(superstructure, PivotConstants.L2_ANGLE));
-        l2Button.whileTrue(new SuperstructureStateCommand(superstructure, RobotConstants.L3_STATE));
-        l1Button.whileTrue(new SuperstructureStateCommand(superstructure, RobotConstants.L1_STATE));
-        leftButton.onTrue(new AlignToReefCommand(driveBase, false));
-        rightButton.onTrue(new AlignToReefCommand(driveBase, true));
+        //driver
+        driverLTButton.whileTrue(new CoralCommand(coral, 1));
+        driverRTButton.whileTrue(new CoralCommand(coral, -1));
+        driverLBButton.whileTrue(new AlgaeCommand(algae, 1));
+        driverRBButton.whileTrue(new SuperstructureStateCommand(superstructure, RobotConstants.INTAKE_STATE));
+        
+        driverXButton.whileTrue(new SuperstructureStateCommand(superstructure, RobotConstants.L2_STATE));
+        driverYButton.whileTrue(new SuperstructureStateCommand(superstructure, RobotConstants.L3_STATE));
+        driverBButton.whileTrue(new SuperstructureStateCommand(superstructure, RobotConstants.L4_STATE));
+        
+        driverDpadDown.whileTrue(new SuperstructureStateCommand(superstructure, RobotConstants.L2_ALGAE_STATE));
+        driverDpadUp.whileTrue(new SuperstructureStateCommand(superstructure, RobotConstants.L3_ALGAE_STATE));
+
+        driverLeftPaddle.onTrue(new AlignToReefCommand(driveBase, false));
+        driverRightPaddle.onTrue(new AlignToReefCommand(driveBase, true));
+
+        //operator
+        operatorLTButton.whileTrue(new CoralCommand(coral, 1));
+        operatorRTButton.whileTrue(new CoralCommand(coral, -1));
+        operatorLBButton.whileTrue(new AlgaeCommand(algae, -1));
+        operatorRBButton.whileTrue(superstructure.getSetpointCommand(RobotConstants.INTAKE_STATE));
+        
+        operatorXButton.whileTrue(superstructure.getSetpointCommand(RobotConstants.L2_STATE));
+        operatorYButton.whileTrue(superstructure.getSetpointCommand(RobotConstants.L3_STATE));
+        operatorBButton.whileTrue(superstructure.getSetpointCommand(RobotConstants.L4_STATE));
+        
+        opeartorDpadDown.whileTrue(new SuperstructureStateCommand(superstructure, RobotConstants.L2_ALGAE_STATE));
+        operatorDpadUp.whileTrue(new SuperstructureStateCommand(superstructure, RobotConstants.L3_ALGAE_STATE));
+
+        manualArm.whileTrue(new PivotPositionCommand(superstructure, () -> Rotation2d.fromRotations(0.5 * operatorJoystick.getRawAxis(ControllerIOConstants.LEFT_STICK_VERTICAL))));
+        manualArm.whileTrue(new ElevatorPositionCommand(superstructure, () -> (superstructure.getState().elevatorHeight + 3 * operatorJoystick.getRawAxis(ControllerIOConstants.RIGHT_STICK_VERTICAL))));
     }
 
     public boolean getOperatorConnected() {
