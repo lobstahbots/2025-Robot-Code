@@ -38,6 +38,7 @@ public class CoralCommand extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
+    // return endEffector.getCurrent() > 40;
     return false;
   }
 }

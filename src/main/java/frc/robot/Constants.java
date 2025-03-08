@@ -125,15 +125,16 @@ public final class Constants {
         public static final Mass WEIGHT = Pounds.of(150);
         public static final MomentOfInertia MOI = KilogramSquareMeters.of(6);
 
-        public static final SuperstructureState INTAKE_STATE = new SuperstructureState(Rotation2d.fromRadians(-2.615), 0,
+        public static final SuperstructureState INTAKE_STATE = new SuperstructureState(Rotation2d.fromRadians(-2), 0,
                 0, 0);
-        public static final SuperstructureState L2_STATE = new SuperstructureState(Rotation2d.fromRadians(0.81),
+        public static final SuperstructureState L2_STATE = new SuperstructureState(Rotation2d.fromRadians(0.9),
                 ElevatorConstants.BOTTOM_HEIGHT, 0, 0);
-        public static final SuperstructureState L3_STATE = new SuperstructureState(Rotation2d.fromRadians(0.81), 46, 0,
+        public static final SuperstructureState L3_STATE = new SuperstructureState(Rotation2d.fromRadians(1), 37, 0,
                 0);
         public static final SuperstructureState L4_STATE = new SuperstructureState(Rotation2d.fromRadians(0.67), 114, 0, 0);
         public static final SuperstructureState L2_ALGAE_STATE = new SuperstructureState(Rotation2d.fromRadians(0), 0, 0, 0);
         public static final SuperstructureState L3_ALGAE_STATE = new SuperstructureState(Rotation2d.fromRadians(0), 0, 0, 0);
+        public static final double ELEVATOR_THRESHOLD = 10;
     }
 
     public static class DriveConstants {
@@ -200,8 +201,8 @@ public final class Constants {
 
         public static class FrontRightModuleConstants {
             public static final int moduleID = 1;
-            public static final int driveID = 16;
-            public static final int angleID = 17;
+            public static final int driveID = 17;
+            public static final int angleID = 16;
             public static final double angleOffset = 0;
             public static final boolean inverted = false;
         }
@@ -262,7 +263,7 @@ public final class Constants {
     public static class VisionConstants {
         public static final PoseStrategy POSE_STRATEGY = PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR;
         public static final Map<String, Transform3d> CAMERA_TRANSFORMS = new HashMap<>();
-        static {
+        /*static {
             CAMERA_TRANSFORMS.put("frontleft", new Transform3d(Inches.of(11.2435), Inches.of(13.42), Inches.of(7.308),
                     new Rotation3d(Degrees.of(0), Degrees.of(-20), Degrees.of(-35))));
             CAMERA_TRANSFORMS.put("frontright", new Transform3d(Inches.of(11.2435), Inches.of(-13.42), Inches.of(7.164),
@@ -271,7 +272,7 @@ public final class Constants {
                     new Rotation3d(Degrees.of(0), Degrees.of(20), Degrees.of(35))));
             CAMERA_TRANSFORMS.put("backright", new Transform3d(Inches.of(2.689), Inches.of(-10.5585),
                     Inches.of(37.0995), new Rotation3d(Degrees.of(0), Degrees.of(20), Degrees.of(-35))));
-        }
+        } */
         public static final double VISION_ODOMETRY_DIFFERENCE_FILTER_THRESHOLD = 5;
         public static final int CAMERA_RES_WIDTH = 1280;
         public static final int CAMERA_RES_HEIGHT = 960;
@@ -344,7 +345,7 @@ public final class Constants {
 
     public static class PivotConstants {
         public static final double kP = 3.5;
-        public static final double kI = 0.12;
+        public static final double kI = 0.17;
         public static final double kD = 0;
         public static final double kS = 0;
         public static final double kG = 0.3; //NOTE: 1.0129
@@ -364,7 +365,7 @@ public final class Constants {
         public static final int ENCODER_ID = 55;
         public static final double JOYSTICK_SCALING = 0.25; //TODO: figure this out
 
-        public static final Rotation2d LOWER_DANGER_ZONE = Rotation2d.fromRadians(-1.5);
+        public static final Rotation2d LOWER_DANGER_ZONE = Rotation2d.fromRadians(-1);
     }
 
     public static class ElevatorConstants {
@@ -412,14 +413,14 @@ public final class Constants {
 
     public static class CoralEndEffectorConstants {
         public static final double MOTOR_SPEED = 0.5;
-        public static final int CURRENT_LIMIT = 40;
-        public static final int LEFT_ID = 44;
+        public static final int CURRENT_LIMIT = 30;
+        public static final int LEFT_ID = 45;
         public static final int CURRENT_THRESHOLD = 10;
     }
 
     public static class AlgaeEndEffectorConstants {
-        public static final int CURRENT_LIMIT = 40;
-        public static final int MOTOR_ID = 45;
+        public static final int CURRENT_LIMIT = 30;
+        public static final int MOTOR_ID = 44;
     }
 
 }
