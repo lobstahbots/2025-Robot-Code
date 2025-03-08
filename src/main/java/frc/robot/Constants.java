@@ -125,11 +125,11 @@ public final class Constants {
         public static final Mass WEIGHT = Pounds.of(150);
         public static final MomentOfInertia MOI = KilogramSquareMeters.of(6);
 
-        public static final SuperstructureState INTAKE_STATE = new SuperstructureState(Rotation2d.fromRadians(-2.14), 0,
+        public static final SuperstructureState INTAKE_STATE = new SuperstructureState(Rotation2d.fromRadians(-2.615), 0,
                 0, 0);
-        public static final SuperstructureState L2_STATE = new SuperstructureState(Rotation2d.fromRadians(1.07),
+        public static final SuperstructureState L2_STATE = new SuperstructureState(Rotation2d.fromRadians(0.81),
                 ElevatorConstants.BOTTOM_HEIGHT, 0, 0);
-        public static final SuperstructureState L3_STATE = new SuperstructureState(Rotation2d.fromRadians(0.93), 46, 0,
+        public static final SuperstructureState L3_STATE = new SuperstructureState(Rotation2d.fromRadians(0.81), 46, 0,
                 0);
         public static final SuperstructureState L4_STATE = new SuperstructureState(Rotation2d.fromRadians(0.67), 114, 0, 0);
         public static final SuperstructureState L2_ALGAE_STATE = new SuperstructureState(Rotation2d.fromRadians(0), 0, 0, 0);
@@ -343,14 +343,14 @@ public final class Constants {
     }
 
     public static class PivotConstants {
-        public static final double kP = 0;
-        public static final double kI = 0;
+        public static final double kP = 3.5;
+        public static final double kI = 0.12;
         public static final double kD = 0;
         public static final double kS = 0;
-        public static final double kG = 0.15; //NOTE: 1.0129
+        public static final double kG = 0.3; //NOTE: 1.0129
         public static final double kV = 0; //NOTE: 1.0491
         public static final double kA = 0; //NOTE: 0.50095
-        public static final TrapezoidProfile.Constraints CONSTRAINTS = new TrapezoidProfile.Constraints(25, 10);
+        public static final TrapezoidProfile.Constraints CONSTRAINTS = new TrapezoidProfile.Constraints(35, 5);
 
         public static final int CURRENT_LIMIT = 40;
 
@@ -362,14 +362,9 @@ public final class Constants {
 
         public static final int MOTOR_ID = 22;
         public static final int ENCODER_ID = 55;
-
-        public static final Rotation2d INTAKE_SETPOINT_ANGLE = Rotation2d.fromDegrees(-90); //TODO: figure this out
-        public static final Rotation2d L1_ANGLE = Rotation2d.fromDegrees(0.3); //TODO: figure this out
-        public static final Rotation2d L2_ANGLE = Rotation2d.fromDegrees(45); //TODO: figure this out
         public static final double JOYSTICK_SCALING = 0.25; //TODO: figure this out
 
-        public static final Rotation2d UPPER_DANGER_ZONE = Rotation2d.fromDegrees(175);
-        public static final Rotation2d LOWER_DANGER_ZONE = Rotation2d.fromDegrees(300);
+        public static final Rotation2d LOWER_DANGER_ZONE = Rotation2d.fromRadians(-1.5);
     }
 
     public static class ElevatorConstants {
@@ -417,14 +412,13 @@ public final class Constants {
 
     public static class CoralEndEffectorConstants {
         public static final double MOTOR_SPEED = 0.5;
-        public static final int CURRENT_LIMIT = 20;
+        public static final int CURRENT_LIMIT = 40;
         public static final int LEFT_ID = 44;
-        public static final int RIGHT_ID = 45;
         public static final int CURRENT_THRESHOLD = 10;
     }
 
     public static class AlgaeEndEffectorConstants {
-        public static final int CURRENT_LIMIT = 20;
+        public static final int CURRENT_LIMIT = 40;
         public static final int MOTOR_ID = 45;
     }
 

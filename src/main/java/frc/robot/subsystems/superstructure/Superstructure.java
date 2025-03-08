@@ -43,7 +43,7 @@ public class Superstructure extends CharacterizableSubsystem {
 
     private final ProfiledPIDController armPID = new ProfiledPIDController(PivotConstants.kP, PivotConstants.kI,
             PivotConstants.kD, PivotConstants.CONSTRAINTS);
-    private final ArmFeedforward armFeedforward = new ArmFeedforward(PivotConstants.kS, PivotConstants.kG,
+    private final ArmFeedforward armFeedforward = new ArmFeedforward(PivotConstants.kS, 0,
             PivotConstants.kV, PivotConstants.kA);
 
     private final ProfiledPIDController elevatorPID = new ProfiledPIDController(ElevatorConstants.kP, ElevatorConstants.kI, ElevatorConstants.kD, ElevatorConstants.CONSTRAINTS);
@@ -151,10 +151,8 @@ public class Superstructure extends CharacterizableSubsystem {
                     .andThen(superstructureCommand);
         }
 
-        if (getRotation().getRotations() > PivotConstants.LOWER_DANGER_ZONE.getRotations()) {
+        if (getRotation().getRotations() < PivotConstants.LOWER_DANGER_ZONE.getRotations()) {
             return new PivotPositionCommand(this, PivotConstants.LOWER_DANGER_ZONE).andThen(superstructureCommand);
-        } else if (getRotation().getRotations() < PivotConstants.UPPER_DANGER_ZONE.getRotations()) {
-            return new PivotPositionCommand(this, PivotConstants.UPPER_DANGER_ZONE).andThen(superstructureCommand);
         }
 
         return superstructureCommand;
@@ -186,7 +184,7 @@ public class Superstructure extends CharacterizableSubsystem {
         SmartDashboard.putData("ElevatorPID", elevatorPID);
 
         if (pivotIsClosedLoop) pivotIO.setVoltage(armPID.calculate(pivotInputs.position.getRadians())
-                + armFeedforward.calculate(armPID.getSetpoint().position, armPID.getSetpoint().velocity));
+                + armFeedforward.calculate(armPID.getSetpoint().position, armPID.getSetpoint().velocity) + Math.cos(pivotInputs.position.getRadians()) * PivotConstants.kG);
         
         if (elevatorIsClosedLoop) setElevatorVoltage(elevatorPID.calculate(elevatorInputs.leftPosition) + elevatorFeedforward.calculate(elevatorPID.getSetpoint().velocity));
         
