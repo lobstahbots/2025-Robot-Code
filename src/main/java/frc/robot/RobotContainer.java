@@ -60,6 +60,7 @@ import frc.robot.subsystems.superstructure.ElevatorIOTalonFX;
 import frc.robot.subsystems.superstructure.PivotIOSim;
 import frc.robot.subsystems.superstructure.PivotIOTalonFX;
 import frc.robot.subsystems.superstructure.Superstructure;
+import frc.robot.subsystems.superstructure.SuperstructureState;
 import frc.robot.subsystems.vision.Camera;
 import frc.robot.subsystems.vision.CameraIOPhoton;
 import frc.robot.subsystems.vision.CameraIOSim;
@@ -195,7 +196,11 @@ public class RobotContainer {
         SmartDashboard.putData("thing", superstructure);
         coral.setDefaultCommand(new StopCoralCommand(coral));
         algae.setDefaultCommand(new StopAlgaeCommand(algae));
-        superstructure.setDefaultCommand(Commands.run(() -> superstructure.setState(superstructure.getGoal()), superstructure));
+        superstructure.setDefaultCommand(Commands.run(() -> superstructure.setState(
+            new SuperstructureState(
+            superstructure.getGoal().pivotRotation.plus(Rotation2d.fromRadians(operatorJoystick.getRawAxis(ControllerIOConstants.LEFT_STICK_VERTICAL))),
+            superstructure.getGoal().elevatorHeight + operatorJoystick.getRawAxis(ControllerIOConstants.RIGHT_STICK_VERTICAL) * -3, 0, 0
+            )), superstructure));
     }
 
     /**
@@ -204,14 +209,15 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
-        return autoChooser.getCommand();
+        return new SwerveDriveCommand(driveBase, -1, 0, 0, true, false).withTimeout(2);
+        // return autoChooser.getCommand();
     }
 
     public void configureButtonBindings() {
 
         //driver
         driverLTButton.whileTrue(new CoralCommand(coral, 0.75));
-        driverRTButton.whileTrue(new SuperstructureStateCommand(superstructure, RobotConstants.INTAKE_STATE).andThen(new CoralCommand(coral, -1)).until(() -> driverLTButton.getAsBoolean()));
+        driverRTButton.whileTrue(superstructure.getSetpointCommand(RobotConstants.INTAKE_STATE).andThen(new CoralCommand(coral, -1)));
         driverLBButton.whileTrue(new AlgaeCommand(algae, 1));
         //driverRBButton.whileTrue(superstructure.getSetpointCommand(RobotConstants.INTAKE_STATE)); //NOTE: Fancy collision avoidance that is untested and doesn't necessarily work and is messing things up
         
@@ -226,21 +232,22 @@ public class RobotContainer {
         // driverRightPaddle.onTrue(new AlignToReefCommand(driveBase, true));
 
         //operator
-        operatorLTButton.whileTrue(new CoralCommand(coral, 1));
-        operatorRTButton.whileTrue(new CoralCommand(coral, -1));
-        operatorLBButton.whileTrue(new AlgaeCommand(algae, -1));
+        operatorLTButton.whileTrue(new CoralCommand(coral, -0.5));
+        operatorRTButton.whileTrue(new CoralCommand(coral, 0.5));
+        operatorLBButton.whileTrue(new AlgaeCommand(algae, -0.75));
         operatorRBButton.whileTrue(superstructure.getSetpointCommand(RobotConstants.INTAKE_STATE));
         
         operatorXButton.whileTrue(superstructure.getSetpointCommand(RobotConstants.L2_STATE));
         operatorYButton.whileTrue(superstructure.getSetpointCommand(RobotConstants.L3_STATE));
         operatorBButton.whileTrue(superstructure.getSetpointCommand(RobotConstants.L4_STATE));
         
-        opeartorDpadDown.whileTrue(new SuperstructureStateCommand(superstructure, RobotConstants.L2_ALGAE_STATE));
-        operatorDpadUp.whileTrue(new SuperstructureStateCommand(superstructure, RobotConstants.L3_ALGAE_STATE));
+        // TODO: uncoment after the algae states are actually inputed properly
+        // opeartorDpadDown.whileTrue(new SuperstructureStateCommand(superstructure, RobotConstants.L2_ALGAE_STATE));
+        // operatorDpadUp.whileTrue(new SuperstructureStateCommand(superstructure, RobotConstants.L3_ALGAE_STATE));
 
-        //TODO: Fix manual mode
-        manualArm.whileTrue(new PivotPositionCommand(superstructure, () -> Rotation2d.fromRotations(0.5 * operatorJoystick.getRawAxis(ControllerIOConstants.LEFT_STICK_VERTICAL))));
-        manualArm.whileTrue(new ElevatorPositionCommand(superstructure, () -> (superstructure.getState().elevatorHeight + 3 * operatorJoystick.getRawAxis(ControllerIOConstants.RIGHT_STICK_VERTICAL))));
+        // //TODO: Fix manual mode
+        // manualArm.whileTrue(new PivotPositionCommand(superstructure, () -> Rotation2d.fromRotations(0.5 * operatorJoystick.getRawAxis(ControllerIOConstants.LEFT_STICK_VERTICAL))));
+        // manualArm.whileTrue(new ElevatorPositionCommand(superstructure, () -> (superstructure.getState().elevatorHeight + 3 * operatorJoystick.getRawAxis(ControllerIOConstants.RIGHT_STICK_VERTICAL))));
     }
 
     public boolean getOperatorConnected() {
