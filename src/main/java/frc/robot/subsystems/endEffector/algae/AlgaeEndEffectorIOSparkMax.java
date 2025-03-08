@@ -8,6 +8,7 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
+import frc.robot.Constants.AlgaeEndEffectorConstants;
 import frc.robot.Constants.CoralEndEffectorConstants;
 
 public class AlgaeEndEffectorIOSparkMax implements AlgaeEndEffectorIO {
@@ -18,7 +19,7 @@ public class AlgaeEndEffectorIOSparkMax implements AlgaeEndEffectorIO {
     this.algaeMotor = new SparkMax(id, MotorType.kBrushless);
 
     SparkMaxConfig config = new SparkMaxConfig();
-    config.smartCurrentLimit(CoralEndEffectorConstants.CURRENT_LIMIT);
+    config.smartCurrentLimit(AlgaeEndEffectorConstants.CURRENT_LIMIT);
     config.idleMode(IdleMode.kBrake);
     config.inverted(false);
     config.encoder.velocityConversionFactor(1.0 / 60);

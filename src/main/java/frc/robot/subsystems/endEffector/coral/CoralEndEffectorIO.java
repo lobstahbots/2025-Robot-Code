@@ -30,6 +30,8 @@ public interface CoralEndEffectorIO {
      */
     public void stopMotor();
 
+    public void setVoltage(double voltage);
+
     /**
      * Set the speed of the end effector
      * 

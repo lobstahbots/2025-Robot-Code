@@ -16,9 +16,11 @@ import org.littletonrobotics.junction.networktables.LoggedNetworkString;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.AutoFactory.CharacterizationRoutine;
 import frc.robot.AutoFactory.CoralStation;
@@ -32,13 +34,14 @@ import frc.robot.Constants.DriveConstants.FrontLeftModuleConstants;
 import frc.robot.Constants.DriveConstants.FrontRightModuleConstants;
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.IOConstants.ControllerIOConstants;
-import frc.robot.Constants.IOConstants.DriverIOConstants;
 import frc.robot.Constants.PivotConstants;
 import frc.robot.Constants.RobotConstants;
 import frc.robot.Constants.SimConstants;
 import frc.robot.Constants.VisionConstants;
 import frc.robot.commands.algaeEndEffector.AlgaeCommand;
 import frc.robot.commands.algaeEndEffector.StopAlgaeCommand;
+import frc.robot.commands.coralEndEffectorCommands.CoralCommand;
+import frc.robot.commands.coralEndEffectorCommands.StopCoralCommand;
 import frc.robot.commands.drivebase.AlignToReefCommand;
 import frc.robot.commands.drivebase.SwerveDriveCommand;
 import frc.robot.commands.superstructure.ElevatorPositionCommand;
@@ -66,34 +69,43 @@ import frc.robot.util.auto.AutonSelector.AutoQuestion;
 
 public class RobotContainer {
     private final DriveBase driveBase;
+    private final Superstructure superstructure;
+    private final CoralEndEffector coral;
+    private final AlgaeEndEffector algae;
 
     //sticks
     private final Joystick driverJoystick = new Joystick(ControllerIOConstants.DRIVER_CONTROLLER_PORT);
     private final Joystick operatorJoystick = new Joystick(ControllerIOConstants.OPERATOR_CONTROLLER_PORT);
 
     //Driver
-    private final JoystickButton driverLTButton = new JoystickButton(driverJoystick, ControllerIOConstants.LT_BUTTON);
+    private final Trigger driverLTButton = new Trigger(() -> driverJoystick.getRawAxis(ControllerIOConstants.LT_BUTTON) > 0.5);
+    private final Trigger driverRTButton = new Trigger(() -> driverJoystick.getRawAxis(ControllerIOConstants.RT_BUTTON) > 0.5);
+
     private final JoystickButton driverLBButton = new JoystickButton(driverJoystick, ControllerIOConstants.LB_BUTTON);
-    private final JoystickButton driverRTButton = new JoystickButton(driverJoystick, ControllerIOConstants.RT_BUTTON);
     private final JoystickButton driverRBButton = new JoystickButton(driverJoystick, ControllerIOConstants.RB_BUTTON);
+
     private final JoystickButton driverXButton = new JoystickButton(driverJoystick, ControllerIOConstants.X_BUTTON);
     private final JoystickButton driverYButton = new JoystickButton(driverJoystick, ControllerIOConstants.Y_BUTTON);
     private final JoystickButton driverBButton = new JoystickButton(driverJoystick, ControllerIOConstants.B_BUTTON);
+    
     private final JoystickButton driverLeftPaddle = new JoystickButton(driverJoystick, ControllerIOConstants.LEFT_PADDLE);
     private final JoystickButton driverRightPaddle = new JoystickButton(driverJoystick, ControllerIOConstants.RIGHT_PADDLE);
-    private final JoystickButton driverDpadUp = new JoystickButton(driverJoystick, ControllerIOConstants.D_PAD_UP);
-    private final JoystickButton driverDpadDown = new JoystickButton(driverJoystick, ControllerIOConstants.D_PAD_DOWN);
+    private final POVButton driverDpadUp = new POVButton(driverJoystick, ControllerIOConstants.D_PAD_UP);
+    private final POVButton driverDpadDown = new POVButton(driverJoystick, ControllerIOConstants.D_PAD_DOWN);
 
     //Operator
-    private final JoystickButton operatorLTButton = new JoystickButton(operatorJoystick, ControllerIOConstants.LT_BUTTON);
+    private final Trigger operatorLTButton = new Trigger(() -> operatorJoystick.getRawAxis(ControllerIOConstants.LT_BUTTON) > 0.5);
+    private final Trigger operatorRTButton = new Trigger(() -> operatorJoystick.getRawAxis(ControllerIOConstants.RT_BUTTON) > 0.5);
+
     private final JoystickButton operatorLBButton = new JoystickButton(operatorJoystick, ControllerIOConstants.LB_BUTTON);
-    private final JoystickButton operatorRTButton = new JoystickButton(operatorJoystick, ControllerIOConstants.RT_BUTTON);
     private final JoystickButton operatorRBButton = new JoystickButton(operatorJoystick, ControllerIOConstants.RB_BUTTON);
+
     private final JoystickButton operatorXButton = new JoystickButton(operatorJoystick, ControllerIOConstants.X_BUTTON);
     private final JoystickButton operatorYButton = new JoystickButton(operatorJoystick, ControllerIOConstants.Y_BUTTON);
     private final JoystickButton operatorBButton = new JoystickButton(operatorJoystick, ControllerIOConstants.B_BUTTON);
-    private final JoystickButton operatorDpadUp = new JoystickButton(operatorJoystick, ControllerIOConstants.D_PAD_UP);
-    private final JoystickButton opeartorDpadDown = new JoystickButton(operatorJoystick, ControllerIOConstants.D_PAD_DOWN);
+
+    private final POVButton operatorDpadUp = new POVButton(operatorJoystick, ControllerIOConstants.D_PAD_UP);
+    private final POVButton opeartorDpadDown = new POVButton(operatorJoystick, ControllerIOConstants.D_PAD_DOWN);
 
     private final Trigger manualArm = new Trigger(
             () -> operatorJoystick.getRawAxis(ControllerIOConstants.LEFT_STICK_VERTICAL) > 0.1);
@@ -101,11 +113,6 @@ public class RobotContainer {
     private final AutonSelector<Object> autoChooser = new AutonSelector<>("Auto Chooser", "Do Nothing", List.of(),
             () -> Commands.none());
     private final AutoFactory autoFactory;
-
-    private final Superstructure superstructure;
-
-    private final CoralEndEffector coral;
-    private final AlgaeEndEffector algae;
 
     private SwerveDriveSimulation driveSimulation = null;
 
@@ -162,7 +169,7 @@ public class RobotContainer {
         }
 
         coral = new CoralEndEffector(
-                new CoralEndEffectorIOSparkMax(CoralEndEffectorConstants.LEFT_ID, CoralEndEffectorConstants.RIGHT_ID));
+                new CoralEndEffectorIOSparkMax(CoralEndEffectorConstants.LEFT_ID));
         algae = new AlgaeEndEffector(new AlgaeEndEffectorIOSparkMax(AlgaeEndEffectorConstants.MOTOR_ID));
 
         this.autoFactory = new AutoFactory(driveBase, coral, superstructure, autoChooser::getResponses);
@@ -178,7 +185,7 @@ public class RobotContainer {
                 new SwerveDriveCommand(driveBase, () -> -driverJoystick.getRawAxis(ControllerIOConstants.LEFT_STICK_VERTICAL),
                         () -> -driverJoystick.getRawAxis(ControllerIOConstants.LEFT_STICK_HORIZONTAL),
                         () -> -driverJoystick.getRawAxis(ControllerIOConstants.RIGHT_STICK_HORIZONTAL),
-                        () -> DriveConstants.FIELD_CENTRIC, DriverIOConstants.SQUARE_INPUTS));
+                        () -> DriveConstants.FIELD_CENTRIC, ControllerIOConstants.SQUARE_INPUTS));
         // superstructure.setDefaultCommand(new PivotCommand(superstructure, () -> driverJoystick.getRawAxis(OperatorIOConstants.MANUAL_ARM_AXIS)));
         // superstructure.setDefaultCommand(new PivotPositionCommand(superstructure, () -> Rotation2d.fromRotations(
         //         superstructure.getPivotRotation().getRotations() + PivotConstants.JOYSTICK_SCALING * MathUtil
@@ -193,9 +200,10 @@ public class RobotContainer {
         //  .until(() -> coral.getCurrent() > CoralEndEffectorConstants.CURRENT_THRESHOLD)
         //  .andThen(new RunCommand(() -> {
         //  })));
-        superstructure.setDefaultCommand(new SuperstructureStateCommand(superstructure, superstructure.getState()));
-        coral.setDefaultCommand(coral.stopCommand());
+        SmartDashboard.putData("thing", superstructure);
+        coral.setDefaultCommand(new StopCoralCommand(coral));
         algae.setDefaultCommand(new StopAlgaeCommand(algae));
+        superstructure.setDefaultCommand(Commands.run(() -> superstructure.setState(superstructure.getGoal()), superstructure));
     }
 
     /**
@@ -223,8 +231,9 @@ public class RobotContainer {
          * StartEndCommand(() -> scoreLevel = z2, () -> { }));
          */
 
-        driverLTButton.whileTrue(coral.spinCommand(1));
-        driverRTButton.whileTrue(coral.spinCommand(-1));
+        //driver
+        driverLTButton.whileTrue(new CoralCommand(coral, 1));
+        driverRTButton.whileTrue(new CoralCommand(coral, -1));
         driverLBButton.whileTrue(new AlgaeCommand(algae, 1));
         driverRBButton.whileTrue(new SuperstructureStateCommand(superstructure, RobotConstants.INTAKE_STATE));
         
@@ -235,23 +244,24 @@ public class RobotContainer {
         driverDpadDown.whileTrue(new SuperstructureStateCommand(superstructure, RobotConstants.L2_ALGAE_STATE));
         driverDpadUp.whileTrue(new SuperstructureStateCommand(superstructure, RobotConstants.L3_ALGAE_STATE));
 
-        operatorLTButton.whileTrue(coral.spinCommand(1));
-        operatorRTButton.whileTrue(coral.spinCommand(-1));
-        operatorLBButton.whileTrue(new AlgaeCommand(algae, 1));
-        operatorRBButton.whileTrue(new SuperstructureStateCommand(superstructure, RobotConstants.INTAKE_STATE));
+        driverLeftPaddle.onTrue(new AlignToReefCommand(driveBase, false));
+        driverRightPaddle.onTrue(new AlignToReefCommand(driveBase, true));
+
+        //operator
+        operatorLTButton.whileTrue(new CoralCommand(coral, 1));
+        operatorRTButton.whileTrue(new CoralCommand(coral, -1));
+        operatorLBButton.whileTrue(new AlgaeCommand(algae, -1));
+        operatorRBButton.whileTrue(superstructure.getSetpointCommand(RobotConstants.INTAKE_STATE));
         
-        operatorXButton.whileTrue(new SuperstructureStateCommand(superstructure, RobotConstants.L2_STATE));
-        operatorYButton.whileTrue(new SuperstructureStateCommand(superstructure, RobotConstants.L3_STATE));
-        operatorBButton.whileTrue(new SuperstructureStateCommand(superstructure, RobotConstants.L4_STATE));
+        operatorXButton.whileTrue(superstructure.getSetpointCommand(RobotConstants.L2_STATE));
+        operatorYButton.whileTrue(superstructure.getSetpointCommand(RobotConstants.L3_STATE));
+        operatorBButton.whileTrue(superstructure.getSetpointCommand(RobotConstants.L4_STATE));
         
         opeartorDpadDown.whileTrue(new SuperstructureStateCommand(superstructure, RobotConstants.L2_ALGAE_STATE));
         operatorDpadUp.whileTrue(new SuperstructureStateCommand(superstructure, RobotConstants.L3_ALGAE_STATE));
 
-        manualArm.whileTrue(new PivotPositionCommand(superstructure, () -> Rotation2d.fromRotations(operatorJoystick.getRawAxis(ControllerIOConstants.LEFT_STICK_VERTICAL)/2)));
-        manualArm.whileTrue(new ElevatorPositionCommand(superstructure, () -> (superstructure.getState().elevatorHeight - 3 * operatorJoystick.getRawAxis(ControllerIOConstants.RIGHT_STICK_VERTICAL))));
-
-        driverLeftPaddle.onTrue(new AlignToReefCommand(driveBase, false));
-        driverRightPaddle.onTrue(new AlignToReefCommand(driveBase, true));
+        manualArm.whileTrue(new PivotPositionCommand(superstructure, () -> Rotation2d.fromRotations(0.5 * operatorJoystick.getRawAxis(ControllerIOConstants.LEFT_STICK_VERTICAL))));
+        manualArm.whileTrue(new ElevatorPositionCommand(superstructure, () -> (superstructure.getState().elevatorHeight + 3 * operatorJoystick.getRawAxis(ControllerIOConstants.RIGHT_STICK_VERTICAL))));
     }
 
     public boolean getOperatorConnected() {
