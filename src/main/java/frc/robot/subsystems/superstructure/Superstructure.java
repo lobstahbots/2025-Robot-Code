@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.DeferredCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.PivotConstants;
@@ -44,6 +45,8 @@ public class Superstructure extends CharacterizableSubsystem {
 
     private final ProfiledPIDController armPID = new ProfiledPIDController(PivotConstants.kP, PivotConstants.kI,
             PivotConstants.kD, PivotConstants.CONSTRAINTS);
+    private final PIDController armVelocityPID = new PIDController(PivotConstants.VELOCITY_kP,
+            PivotConstants.VELOCITY_kI, PivotConstants.VELOCITY_kD);
     private final ArmFeedforward armFeedforward = new ArmFeedforward(PivotConstants.kS, 0, PivotConstants.kV,
             PivotConstants.kA);
 
@@ -125,7 +128,7 @@ public class Superstructure extends CharacterizableSubsystem {
     }
 
     public void reset(SuperstructureState state) {
-        armPID.reset(state.pivotRotation.getRotations());
+        armPID.reset(state.pivotRotation.getRadians());
         elevatorPID.reset(state.elevatorHeight);
     }
 
@@ -152,23 +155,25 @@ public class Superstructure extends CharacterizableSubsystem {
      * @param setpoint The setpoint to move to.
      */
     public Command getSetpointCommand(SuperstructureState setpoint) {
-        Command superstructureCommand = new SuperstructureStateCommand(this, setpoint);
+        return this.defer(() -> {
+            Command superstructureCommand = new SuperstructureStateCommand(this, setpoint);
+            if (setpoint.pivotRotation.getRotations() < PivotConstants.LOWER_DANGER_ZONE.getRotations()
+                    && getRotation().getRotations() > PivotConstants.LOWER_DANGER_ZONE.getRotations()) {
+                superstructureCommand = new SuperstructureStateCommand(this, new SuperstructureState(
+                        PivotConstants.LOWER_DANGER_ZONE, RobotConstants.INTAKE_STATE.elevatorHeight, 0, 0))
+                                .until(() -> {
+                                    System.out.println(getExtension());
+                                    return getExtension() < 1;
+                                }).andThen(superstructureCommand);
+            }
 
-        if (setpoint.pivotRotation.getRotations() < PivotConstants.LOWER_DANGER_ZONE.getRotations()
-                && getRotation().getRotations() > PivotConstants.LOWER_DANGER_ZONE.getRotations()) {
-            superstructureCommand = new SuperstructureStateCommand(this, new SuperstructureState(
-                    PivotConstants.LOWER_DANGER_ZONE, RobotConstants.INTAKE_STATE.elevatorHeight, 0, 0)).until(() -> {
-                        System.out.println(getExtension());
-                        return getExtension() < 1;
-                    }).andThen(superstructureCommand);
-        }
+            if (getRotation().getRotations() < PivotConstants.LOWER_DANGER_ZONE.getRotations()
+                    && setpoint.pivotRotation.getRotations() > PivotConstants.LOWER_DANGER_ZONE.getRotations()) {
+                return new PivotPositionCommand(this, PivotConstants.LOWER_DANGER_ZONE).andThen(superstructureCommand);
+            }
 
-        if (getRotation().getRotations() < PivotConstants.LOWER_DANGER_ZONE.getRotations()
-                && setpoint.pivotRotation.getRotations() > PivotConstants.LOWER_DANGER_ZONE.getRotations()) {
-            return new PivotPositionCommand(this, PivotConstants.LOWER_DANGER_ZONE).andThen(superstructureCommand);
-        }
-
-        return superstructureCommand;
+            return superstructureCommand;
+        });
     }
 
     public Rotation2d getPivotRotation() {
@@ -198,10 +203,13 @@ public class Superstructure extends CharacterizableSubsystem {
         Logger.recordOutput("ElevatorAtGoal", atElevatorSetpoint());
         Logger.recordOutput("ElevatorVelocitySetpoint", elevatorPID.getSetpoint().velocity);
         SmartDashboard.putData("ElevatorVelocityPID", elevatorVelocityPID);
+        SmartDashboard.putData("PivotVelocityPID", armVelocityPID);
+        Logger.recordOutput("PivotVelocitySetpoint", armPID.getSetpoint().velocity);
 
         if (pivotIsClosedLoop) pivotIO.setVoltage(armPID.calculate(pivotInputs.position.getRadians())
                 + armFeedforward.calculate(armPID.getSetpoint().position, armPID.getSetpoint().velocity)
-                + Math.cos(pivotInputs.position.getRadians()) * PivotConstants.kG);
+                + armVelocityPID.calculate(getRotation().getRadians(), armPID.getSetpoint().velocity)
+                + Math.cos(pivotInputs.position.plus(PivotConstants.COG_OFFSET).getRadians()) * PivotConstants.kG);
 
         if (elevatorIsClosedLoop) setElevatorVoltage(elevatorPID.calculate(elevatorInputs.leftPosition)
                 + elevatorFeedforward.calculate(elevatorPID.getSetpoint().velocity)

@@ -345,14 +345,20 @@ public final class Constants {
     }
 
     public static class PivotConstants {
-        public static final double kP = 3.5;
-        public static final double kI = 0.17;
+        public static final double kP = 5;
+        public static final double kI = 0.2;
         public static final double kD = 0;
         public static final double kS = 0;
-        public static final double kG = 0.3; //NOTE: 1.0129
+        public static final double kG = 0.4; //NOTE: 1.0129
         public static final double kV = 0; //NOTE: 1.0491
         public static final double kA = 0; //NOTE: 0.50095
-        public static final TrapezoidProfile.Constraints CONSTRAINTS = new TrapezoidProfile.Constraints(40, 5);
+        public static final TrapezoidProfile.Constraints CONSTRAINTS = new TrapezoidProfile.Constraints(10, 10);
+
+        public static final double VELOCITY_kP = 0.025;
+        public static final double VELOCITY_kI = 0;
+        public static final double VELOCITY_kD = 0;
+
+        public static final Rotation2d COG_OFFSET = Rotation2d.fromRadians(-0.382);
 
         public static final int CURRENT_LIMIT = 40;
         public static final int STATOR_CURRENT_LIMIT = 100;
