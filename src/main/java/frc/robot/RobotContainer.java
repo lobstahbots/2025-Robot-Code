@@ -82,6 +82,7 @@ public class RobotContainer {
     private final Trigger driverRTButton = new Trigger(() -> driverJoystick.getRawAxis(ControllerIOConstants.RT_BUTTON) > 0.5);
 
     private final JoystickButton driverLBButton = new JoystickButton(driverJoystick, ControllerIOConstants.LB_BUTTON);
+    private final JoystickButton driverRBButton = new JoystickButton(driverJoystick, ControllerIOConstants.RB_BUTTON);
     
     private final JoystickButton driverLeftPaddle = new JoystickButton(driverJoystick, ControllerIOConstants.LEFT_PADDLE);
     private final JoystickButton driverRightPaddle = new JoystickButton(driverJoystick, ControllerIOConstants.RIGHT_PADDLE);
@@ -216,9 +217,10 @@ public class RobotContainer {
     public void configureButtonBindings() {
 
         //driver
-        driverLTButton.whileTrue(new CoralCommand(coral, 0.75));
-        driverRTButton.onTrue(superstructure.getSetpointCommand(RobotConstants.INTAKE_STATE).andThen(new CoralCommand(coral, -1)));
+        driverLTButton.whileTrue(new CoralCommand(coral, -0.75));
+        driverRTButton.onTrue(superstructure.getSetpointCommand(RobotConstants.INTAKE_STATE).andThen(new CoralCommand(coral, -0.5)));
         driverLBButton.whileTrue(new AlgaeCommand(algae, 1));
+        driverRBButton.whileTrue(new CoralCommand(coral, 0.5));
         //driverRBButton.whileTrue(superstructure.getSetpointCommand(RobotConstants.INTAKE_STATE)); //NOTE: Fancy collision avoidance that is untested and doesn't necessarily work and is messing things up
         
         // driverXButton.whileTrue(superstructure.getSetpointCommand(RobotConstants.L2_STATE));
@@ -234,7 +236,8 @@ public class RobotContainer {
         //operator
         operatorLTButton.whileTrue(new CoralCommand(coral, -0.5));
         operatorRTButton.whileTrue(new CoralCommand(coral, 0.5));
-        operatorLBButton.whileTrue(new AlgaeCommand(algae, -0.75));
+        operatorLBButton.whileTrue(new AlgaeCommand(algae, -0.75))
+        ;
         operatorRBButton.whileTrue(superstructure.getSetpointCommand(RobotConstants.INTAKE_STATE));
         
         operatorXButton.whileTrue(superstructure.getSetpointCommand(RobotConstants.L2_STATE));

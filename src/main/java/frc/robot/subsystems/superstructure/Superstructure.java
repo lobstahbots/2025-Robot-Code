@@ -159,7 +159,7 @@ public class Superstructure extends CharacterizableSubsystem {
                                     .andThen(superstructureCommand);
         }
 
-        if (getRotation().getRotations() < PivotConstants.LOWER_DANGER_ZONE.getRotations()) {
+        if (getRotation().getRotations() < PivotConstants.LOWER_DANGER_ZONE.getRotations() && setpoint.pivotRotation.getRotations() > PivotConstants.LOWER_DANGER_ZONE.getRotations()) {
             return new PivotPositionCommand(this, PivotConstants.LOWER_DANGER_ZONE).andThen(superstructureCommand);
         }
 

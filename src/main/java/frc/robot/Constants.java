@@ -125,13 +125,13 @@ public final class Constants {
         public static final Mass WEIGHT = Pounds.of(150);
         public static final MomentOfInertia MOI = KilogramSquareMeters.of(6);
 
-        public static final SuperstructureState INTAKE_STATE = new SuperstructureState(Rotation2d.fromRadians(-2), 0,
+        public static final SuperstructureState INTAKE_STATE = new SuperstructureState(Rotation2d.fromRadians(-2.34), 0,
                 0, 0);
-        public static final SuperstructureState L2_STATE = new SuperstructureState(Rotation2d.fromRadians(0.9),
+        public static final SuperstructureState L2_STATE = new SuperstructureState(Rotation2d.fromRadians(0.956),
                 ElevatorConstants.BOTTOM_HEIGHT, 0, 0);
-        public static final SuperstructureState L3_STATE = new SuperstructureState(Rotation2d.fromRadians(1), 37, 0,
+        public static final SuperstructureState L3_STATE = new SuperstructureState(Rotation2d.fromRadians(1.03), 41.2, 0,
                 0);
-        public static final SuperstructureState L4_STATE = new SuperstructureState(Rotation2d.fromRadians(0.67), 114, 0, 0);
+        public static final SuperstructureState L4_STATE = new SuperstructureState(Rotation2d.fromRadians(0.598), 120, 0, 0);
         public static final SuperstructureState L2_ALGAE_STATE = new SuperstructureState(Rotation2d.fromRadians(0), 0, 0, 0);
         public static final SuperstructureState L3_ALGAE_STATE = new SuperstructureState(Rotation2d.fromRadians(0), 0, 0, 0);
         public static final double ELEVATOR_THRESHOLD = 10;
@@ -263,7 +263,7 @@ public final class Constants {
     public static class VisionConstants {
         public static final PoseStrategy POSE_STRATEGY = PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR;
         public static final Map<String, Transform3d> CAMERA_TRANSFORMS = new HashMap<>();
-        /*static {
+        static {
             CAMERA_TRANSFORMS.put("frontleft", new Transform3d(Inches.of(11.2435), Inches.of(13.42), Inches.of(7.308),
                     new Rotation3d(Degrees.of(0), Degrees.of(-20), Degrees.of(-35))));
             CAMERA_TRANSFORMS.put("frontright", new Transform3d(Inches.of(11.2435), Inches.of(-13.42), Inches.of(7.164),
@@ -272,7 +272,7 @@ public final class Constants {
                     new Rotation3d(Degrees.of(0), Degrees.of(20), Degrees.of(35))));
             CAMERA_TRANSFORMS.put("backright", new Transform3d(Inches.of(2.689), Inches.of(-10.5585),
                     Inches.of(37.0995), new Rotation3d(Degrees.of(0), Degrees.of(20), Degrees.of(-35))));
-        } */
+        }
         public static final double VISION_ODOMETRY_DIFFERENCE_FILTER_THRESHOLD = 5;
         public static final int CAMERA_RES_WIDTH = 1280;
         public static final int CAMERA_RES_HEIGHT = 960;
@@ -351,9 +351,10 @@ public final class Constants {
         public static final double kG = 0.3; //NOTE: 1.0129
         public static final double kV = 0; //NOTE: 1.0491
         public static final double kA = 0; //NOTE: 0.50095
-        public static final TrapezoidProfile.Constraints CONSTRAINTS = new TrapezoidProfile.Constraints(35, 5);
+        public static final TrapezoidProfile.Constraints CONSTRAINTS = new TrapezoidProfile.Constraints(40, 5);
 
         public static final int CURRENT_LIMIT = 40;
+        public static final int STATOR_CURRENT_LIMIT = 100;
 
         public static final double PIVOT_GEARING = 12;
         public static final double ARM_LENGTH = Units.inchesToMeters(12);
@@ -380,10 +381,10 @@ public final class Constants {
         public static final double kV = 0; // TODO: Find actual value NOTE: 0.034454
         public static final double kA = 0; // TODO: Find actual value NOTE: 0.2
         public static final double kG = 0.3; // TODO: Find actual value NOTE: 0.28946
-        public static final TrapezoidProfile.Constraints CONSTRAINTS = new TrapezoidProfile.Constraints(150, 100);
+        public static final TrapezoidProfile.Constraints CONSTRAINTS = new TrapezoidProfile.Constraints(400, 200);
 
         public static final double SUPPLY_CURRENT_LIMIT = 40;
-        public static final double STATOR_CURRENT_LIMIT = 80;
+        public static final double STATOR_CURRENT_LIMIT = 100;
 
         public static final double VOLTAGE_OUTPUT = 0;
 

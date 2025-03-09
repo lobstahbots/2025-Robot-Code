@@ -24,6 +24,7 @@ public class PivotIOTalonFX implements PivotIO {
         TalonFXConfiguration config = new TalonFXConfiguration();
         pivotMotor = new TalonFX(pivotMotorID);
         config.CurrentLimits.SupplyCurrentLimit = PivotConstants.CURRENT_LIMIT;
+        config.CurrentLimits.SupplyCurrentLimitEnable = true;
         config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
         config.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
         config.Feedback.SensorToMechanismRatio = PivotConstants.PIVOT_GEARING;

@@ -314,7 +314,7 @@ public class AutoFactory {
      */
     public Command getScoreCommand(CoralStation coralStation, char pipe) {
         return getPathFindToPathCommand(coralStation.name() + "_" + pipe, PathType.CHOREO, 0)
-                .alongWith(new SuperstructureStateCommand(superstructure, RobotConstants.L2_STATE))
+                .alongWith(new SuperstructureStateCommand(superstructure, RobotConstants.L4_STATE))
                 .andThen(getAutoAlignToPipeCommand(pipe))
                 .andThen(new CoralCommand(coral, CoralEndEffectorConstants.MOTOR_SPEED).withTimeout(1));
     }
@@ -345,7 +345,7 @@ public class AutoFactory {
      */
     public Supplier<Command> getChosenAuto(Supplier<String> pipes) {
         return () -> getAuto((StartingPosition) responses.get().get(0), (CoralStation) responses.get().get(1),
-                pipes.get());
+                pipes.get().toUpperCase());
     }
 
     public static enum CharacterizationRoutine {
