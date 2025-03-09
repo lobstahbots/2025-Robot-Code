@@ -49,6 +49,8 @@ public class Superstructure extends CharacterizableSubsystem {
 
     private final ProfiledPIDController elevatorPID = new ProfiledPIDController(ElevatorConstants.kP,
             ElevatorConstants.kI, ElevatorConstants.kD, ElevatorConstants.CONSTRAINTS);
+    private final PIDController elevatorVelocityPID = new PIDController(ElevatorConstants.VELOCITY_kP,
+            ElevatorConstants.VELOCITY_kI, ElevatorConstants.VELOCITY_kD);
     private final ElevatorFeedforward elevatorFeedforward = new ElevatorFeedforward(ElevatorConstants.kS,
             ElevatorConstants.kG, ElevatorConstants.kV, ElevatorConstants.kA);
 
@@ -195,13 +197,15 @@ public class Superstructure extends CharacterizableSubsystem {
         Logger.recordOutput("PivotAtGoal", atPivotSetpoint());
         Logger.recordOutput("ElevatorAtGoal", atElevatorSetpoint());
         Logger.recordOutput("ElevatorVelocitySetpoint", elevatorPID.getSetpoint().velocity);
+        SmartDashboard.putData("ElevatorVelocityPID", elevatorVelocityPID);
 
         if (pivotIsClosedLoop) pivotIO.setVoltage(armPID.calculate(pivotInputs.position.getRadians())
                 + armFeedforward.calculate(armPID.getSetpoint().position, armPID.getSetpoint().velocity)
                 + Math.cos(pivotInputs.position.getRadians()) * PivotConstants.kG);
 
         if (elevatorIsClosedLoop) setElevatorVoltage(elevatorPID.calculate(elevatorInputs.leftPosition)
-                + elevatorFeedforward.calculate(elevatorPID.getSetpoint().velocity));
+                + elevatorFeedforward.calculate(elevatorPID.getSetpoint().velocity)
+                + elevatorVelocityPID.calculate(elevatorInputs.leftVelocity, elevatorPID.getSetpoint().velocity));
 
     }
 }
