@@ -211,8 +211,8 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
-        // return new SwerveDriveCommand(driveBase, -1, 0, 0, true, false).withTimeout(2);
-        return autoChooser.getCommand();
+        return new SwerveDriveCommand(driveBase, -1, 0, 0, true, false).withTimeout(2);
+        // return autoChooser.getCommand();
     }
 
     public void configureButtonBindings() {

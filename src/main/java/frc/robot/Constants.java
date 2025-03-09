@@ -378,18 +378,18 @@ public final class Constants {
         public static final double kI = 0.01; // TODO: Find actual value
         public static final double kD = 0; //TODO: Find actual value
         
-        public static final double VELOCITY_kP = 0.013;
+        public static final double VELOCITY_kP = 0.008;
         public static final double VELOCITY_kI = 0;
         public static final double VELOCITY_kD = 0;
 
         public static final double kS = 0; // TODO: Find actual value NOTE: 1.2256
         public static final double kV = 0; // TODO: Find actual value NOTE: 0.034454
         public static final double kA = 0; // TODO: Find actual value NOTE: 0.2
-        public static final double kG = 0.38; // TODO: Find actual value NOTE: 0.28946
-        public static final TrapezoidProfile.Constraints CONSTRAINTS = new TrapezoidProfile.Constraints(600, 300);
+        public static final double kG = 0.47; // TODO: Find actual value NOTE: 0.28946
+        public static final TrapezoidProfile.Constraints CONSTRAINTS = new TrapezoidProfile.Constraints(140, 300);
 
-        public static final double SUPPLY_CURRENT_LIMIT = 40;
-        public static final double STATOR_CURRENT_LIMIT = 100;
+        public static final double SUPPLY_CURRENT_LIMIT = 70;
+        public static final double STATOR_CURRENT_LIMIT = 250;
 
         public static final double VOLTAGE_OUTPUT = 0;
 
