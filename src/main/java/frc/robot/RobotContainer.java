@@ -42,6 +42,7 @@ import frc.robot.commands.algaeEndEffector.AlgaeCommand;
 import frc.robot.commands.algaeEndEffector.StopAlgaeCommand;
 import frc.robot.commands.coralEndEffectorCommands.CoralCommand;
 import frc.robot.commands.coralEndEffectorCommands.StopCoralCommand;
+import frc.robot.commands.drivebase.AlignToReefCommand;
 import frc.robot.commands.drivebase.SwerveDriveCommand;
 import frc.robot.commands.superstructure.ElevatorPositionCommand;
 import frc.robot.commands.superstructure.PivotPositionCommand;
@@ -99,7 +100,7 @@ public class RobotContainer {
     private final JoystickButton operatorBButton = new JoystickButton(operatorJoystick, ControllerIOConstants.B_BUTTON);
 
     private final POVButton operatorDpadUp = new POVButton(operatorJoystick, ControllerIOConstants.D_PAD_UP);
-    private final POVButton opeartorDpadDown = new POVButton(operatorJoystick, ControllerIOConstants.D_PAD_DOWN);
+    private final POVButton operatorDpadDown = new POVButton(operatorJoystick, ControllerIOConstants.D_PAD_DOWN);
 
     private final Trigger manualArm = new Trigger(
             () -> operatorJoystick.getRawAxis(ControllerIOConstants.LEFT_STICK_VERTICAL) > 0.1);
@@ -210,17 +211,17 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
-        return new SwerveDriveCommand(driveBase, -1, 0, 0, true, false).withTimeout(2);
-        // return autoChooser.getCommand();
+        // return new SwerveDriveCommand(driveBase, -1, 0, 0, true, false).withTimeout(2);
+        return autoChooser.getCommand();
     }
 
     public void configureButtonBindings() {
 
         //driver
         driverLTButton.whileTrue(new CoralCommand(coral, -0.75));
-        driverRTButton.onTrue(superstructure.getSetpointCommand(RobotConstants.INTAKE_STATE).andThen(new CoralCommand(coral, -0.5)));
-        driverLBButton.whileTrue(new AlgaeCommand(algae, 1));
-        driverRBButton.whileTrue(new CoralCommand(coral, 0.5));
+        driverRBButton.whileTrue(superstructure.getSetpointCommand(RobotConstants.INTAKE_STATE));
+        driverLBButton.whileTrue(new AlgaeCommand(algae, -1));
+        driverRTButton.whileTrue(new CoralCommand(coral, 0.5));
         //driverRBButton.whileTrue(superstructure.getSetpointCommand(RobotConstants.INTAKE_STATE)); //NOTE: Fancy collision avoidance that is untested and doesn't necessarily work and is messing things up
         
         // driverXButton.whileTrue(superstructure.getSetpointCommand(RobotConstants.L2_STATE));
@@ -236,17 +237,16 @@ public class RobotContainer {
         //operator
         operatorLTButton.whileTrue(new CoralCommand(coral, -0.5));
         operatorRTButton.whileTrue(new CoralCommand(coral, 0.5));
-        operatorLBButton.whileTrue(new AlgaeCommand(algae, -0.75))
-        ;
+        operatorLBButton.whileTrue(new AlgaeCommand(algae, -0.75));
         operatorRBButton.whileTrue(superstructure.getSetpointCommand(RobotConstants.INTAKE_STATE));
         
         operatorXButton.whileTrue(superstructure.getSetpointCommand(RobotConstants.L2_STATE));
         operatorYButton.whileTrue(superstructure.getSetpointCommand(RobotConstants.L3_STATE));
         operatorBButton.whileTrue(superstructure.getSetpointCommand(RobotConstants.L4_STATE));
-        
+         
         // TODO: uncoment after the algae states are actually inputed properly
-        // opeartorDpadDown.whileTrue(new SuperstructureStateCommand(supers                  tructure, RobotConstants.L2_ALGAE_STATE));
-        // operatorDpadUp.whileTrue(new SuperstructureStateCommand(superstructure, RobotConstants.L3_ALGAE_STATE));
+        operatorDpadDown.whileTrue(new SuperstructureStateCommand(superstructure, RobotConstants.L2_ALGAE_STATE));
+        operatorDpadUp.whileTrue(new SuperstructureStateCommand(superstructure, RobotConstants.L3_ALGAE_STATE));
 
         // //TODO: Fix manual mode
         // manualArm.whileTrue(new PivotPositionCommand(superstructure, () -> Rotation2d.fromRotations(0.5 * operatorJoystick.getRawAxis(ControllerIOConstants.LEFT_STICK_VERTICAL))));

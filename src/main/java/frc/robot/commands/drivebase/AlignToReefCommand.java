@@ -4,6 +4,8 @@
 
 package frc.robot.commands.drivebase;
 
+import org.littletonrobotics.junction.Logger;
+
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -38,6 +40,7 @@ public class AlignToReefCommand extends Command {
     @Override
     public void initialize() {
         Pose2d targetPose = LobstahMath.getNearestScoringPose(driveBase.getPose(), ccw);
+        Logger.recordOutput("AutoAlignTargetPose", targetPose);
         xController.setSetpoint(targetPose.getX());
         yController.setSetpoint(targetPose.getY());
         thetaController.setSetpoint(targetPose.getRotation().getRadians());

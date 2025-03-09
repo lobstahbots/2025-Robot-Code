@@ -34,6 +34,7 @@ import frc.robot.subsystems.endEffector.coral.CoralEndEffector;
 import frc.robot.subsystems.superstructure.Superstructure;
 import frc.robot.util.choreo.ChoreoVariables;
 import frc.robot.util.sysId.CharacterizableSubsystem;
+import frc.robot.util.trajectory.AlliancePoseMirror;
 
 public class AutoFactory {
     private final Supplier<List<Object>> responses;
@@ -257,7 +258,7 @@ public class AutoFactory {
      * @return the constructed command
      */
     public Command getAutoAlignToPipeCommand(char pipe) {
-        return new DriveToPoseCommand(driveBase, switch (pipe) {
+        return new DriveToPoseCommand(driveBase, AlliancePoseMirror.mirrorPose2d(switch (pipe) {
             case 'A' -> Poses.A;
             case 'B' -> Poses.B;
             case 'C' -> Poses.C;
@@ -271,7 +272,7 @@ public class AutoFactory {
             case 'K' -> Poses.K;
             case 'L' -> Poses.L;
             default -> driveBase.getPose();
-        });
+        }));
     }
 
     /**
@@ -334,7 +335,7 @@ public class AutoFactory {
             result = result.andThen(getCoralStationCommand(coralStation, pipes.charAt(i - 1)))
                     .andThen(getScoreCommand(coralStation, pipes.charAt(i)));
         }
-        return result;
+        return result.andThen(() -> {});
     }
 
     /**

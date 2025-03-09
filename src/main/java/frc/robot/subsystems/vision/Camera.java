@@ -37,7 +37,7 @@ public class Camera {
         Pose3d resolvedPose = null;
         double resolvedReprojErr = 0;
 
-        if (inputs.ambiguity > VisionConstants.AMBIGUITY_ACCEPTANCE_THRESHOLD) {
+        if (inputs.ambiguity < VisionConstants.AMBIGUITY_ACCEPTANCE_THRESHOLD) {
             resolvedPose = inputs.bestEstimatedPose;
             resolvedReprojErr = inputs.bestReprojErr;
         }

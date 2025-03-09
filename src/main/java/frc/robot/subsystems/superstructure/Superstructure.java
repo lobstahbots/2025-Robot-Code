@@ -4,6 +4,7 @@ import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.ElevatorFeedforward;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
@@ -193,6 +194,7 @@ public class Superstructure extends CharacterizableSubsystem {
         SmartDashboard.putData("ElevatorPID", elevatorPID);
         Logger.recordOutput("PivotAtGoal", atPivotSetpoint());
         Logger.recordOutput("ElevatorAtGoal", atElevatorSetpoint());
+        Logger.recordOutput("ElevatorVelocitySetpoint", elevatorPID.getSetpoint().velocity);
 
         if (pivotIsClosedLoop) pivotIO.setVoltage(armPID.calculate(pivotInputs.position.getRadians())
                 + armFeedforward.calculate(armPID.getSetpoint().position, armPID.getSetpoint().velocity)

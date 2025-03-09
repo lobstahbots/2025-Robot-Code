@@ -4,6 +4,8 @@
 
 package frc.robot.util.math;
 
+import org.littletonrobotics.junction.Logger;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
@@ -173,11 +175,11 @@ public class LobstahMath {
      * @return nearest scoring pose, blue alliance origin
      */
     public static Pose2d getNearestScoringPose(Pose2d currentPose, boolean ccw) {
+        var translation = AlliancePoseMirror.mirrorPose2d(currentPose).minus(Poses.REEF_CENTER).getTranslation();
+        var angle = wrapValue(translation.getAngle().getRadians() + 7 * Math.PI / 6, 0, 2 * Math.PI);
+        Logger.recordOutput("AutoAlignAngle", angle);
+        Logger.recordOutput("AutoAlignTranslation", translation);
         return AlliancePoseMirror
-                .mirrorPose2d(
-                        Poses.REEF_POSES[(int) wrapValue(
-                                AlliancePoseMirror.mirrorPose2d(currentPose).minus(Poses.REEF_CENTER).getTranslation()
-                                        .getAngle().minus(Rotation2d.fromRadians(5 * Math.PI / 6)).getRotations() * 6,
-                                0, 6) + (ccw ? 1 : 0)]);
+                .mirrorPose2d(Poses.REEF_POSES[2 * ((int) angle) + (ccw ? 1 : 0)]);
     }
 }

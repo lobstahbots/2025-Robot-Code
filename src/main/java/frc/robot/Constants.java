@@ -80,8 +80,8 @@ public final class Constants {
             public static final int RIGHT_PADDLE = 7;
             public static final int LEFT_PADDLE = 8;
 
-            public static final int D_PAD_UP = 90;
-            public static final int D_PAD_DOWN = 270;
+            public static final int D_PAD_UP = 0;
+            public static final int D_PAD_DOWN = 180;
             public static final int D_PAD_LEFT = 180;
             public static final int D_PAD_RIGHT = 0;
             
@@ -131,9 +131,10 @@ public final class Constants {
                 ElevatorConstants.BOTTOM_HEIGHT, 0, 0);
         public static final SuperstructureState L3_STATE = new SuperstructureState(Rotation2d.fromRadians(1.03), 41.2, 0,
                 0);
-        public static final SuperstructureState L4_STATE = new SuperstructureState(Rotation2d.fromRadians(0.598), 120, 0, 0);
-        public static final SuperstructureState L2_ALGAE_STATE = new SuperstructureState(Rotation2d.fromRadians(0), 0, 0, 0);
-        public static final SuperstructureState L3_ALGAE_STATE = new SuperstructureState(Rotation2d.fromRadians(0), 0, 0, 0);
+        public static final SuperstructureState L4_STATE = new SuperstructureState(Rotation2d.fromRadians(0.2), 124
+        , 0, 0);
+        public static final SuperstructureState L2_ALGAE_STATE = new SuperstructureState(Rotation2d.fromRadians(-0.2), 0, 0, 0);
+        public static final SuperstructureState L3_ALGAE_STATE = new SuperstructureState(Rotation2d.fromRadians(-0.2), 41.2, 0, 0);
         public static final double ELEVATOR_THRESHOLD = 10;
     }
 
@@ -373,7 +374,7 @@ public final class Constants {
         public static final double GEAR_RATIO = 64 / 16 / 2;
         public static final double PITCH_DIAMETER = Units.inchesToMeters(1.273);
 
-        public static final double kP = 0.2; // TODO: Find actual value NOTE: was 3.596
+        public static final double kP = 0.25; // TODO: Find actual value NOTE: was 3.596
         public static final double kI = 0.01; // TODO: Find actual value
         public static final double kD = 0; //TODO: Find actual value
 
@@ -381,7 +382,7 @@ public final class Constants {
         public static final double kV = 0; // TODO: Find actual value NOTE: 0.034454
         public static final double kA = 0; // TODO: Find actual value NOTE: 0.2
         public static final double kG = 0.3; // TODO: Find actual value NOTE: 0.28946
-        public static final TrapezoidProfile.Constraints CONSTRAINTS = new TrapezoidProfile.Constraints(400, 200);
+        public static final TrapezoidProfile.Constraints CONSTRAINTS = new TrapezoidProfile.Constraints(600, 300);
 
         public static final double SUPPLY_CURRENT_LIMIT = 40;
         public static final double STATOR_CURRENT_LIMIT = 100;

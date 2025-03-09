@@ -324,5 +324,6 @@ public class DriveBase extends CharacterizableSubsystem {
     }
 
     Logger.recordOutput("SwerveStates/Measured", getStates());
+    SmartDashboard.putData("Drivebase subsystem", this);
   }
 }
