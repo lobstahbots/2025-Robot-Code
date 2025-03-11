@@ -8,16 +8,21 @@ import com.studica.frc.AHRS;
 import com.studica.frc.AHRS.NavXComType;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 
 /** Add your docs here. */
 public class GyroIONavX implements GyroIO {
     private final AHRS gyro = new AHRS(NavXComType.kMXP_SPI);
 
-    public GyroIONavX(){}
+    public GyroIONavX() {}
 
     public Rotation2d getYaw() {
-        return Rotation2d.fromDegrees(gyro.getYaw()).plus(Rotation2d.k180deg);
-      }
+        return Rotation2d.fromDegrees(gyro.getYaw())
+                .plus(DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Red
+                        ? Rotation2d.kZero
+                        : Rotation2d.k180deg);
+    }
 
     public Rotation2d getPitch() {
         return Rotation2d.fromDegrees(gyro.getPitch());
