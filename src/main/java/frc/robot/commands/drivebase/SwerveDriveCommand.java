@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.IOConstants;
 import frc.robot.subsystems.drive.DriveBase;
+import frc.robot.util.trajectory.AlliancePoseMirror;
 
 /** A command to drive a swerve robot. */
 public class SwerveDriveCommand extends Command {
@@ -75,6 +76,7 @@ public class SwerveDriveCommand extends Command {
       double linearMagnitude = MathUtil.applyDeadband(
           Math.hypot(strafeXSupplier.getAsDouble(), strafeYSupplier.getAsDouble()), IOConstants.JOYSTICK_DEADBAND);
       Rotation2d linearDirection = new Rotation2d(strafeXSupplier.getAsDouble(), strafeYSupplier.getAsDouble());
+      if (AlliancePoseMirror.isRedAlliance()) linearDirection = linearDirection.plus(Rotation2d.k180deg);
       double omega = MathUtil.applyDeadband(rotationSupplier.getAsDouble(), IOConstants.JOYSTICK_DEADBAND);
 
       // Square values

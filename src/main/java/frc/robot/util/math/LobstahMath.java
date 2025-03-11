@@ -175,11 +175,13 @@ public class LobstahMath {
      * @return nearest scoring pose, blue alliance origin
      */
     public static Pose2d getNearestScoringPose(Pose2d currentPose, boolean ccw) {
-        var translation = AlliancePoseMirror.mirrorPose2d(currentPose).minus(Poses.REEF_CENTER).getTranslation();
+        var mirroredPose = AlliancePoseMirror.mirrorPose2d(currentPose);
+        var translation = mirroredPose.minus(Poses.REEF_CENTER).getTranslation();
         var angle = wrapValue(translation.getAngle().getRadians() + 7 * Math.PI / 6, 0, 2 * Math.PI);
+        Logger.recordOutput("MirroredPose", mirroredPose);
         Logger.recordOutput("AutoAlignAngle", angle);
         Logger.recordOutput("AutoAlignTranslation", translation);
         return AlliancePoseMirror
-                .mirrorPose2d(Poses.REEF_POSES[2 * ((int) angle) + (ccw ? 1 : 0)]);
+                .mirrorPose2d(Poses.REEF_POSES[2 * ((int) (angle * 3 / Math.PI)) + (ccw ? 1 : 0)]);
     }
 }

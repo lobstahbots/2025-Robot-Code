@@ -19,11 +19,11 @@ import frc.robot.subsystems.drive.DriveBase;
  * command-based.html#defining-commands
  */
 public class DriveToPoseCommand extends Command {
-    private final PIDController xController = new PIDController(DriveConstants.TRANSLATION_PID_CONSTANTS.kP,
+    private final PIDController xController = new PIDController(3 * DriveConstants.TRANSLATION_PID_CONSTANTS.kP,
             DriveConstants.TRANSLATION_PID_CONSTANTS.kI, DriveConstants.TRANSLATION_PID_CONSTANTS.kD);
-    private final PIDController yController = new PIDController(DriveConstants.TRANSLATION_PID_CONSTANTS.kP,
+    private final PIDController yController = new PIDController(3 * DriveConstants.TRANSLATION_PID_CONSTANTS.kP,
             DriveConstants.TRANSLATION_PID_CONSTANTS.kI, DriveConstants.TRANSLATION_PID_CONSTANTS.kD);
-    private final PIDController thetaController = new PIDController(DriveConstants.ROTATION_PID_CONSTANTS.kP,
+    private final PIDController thetaController = new PIDController(2 * DriveConstants.ROTATION_PID_CONSTANTS.kP,
             DriveConstants.ROTATION_PID_CONSTANTS.kI, DriveConstants.ROTATION_PID_CONSTANTS.kD);
 
     private final DriveBase driveBase;

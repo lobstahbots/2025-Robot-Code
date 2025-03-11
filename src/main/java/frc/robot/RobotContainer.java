@@ -247,8 +247,8 @@ public class RobotContainer {
         // driverDpadDown.whileTrue(new SuperstructureStateCommand(superstructure, RobotConstants.L2_ALGAE_STATE));
         // driverDpadUp.whileTrue(new SuperstructureStateCommand(superstructure, RobotConstants.L3_ALGAE_STATE));
 
-        // driverLeftPaddle.onTrue(new AlignToReefCommand(driveBase, false));
-        // driverRightPaddle.onTrue(new AlignToReefCommand(driveBase, true));
+        driverLeftPaddle.whileTrue(new AlignToReefCommand(driveBase, true));
+        driverRightPaddle.whileTrue(new AlignToReefCommand(driveBase, false));
 
         //operator
         operatorLTButton.whileTrue(new CoralCommand(coral, -0.5));
