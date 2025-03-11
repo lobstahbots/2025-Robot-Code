@@ -43,6 +43,8 @@ public class AutoFactory {
     private final DriveBase driveBase;
     private final CoralEndEffector coral;
     private final Superstructure superstructure;
+    private final PPHolonomicDriveController driveController = new PPHolonomicDriveController(
+            DriveConstants.TRANSLATION_PID_CONSTANTS, DriveConstants.ROTATION_PID_CONSTANTS);
 
     /**
      * Create a new auto factory.
@@ -59,9 +61,7 @@ public class AutoFactory {
         this.superstructure = superstructure;
 
         AutoBuilder.configure(driveBase::getPose, driveBase::resetPose, driveBase::getRobotRelativeSpeeds,
-                (chassisSpeeds, driveFeedforwards) -> driveBase.driveRobotRelative(chassisSpeeds),
-                new PPHolonomicDriveController(DriveConstants.TRANSLATION_PID_CONSTANTS,
-                        DriveConstants.ROTATION_PID_CONSTANTS),
+                (chassisSpeeds, driveFeedforwards) -> driveBase.driveRobotRelative(chassisSpeeds), driveController,
                 DriveConstants.ROBOT_CONFIG, () -> {
                     return DriverStation.getAlliance().get() == DriverStation.Alliance.Red;
                 }, driveBase);
@@ -300,8 +300,9 @@ public class AutoFactory {
      */
     public Command getStartCommand(StartingPosition startingPosition, char pipe) {
         return getPathFindToPathCommand(startingPosition.name() + "_" + pipe, PathType.CHOREO);
-                // .andThen(superstructure.getSetpointCommand(RobotConstants.L4_STATE))
-                // .andThen(new CoralCommand(coral, -0.5).withTimeout(1));
+                // .andThen(driveBase.run(driveBase::stopMotors));
+                // .alongWith(superstructure.getSetpointCommand(RobotConstants.L4_STATE))
+                // .andThen(new CoralCommand(coral, -0.5));
     }
 
     /**
@@ -341,9 +342,12 @@ public class AutoFactory {
      */
     public Command getAuto(StartingPosition startingPosition, CoralStation coralStation, String pipes) {
         if (pipes.length() == 0) return Commands.none();
-        Command result = getStartCommand(startingPosition, pipes.charAt(0));
+        Command result = getStartCommand(startingPosition, pipes.charAt(0))
+                .andThen(Commands.runOnce(() -> System.out.println("Start command just ended!")));
         for (int i = 1; i < pipes.length(); i++) {
-            result = result.andThen(getCoralStationCommand(coralStation, pipes.charAt(i - 1)))
+            result = result
+                    .andThen(getCoralStationCommand(coralStation, pipes.charAt(i - 1))
+                            .andThen(Commands.runOnce(() -> System.out.println("cst command just ended!"))))
                     .andThen(getScoreCommand(coralStation, pipes.charAt(i)));
         }
         return result;
