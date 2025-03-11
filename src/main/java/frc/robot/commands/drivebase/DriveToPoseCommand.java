@@ -4,6 +4,8 @@
 
 package frc.robot.commands.drivebase;
 
+import org.littletonrobotics.junction.Logger;
+
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -33,14 +35,17 @@ public class DriveToPoseCommand extends Command {
         xController.setSetpoint(pose.getX());
         yController.setSetpoint(pose.getY());
         thetaController.setSetpoint(pose.getRotation().getRadians());
+        Logger.recordOutput("DriveToPosePose", pose);
     }
 
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        driveBase.driveRobotRelative(ChassisSpeeds.fromFieldRelativeSpeeds(
-                xController.calculate(driveBase.getPose().getX()), yController.calculate(driveBase.getPose().getY()),
-                thetaController.calculate(driveBase.getPose().getRotation().getRadians()), driveBase.getGyroAngle()));
+        driveBase.driveRobotRelative(
+                ChassisSpeeds.fromFieldRelativeSpeeds(10 * xController.calculate(driveBase.getPose().getX()),
+                        10 * yController.calculate(driveBase.getPose().getY()),
+                        10 * thetaController.calculate(driveBase.getPose().getRotation().getRadians()),
+                        driveBase.getGyroAngle()));
     }
 
     // Called once the command ends or is interrupted.

@@ -8,6 +8,7 @@ import org.littletonrobotics.junction.Logger;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.path.GoalEndState;
+import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.path.Waypoint;
 
@@ -82,7 +83,10 @@ public class AutoFactory {
     public Command getPathFindToPoseCommand(Pose2d targetPose) {
 
         // Since AutoBuilder is configured, we can use it to build pathfinding commands
-        Command pathfindingCommand = AutoBuilder.pathfindToPoseFlipped(targetPose, PathConstants.CONSTRAINTS, 0.0 // Goal end velocity in meters/sec
+        Command pathfindingCommand = AutoBuilder.pathfindToPoseFlipped(targetPose,
+                new PathConstraints(2, 0.2, PathConstants.CONSTRAINTS.maxAngularVelocityRadPerSec(),
+                        PathConstants.CONSTRAINTS.maxAngularAccelerationRadPerSecSq()),
+                0.0 // Goal end velocity in meters/sec
         ).andThen(new SwerveDriveStopCommand(driveBase));
 
         return pathfindingCommand;
@@ -335,7 +339,8 @@ public class AutoFactory {
             result = result.andThen(getCoralStationCommand(coralStation, pipes.charAt(i - 1)))
                     .andThen(getScoreCommand(coralStation, pipes.charAt(i)));
         }
-        return result.andThen(() -> {});
+        return result.andThen(() -> {
+        });
     }
 
     /**
