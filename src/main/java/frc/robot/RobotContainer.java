@@ -227,11 +227,7 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
-        return superstructure.getSetpointCommand(RobotConstants.L4_STATE)
-                .alongWith(autoFactory.getPathFindToPoseCommand(Poses.G).alongWith(new CoralCommand(coral, 0.2))
-                        .withTimeout(7).andThen(new CoralCommand(coral, -0.5)).withTimeout(1))
-                .andThen(new SwerveDriveCommand(driveBase, -0.5, 0, 0, false, false).withTimeout(2));
-        // return autoChooser.getCommand();
+        return autoChooser.getCommand();
     }
 
     public void configureButtonBindings() {
@@ -290,7 +286,7 @@ public class RobotContainer {
         LoggedNetworkString autoInput = new LoggedNetworkString("SmartDashboard/AutoPipes", "");
 
         autoChooser.addRoutine(
-                "L2 Auto", List.of(
+                "L4 Auto", List.of(
                         new AutoQuestion<>("Starting Postion",
                                 Map.of("Left side left cage", StartingPosition.START_LL, "Left side middle cage",
                                         StartingPosition.START_LC, "Left side right cage", StartingPosition.START_LR,
@@ -299,6 +295,8 @@ public class RobotContainer {
                         new AutoQuestion<>("Coral Station",
                                 Map.of("Left", CoralStation.LEFT, "Right", CoralStation.RIGHT))),
                 autoFactory.getChosenAuto(autoInput::get));
+
+        autoChooser.addRoutine("Simple timed 1 piece", List.of(), autoFactory::getSimpleTimedAuto);
     }
 
     public void displaySimField() {

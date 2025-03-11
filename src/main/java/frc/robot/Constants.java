@@ -85,7 +85,7 @@ public final class Constants {
             public static final int D_PAD_LEFT = 180;
             public static final int D_PAD_RIGHT = 0;
             
-            public static final boolean SQUARE_INPUTS = false;
+            public static final boolean SQUARE_INPUTS = true;
         }
         //NOTE: useless probably
         // public static class DriverIOConstants {
@@ -141,7 +141,7 @@ public final class Constants {
     public static class DriveConstants {
         public static final double MAX_ACCELERATION = 30;
         public static final double MAX_DRIVE_SPEED = 100;
-        public static final double MAX_ANGULAR_SPEED = 20;
+        public static final double MAX_ANGULAR_SPEED = 40;
         public static final double SLOWDOWN_PERCENT = 0.5;
         public static final int DRIVE_MOTOR_CURRENT_LIMIT = 40;
         public static final int ANGLE_MOTOR_CURRENT_LIMIT = 40;
