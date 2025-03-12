@@ -85,7 +85,7 @@ public class AutoFactory {
 
         // Since AutoBuilder is configured, we can use it to build pathfinding commands
         Command pathfindingCommand = AutoBuilder.pathfindToPoseFlipped(targetPose,
-                new PathConstraints(2, 0.5, PathConstants.CONSTRAINTS.maxAngularVelocityRadPerSec(),
+                new PathConstraints(4, 1, PathConstants.CONSTRAINTS.maxAngularVelocityRadPerSec(),
                         PathConstants.CONSTRAINTS.maxAngularAccelerationRadPerSecSq()),
                 0.0 // Goal end velocity in meters/sec
         ).andThen(new SwerveDriveStopCommand(driveBase));
@@ -199,7 +199,7 @@ public class AutoFactory {
     }
 
     public Command getSimpleTimedAuto() {
-        return getPathFindToPoseCommand(Poses.H).alongWith(new CoralCommand(coral, 0.2)).withTimeout(3)
+        return getPathFindToPoseCommand(Poses.H).alongWith(new CoralCommand(coral, 0.2)).withTimeout(5)
                 .andThen(new CoralCommand(coral, -0.5).withTimeout(1))
                 .deadlineFor(superstructure.getSetpointCommand(RobotConstants.L4_STATE))
                 .andThen(new SwerveDriveCommand(driveBase, -0.2, 0, 0, false, false).withTimeout(2))
@@ -207,8 +207,13 @@ public class AutoFactory {
     }
 
     public Command getTwoPieceHardCodedAuto() {
-        return getSimpleTimedAuto().andThen(getPathFindToPoseCommand(Poses.LEFT_STATION).withTimeout(5))
-                .andThen(getPathFindToPoseCommand(Poses.L).alongWith(new CoralCommand(coral, 0.5)).alongWith(
+        return getPathFindToPoseCommand(Poses.G).alongWith(new CoralCommand(coral, 0.2)).withTimeout(3)
+                .andThen(new CoralCommand(coral, -0.5).withTimeout(1))
+                .deadlineFor(superstructure.getSetpointCommand(RobotConstants.L4_STATE))
+                .andThen(new SwerveDriveCommand(driveBase, -0.4, 0, 0, false, false).withTimeout(1))
+                .andThen(getPathFindToPoseCommand(Poses.RIGHT_STATION)
+                        .alongWith(superstructure.getSetpointCommand(RobotConstants.INTAKE_STATE)).withTimeout(6))
+                .andThen(getPathFindToPoseCommand(Poses.C).alongWith(new CoralCommand(coral, 1)).alongWith(
                         Commands.waitSeconds(1).andThen(superstructure.getSetpointCommand(RobotConstants.L4_STATE))));
     }
 
