@@ -85,7 +85,7 @@ public class AutoFactory {
 
         // Since AutoBuilder is configured, we can use it to build pathfinding commands
         Command pathfindingCommand = AutoBuilder.pathfindToPoseFlipped(targetPose,
-                new PathConstraints(2, 0.2, PathConstants.CONSTRAINTS.maxAngularVelocityRadPerSec(),
+                new PathConstraints(2, 0.5, PathConstants.CONSTRAINTS.maxAngularVelocityRadPerSec(),
                         PathConstants.CONSTRAINTS.maxAngularAccelerationRadPerSecSq()),
                 0.0 // Goal end velocity in meters/sec
         ).andThen(new SwerveDriveStopCommand(driveBase));
@@ -199,11 +199,17 @@ public class AutoFactory {
     }
 
     public Command getSimpleTimedAuto() {
-        return getPathFindToPoseCommand(Poses.H).alongWith(new CoralCommand(coral, 0.2)).withTimeout(6)
+        return getPathFindToPoseCommand(Poses.H).alongWith(new CoralCommand(coral, 0.2)).withTimeout(3)
                 .andThen(new CoralCommand(coral, -0.5).withTimeout(1))
                 .deadlineFor(superstructure.getSetpointCommand(RobotConstants.L4_STATE))
-                .andThen(new SwerveDriveCommand(driveBase, -0.2, 0, 0, false, false).withTimeout(3))
+                .andThen(new SwerveDriveCommand(driveBase, -0.2, 0, 0, false, false).withTimeout(2))
                 .andThen(superstructure.getSetpointCommand(RobotConstants.INTAKE_STATE));
+    }
+
+    public Command getTwoPieceHardCodedAuto() {
+        return getSimpleTimedAuto().andThen(getPathFindToPoseCommand(Poses.LEFT_STATION).withTimeout(5))
+                .andThen(getPathFindToPoseCommand(Poses.L).alongWith(new CoralCommand(coral, 0.5)).alongWith(
+                        Commands.waitSeconds(1).andThen(superstructure.getSetpointCommand(RobotConstants.L4_STATE))));
     }
 
     /**
@@ -300,9 +306,9 @@ public class AutoFactory {
      */
     public Command getStartCommand(StartingPosition startingPosition, char pipe) {
         return getPathFindToPathCommand(startingPosition.name() + "_" + pipe, PathType.CHOREO);
-                // .andThen(driveBase.run(driveBase::stopMotors));
-                // .alongWith(superstructure.getSetpointCommand(RobotConstants.L4_STATE))
-                // .andThen(new CoralCommand(coral, -0.5));
+        // .andThen(driveBase.run(driveBase::stopMotors));
+        // .alongWith(superstructure.getSetpointCommand(RobotConstants.L4_STATE))
+        // .andThen(new CoralCommand(coral, -0.5));
     }
 
     /**

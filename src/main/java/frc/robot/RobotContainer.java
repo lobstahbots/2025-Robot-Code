@@ -297,6 +297,8 @@ public class RobotContainer {
                 autoFactory.getChosenAuto(autoInput::get));
 
         autoChooser.addRoutine("Simple timed 1 piece", List.of(), autoFactory::getSimpleTimedAuto);
+
+        autoChooser.addRoutine("hard-coded 2 piece", List.of(), autoFactory::getTwoPieceHardCodedAuto);
     }
 
     public void displaySimField() {

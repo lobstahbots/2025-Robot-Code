@@ -323,6 +323,9 @@ public final class Constants {
 
             public static final Pose2d REEF_CENTER = ChoreoVariables.getPose("REEF_CENTER");
 
+            public static final Pose2d LEFT_STATION = ChoreoVariables.getPose("LEFT_STATION");
+            public static final Pose2d RIGHT_STATION = ChoreoVariables.getPose("RIGHT_STATION");
+
             public static final Pose2d FIELD_CENTER = new Pose2d(FIELD_LENGTH / 2, FIELD_WIDTH / 2, new Rotation2d());
 
             public static final Pose2d[] REEF_POSES = { A, B, C, D, E, F, G, H, I, J, K, L };
