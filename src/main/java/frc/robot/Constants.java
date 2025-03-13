@@ -411,7 +411,7 @@ public final class Constants {
 
         public static final int LEFT_ELEVATOR_ID = 33; // TODO: Find actual motor ID
         public static final int RIGHT_ELEVATOR_ID = 34; // TODO: Find actual motor ID
-        public static final int LIMIT_SWITCH_CHANNEL = 6; // TODO: Find actual channel
+        public static final int LIMIT_SWITCH_CHANNEL = 9; // TODO: Find actual channel
 
         public static final double BOTTOM_HEIGHT = 0;
         public static final double TOP_HEIGHT = 2;
@@ -431,6 +431,7 @@ public final class Constants {
         public static final int CURRENT_LIMIT = 30;
         public static final int LEFT_ID = 45;
         public static final int CURRENT_THRESHOLD = 10;
+        public static final int BEAM_BREAK_ID = 8;
     }
 
     public static class AlgaeEndEffectorConstants {

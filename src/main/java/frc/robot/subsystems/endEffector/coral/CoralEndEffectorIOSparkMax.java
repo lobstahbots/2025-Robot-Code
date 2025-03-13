@@ -6,6 +6,9 @@ import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+
+import edu.wpi.first.wpilibj.DigitalInput;
+
 import com.revrobotics.spark.config.SparkMaxConfig;
 
 import frc.robot.Constants.CoralEndEffectorConstants;
@@ -14,10 +17,12 @@ public class CoralEndEffectorIOSparkMax implements CoralEndEffectorIO {
     private final SparkMax leftMotor;
     //private final SparkMax rightMotor;
     private final RelativeEncoder encoder;
+    private final DigitalInput beamBreak;
 
-    public CoralEndEffectorIOSparkMax(int leftId) {
+    public CoralEndEffectorIOSparkMax(int leftId, int beamBreakId) {
         leftMotor = new SparkMax(leftId, MotorType.kBrushless);
         //rightMotor = new SparkMax(rightId, MotorType.kBrushless);
+        beamBreak = new DigitalInput(beamBreakId);
 
         SparkMaxConfig config = new SparkMaxConfig();
         config.smartCurrentLimit(CoralEndEffectorConstants.CURRENT_LIMIT);
@@ -53,6 +58,7 @@ public class CoralEndEffectorIOSparkMax implements CoralEndEffectorIO {
         inputs.appliedVoltage = leftMotor.getAppliedOutput() * leftMotor.getBusVoltage();
         inputs.currentAmps = leftMotor.getOutputCurrent();
         inputs.tempCelsius = leftMotor.getMotorTemperature();
+        inputs.beamBreakTriggered = !beamBreak.get();
     }
 
     @Override

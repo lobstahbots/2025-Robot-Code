@@ -21,6 +21,10 @@ public interface CoralEndEffectorIO {
          * Temperature in degrees Celsius of motor
          */
         public double tempCelsius = 0.0;
+        /**
+         * Whether or not the beam on the beam break is broken.
+         */
+        public boolean beamBreakTriggered = false;
     }
 
     public void updateInputs(CoralEndEffectorIOInputs inputs);

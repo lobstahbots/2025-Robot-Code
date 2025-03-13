@@ -176,7 +176,7 @@ public class RobotContainer {
             superstructure = new Superstructure(new ElevatorIOSim(), new PivotIOSim());
         }
 
-        coral = new CoralEndEffector(new CoralEndEffectorIOSparkMax(CoralEndEffectorConstants.LEFT_ID));
+        coral = new CoralEndEffector(new CoralEndEffectorIOSparkMax(CoralEndEffectorConstants.LEFT_ID, CoralEndEffectorConstants.BEAM_BREAK_ID));
         algae = new AlgaeEndEffector(new AlgaeEndEffectorIOSparkMax(AlgaeEndEffectorConstants.MOTOR_ID));
 
         this.autoFactory = new AutoFactory(driveBase, coral, superstructure, autoChooser::getResponses);
