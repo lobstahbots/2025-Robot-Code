@@ -61,7 +61,7 @@ public class Robot extends LoggedRobot {
         Logger.recordMetadata("GitSHA", BuildConstants.GIT_SHA);
         Logger.recordMetadata("GitDate", BuildConstants.GIT_DATE);
         Logger.recordMetadata("GitBranch", BuildConstants.GIT_BRANCH);
-        Logger.recordMetadata("Lobstah Bots", "2024 Robot Code");
+        Logger.recordMetadata("Lobstah Bots", "2025 Robot Code");
 
         Logger.registerURCL(URCL.startExternal());
 
