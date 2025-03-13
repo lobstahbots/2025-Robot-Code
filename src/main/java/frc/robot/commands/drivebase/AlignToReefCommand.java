@@ -20,9 +20,9 @@ import frc.robot.util.math.LobstahMath;
  * command-based.html#defining-commands
  */
 public class AlignToReefCommand extends Command {
-    private final PIDController xController = new PIDController(DriveConstants.TRANSLATION_PID_CONSTANTS.kP,
+    private final PIDController xController = new PIDController(DriveConstants.TRANSLATION_PID_CONSTANTS.kP * 0.8,
             DriveConstants.TRANSLATION_PID_CONSTANTS.kI, DriveConstants.TRANSLATION_PID_CONSTANTS.kD);
-    private final PIDController yController = new PIDController(DriveConstants.TRANSLATION_PID_CONSTANTS.kP,
+    private final PIDController yController = new PIDController(DriveConstants.TRANSLATION_PID_CONSTANTS.kP * 0.8,
             DriveConstants.TRANSLATION_PID_CONSTANTS.kI, DriveConstants.TRANSLATION_PID_CONSTANTS.kD);
     private final PIDController thetaController = new PIDController(DriveConstants.ROTATION_PID_CONSTANTS.kP,
             DriveConstants.ROTATION_PID_CONSTANTS.kI, DriveConstants.ROTATION_PID_CONSTANTS.kD);

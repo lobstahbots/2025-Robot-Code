@@ -85,7 +85,7 @@ public final class Constants {
             public static final int D_PAD_LEFT = 180;
             public static final int D_PAD_RIGHT = 0;
             
-            public static final boolean SQUARE_INPUTS = false;
+            public static final boolean SQUARE_INPUTS = true;
         }
         //NOTE: useless probably
         // public static class DriverIOConstants {
@@ -141,7 +141,7 @@ public final class Constants {
     public static class DriveConstants {
         public static final double MAX_ACCELERATION = 30;
         public static final double MAX_DRIVE_SPEED = 100;
-        public static final double MAX_ANGULAR_SPEED = 20;
+        public static final double MAX_ANGULAR_SPEED = 40;
         public static final double SLOWDOWN_PERCENT = 0.5;
         public static final int DRIVE_MOTOR_CURRENT_LIMIT = 40;
         public static final int ANGLE_MOTOR_CURRENT_LIMIT = 40;
@@ -270,9 +270,9 @@ public final class Constants {
             CAMERA_TRANSFORMS.put("frontright", new Transform3d(Inches.of(11.2435), Inches.of(-13.42), Inches.of(7.164),
                     new Rotation3d(Degrees.of(0), Degrees.of(-20), Degrees.of(35))));
             CAMERA_TRANSFORMS.put("backleft", new Transform3d(Inches.of(2.775), Inches.of(10.5285), Inches.of(37.1935),
-                    new Rotation3d(Degrees.of(0), Degrees.of(20), Degrees.of(35))));
+                    new Rotation3d(Degrees.of(0), Degrees.of(20), Degrees.of(35 + 180))));
             CAMERA_TRANSFORMS.put("backright", new Transform3d(Inches.of(2.689), Inches.of(-10.5585),
-                    Inches.of(37.0995), new Rotation3d(Degrees.of(0), Degrees.of(20), Degrees.of(-35))));
+                    Inches.of(37.0995), new Rotation3d(Degrees.of(0), Degrees.of(20), Degrees.of(-35 - 180))));
         }
         public static final double VISION_ODOMETRY_DIFFERENCE_FILTER_THRESHOLD = 5;
         public static final int CAMERA_RES_WIDTH = 1280;
@@ -322,6 +322,9 @@ public final class Constants {
             public static final Pose2d L = ChoreoVariables.getPose("L");
 
             public static final Pose2d REEF_CENTER = ChoreoVariables.getPose("REEF_CENTER");
+
+            public static final Pose2d LEFT_STATION = ChoreoVariables.getPose("LEFT_STATION");
+            public static final Pose2d RIGHT_STATION = ChoreoVariables.getPose("RIGHT_STATION");
 
             public static final Pose2d FIELD_CENTER = new Pose2d(FIELD_LENGTH / 2, FIELD_WIDTH / 2, new Rotation2d());
 

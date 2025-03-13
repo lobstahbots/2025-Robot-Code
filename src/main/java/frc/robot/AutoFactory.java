@@ -28,6 +28,7 @@ import frc.robot.Constants.RobotConstants;
 import frc.robot.Constants.FieldConstants.Poses;
 import frc.robot.commands.coralEndEffectorCommands.CoralCommand;
 import frc.robot.commands.drivebase.DriveToPoseCommand;
+import frc.robot.commands.drivebase.SwerveDriveCommand;
 import frc.robot.commands.drivebase.SwerveDriveStopCommand;
 import frc.robot.commands.superstructure.SuperstructureStateCommand;
 import frc.robot.subsystems.drive.DriveBase;
@@ -42,6 +43,8 @@ public class AutoFactory {
     private final DriveBase driveBase;
     private final CoralEndEffector coral;
     private final Superstructure superstructure;
+    private final PPHolonomicDriveController driveController = new PPHolonomicDriveController(
+            DriveConstants.TRANSLATION_PID_CONSTANTS, DriveConstants.ROTATION_PID_CONSTANTS);
 
     /**
      * Create a new auto factory.
@@ -58,9 +61,7 @@ public class AutoFactory {
         this.superstructure = superstructure;
 
         AutoBuilder.configure(driveBase::getPose, driveBase::resetPose, driveBase::getRobotRelativeSpeeds,
-                (chassisSpeeds, driveFeedforwards) -> driveBase.driveRobotRelative(chassisSpeeds),
-                new PPHolonomicDriveController(DriveConstants.TRANSLATION_PID_CONSTANTS,
-                        DriveConstants.ROTATION_PID_CONSTANTS),
+                (chassisSpeeds, driveFeedforwards) -> driveBase.driveRobotRelative(chassisSpeeds), driveController,
                 DriveConstants.ROBOT_CONFIG, () -> {
                     return DriverStation.getAlliance().get() == DriverStation.Alliance.Red;
                 }, driveBase);
@@ -84,7 +85,7 @@ public class AutoFactory {
 
         // Since AutoBuilder is configured, we can use it to build pathfinding commands
         Command pathfindingCommand = AutoBuilder.pathfindToPoseFlipped(targetPose,
-                new PathConstraints(2, 0.2, PathConstants.CONSTRAINTS.maxAngularVelocityRadPerSec(),
+                new PathConstraints(4, 1, PathConstants.CONSTRAINTS.maxAngularVelocityRadPerSec(),
                         PathConstants.CONSTRAINTS.maxAngularAccelerationRadPerSecSq()),
                 0.0 // Goal end velocity in meters/sec
         ).andThen(new SwerveDriveStopCommand(driveBase));
@@ -166,7 +167,7 @@ public class AutoFactory {
                 default:
                     path = PathPlannerPath.fromChoreoTrajectory(pathname);
             }
-            return AutoBuilder.pathfindThenFollowPath(path, PathConstants.CONSTRAINTS);
+            return AutoBuilder.followPath(path);
         } catch (Exception exception) {
             DriverStation.reportError("Could not load path " + pathname + ". Error: " + exception.getMessage(), false);
             return Commands.none();
@@ -195,6 +196,28 @@ public class AutoFactory {
 
         Supplier<Command> pathCommand = () -> AutoBuilder.pathfindThenFollowPath(path, PathConstants.CONSTRAINTS);
         return pathCommand;
+    }
+
+    public Command getSimpleTimedAuto() {
+        return getPathFindToPoseCommand(Poses.H).alongWith(new CoralCommand(coral, 0.2)).withTimeout(5)
+                .andThen(new CoralCommand(coral, -0.5).withTimeout(1))
+                .deadlineFor(superstructure.getSetpointCommand(RobotConstants.L4_STATE))
+                .andThen(new SwerveDriveCommand(driveBase, -0.2, 0, 0, false, false).withTimeout(2))
+                .andThen(superstructure.getSetpointCommand(RobotConstants.INTAKE_STATE));
+    }
+
+    public Command getTwoPieceHardCodedAuto() {
+        return getPathFindToPoseCommand(Poses.G).alongWith(new CoralCommand(coral, 0.2)).withTimeout(3)
+                .andThen(new CoralCommand(coral, -0.5).withTimeout(1))
+                .deadlineFor(superstructure.getSetpointCommand(RobotConstants.L4_STATE))
+                .andThen(new SwerveDriveCommand(driveBase, -0.4, 0, 0, false, false).withTimeout(1))
+                .andThen(getPathFindToPoseCommand(Poses.RIGHT_STATION)
+                        .alongWith(superstructure.getSetpointCommand(RobotConstants.INTAKE_STATE)).withTimeout(8))
+                .andThen(new CoralCommand(coral, 1).alongWith(new SwerveDriveCommand(driveBase, -0.4, 0, 0, false, false)).withTimeout(2))
+                .andThen(getPathFindToPoseCommand(Poses.C)
+                        .alongWith(new CoralCommand(coral, 1))
+                        .alongWith(Commands.waitSeconds(1).andThen(superstructure.getSetpointCommand(RobotConstants.L4_STATE)))
+                );
     }
 
     /**
@@ -290,10 +313,10 @@ public class AutoFactory {
      * @return The constructed command
      */
     public Command getStartCommand(StartingPosition startingPosition, char pipe) {
-        return getPathFindToPathCommand(startingPosition.name() + "_" + pipe, PathType.CHOREO)
-                .alongWith(new SuperstructureStateCommand(superstructure, RobotConstants.L2_STATE))
-                .andThen(getAutoAlignToPipeCommand(pipe))
-                .andThen(new CoralCommand(coral, CoralEndEffectorConstants.MOTOR_SPEED).withTimeout(1));
+        return getPathFindToPathCommand(startingPosition.name() + "_" + pipe, PathType.CHOREO);
+        // .andThen(driveBase.run(driveBase::stopMotors));
+        // .alongWith(superstructure.getSetpointCommand(RobotConstants.L4_STATE))
+        // .andThen(new CoralCommand(coral, -0.5));
     }
 
     /**
@@ -320,7 +343,6 @@ public class AutoFactory {
     public Command getScoreCommand(CoralStation coralStation, char pipe) {
         return getPathFindToPathCommand(coralStation.name() + "_" + pipe, PathType.CHOREO, 0)
                 .alongWith(new SuperstructureStateCommand(superstructure, RobotConstants.L4_STATE))
-                .andThen(getAutoAlignToPipeCommand(pipe))
                 .andThen(new CoralCommand(coral, CoralEndEffectorConstants.MOTOR_SPEED).withTimeout(1));
     }
 
@@ -334,13 +356,15 @@ public class AutoFactory {
      */
     public Command getAuto(StartingPosition startingPosition, CoralStation coralStation, String pipes) {
         if (pipes.length() == 0) return Commands.none();
-        Command result = getStartCommand(startingPosition, pipes.charAt(0));
+        Command result = getStartCommand(startingPosition, pipes.charAt(0))
+                .andThen(Commands.runOnce(() -> System.out.println("Start command just ended!")));
         for (int i = 1; i < pipes.length(); i++) {
-            result = result.andThen(getCoralStationCommand(coralStation, pipes.charAt(i - 1)))
+            result = result
+                    .andThen(getCoralStationCommand(coralStation, pipes.charAt(i - 1))
+                            .andThen(Commands.runOnce(() -> System.out.println("cst command just ended!"))))
                     .andThen(getScoreCommand(coralStation, pipes.charAt(i)));
         }
-        return result.andThen(() -> {
-        });
+        return result;
     }
 
     /**

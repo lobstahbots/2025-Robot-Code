@@ -28,7 +28,7 @@ public class AlliancePoseMirror {
      */
     public static Translation2d mirrorTranslation2d(Translation2d translation) {
         if (isRedAlliance()) {
-            return translation.plus(Poses.FIELD_CENTER.getTranslation().minus(translation));
+            return Poses.FIELD_CENTER.getTranslation().plus(Poses.FIELD_CENTER.getTranslation().minus(translation));
         } else {
             return translation;
         }
