@@ -212,9 +212,12 @@ public class AutoFactory {
                 .deadlineFor(superstructure.getSetpointCommand(RobotConstants.L4_STATE))
                 .andThen(new SwerveDriveCommand(driveBase, -0.4, 0, 0, false, false).withTimeout(1))
                 .andThen(getPathFindToPoseCommand(Poses.RIGHT_STATION)
-                        .alongWith(superstructure.getSetpointCommand(RobotConstants.INTAKE_STATE)).withTimeout(6))
-                .andThen(getPathFindToPoseCommand(Poses.C).alongWith(new CoralCommand(coral, 1)).alongWith(
-                        Commands.waitSeconds(1).andThen(superstructure.getSetpointCommand(RobotConstants.L4_STATE))));
+                        .alongWith(superstructure.getSetpointCommand(RobotConstants.INTAKE_STATE)).withTimeout(8))
+                .andThen(new CoralCommand(coral, 1).alongWith(new SwerveDriveCommand(driveBase, -0.4, 0, 0, false, false)).withTimeout(2))
+                .andThen(getPathFindToPoseCommand(Poses.C)
+                        .alongWith(new CoralCommand(coral, 1))
+                        .alongWith(Commands.waitSeconds(1).andThen(superstructure.getSetpointCommand(RobotConstants.L4_STATE)))
+                );
     }
 
     /**
