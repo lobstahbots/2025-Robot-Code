@@ -44,4 +44,11 @@ public class AlgaeEndEffectorIOSparkMax implements AlgaeEndEffectorIO {
     inputs.currentAmps = algaeMotor.getOutputCurrent();
     inputs.tempCelsius = algaeMotor.getMotorTemperature();
   }
+
+  @Override
+  public void setIdleMode(boolean isBrake) {
+    SparkMaxConfig config = new SparkMaxConfig();
+    config.idleMode(isBrake ? IdleMode.kBrake : IdleMode.kCoast);
+    algaeMotor.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+  }
 }

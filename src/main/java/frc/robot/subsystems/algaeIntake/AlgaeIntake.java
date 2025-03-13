@@ -44,6 +44,10 @@ public class AlgaeIntake extends SubsystemBase {
     intakePivot.stopMotor();
   }
 
+  /** @implNote UNIMPLEMENTED */
+  @Deprecated
+  public void setIdleMode() { }
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run

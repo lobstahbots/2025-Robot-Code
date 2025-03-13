@@ -43,6 +43,10 @@ public class Ramp extends SubsystemBase {
     rampMotor.set(speed);
   }
 
+  /** @implNote UNIMPLEMENTED */
+  @Deprecated
+  public void setIdleMode(IdleMode mode) { }
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run

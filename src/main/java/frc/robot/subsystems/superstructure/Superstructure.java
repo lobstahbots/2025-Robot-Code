@@ -180,6 +180,11 @@ public class Superstructure extends CharacterizableSubsystem {
         return pivotInputs.position;
     }
 
+    public void setIdleMode(boolean isBrake) {
+        elevatorIO.setIdleMode(isBrake);
+        pivotIO.setIdleMode(isBrake);
+    }
+
     @Override
     public void periodic() {
         elevatorIO.updateInputs(elevatorInputs);

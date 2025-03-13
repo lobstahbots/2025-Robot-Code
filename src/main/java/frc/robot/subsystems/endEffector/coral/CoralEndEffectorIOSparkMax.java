@@ -54,4 +54,11 @@ public class CoralEndEffectorIOSparkMax implements CoralEndEffectorIO {
         inputs.currentAmps = leftMotor.getOutputCurrent();
         inputs.tempCelsius = leftMotor.getMotorTemperature();
     }
+
+    @Override
+    public void setIdleMode(boolean isBrake) {
+        SparkMaxConfig config = new SparkMaxConfig();
+        config.idleMode(isBrake ? IdleMode.kBrake : IdleMode.kCoast);
+        leftMotor.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+    }
 }

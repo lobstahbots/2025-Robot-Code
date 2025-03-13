@@ -44,4 +44,6 @@ public class PivotIOSim implements PivotIO{
         pivotSim.setInputVoltage(0);
     }
 
+    @Override
+    public void setIdleMode(boolean isBrake) { }
 }

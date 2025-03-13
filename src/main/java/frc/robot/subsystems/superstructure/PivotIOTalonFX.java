@@ -59,4 +59,9 @@ public class PivotIOTalonFX implements PivotIO {
         inputs.temperature = pivotMotor.getDeviceTemp().getValueAsDouble();
         inputs.appliedVoltage = pivotMotor.getMotorVoltage().getValueAsDouble();
     }
+
+    @Override
+    public void setIdleMode(boolean isBrake) {
+        pivotMotor.setNeutralMode(isBrake ? NeutralModeValue.Brake : NeutralModeValue.Coast);
+    }
 }

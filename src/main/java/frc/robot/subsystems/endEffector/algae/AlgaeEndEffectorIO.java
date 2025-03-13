@@ -38,4 +38,8 @@ public interface AlgaeEndEffectorIO {
     public void setSpeed(double speed);
 
     public default void periodic() {};
+
+    /** Enable or disable brake mode on the motors. */
+    public void setIdleMode(boolean isBrake);
+
 }

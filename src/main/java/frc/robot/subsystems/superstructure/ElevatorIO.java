@@ -91,4 +91,7 @@ public interface ElevatorIO {
      * @param position the position to reset to
      */
     public void resetEncoder(double position);
+
+    /** Enable or disable brake mode on the motors. */
+    public void setIdleMode(boolean isBrake);
 }

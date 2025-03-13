@@ -32,4 +32,8 @@ public class CoralEndEffector extends SubsystemBase {
         io.updateInputs(inputs);
         Logger.processInputs("CoralEndEffector", inputs);
     }
+
+    public void setIdleMode(boolean isBrake) {
+        io.setIdleMode(isBrake);
+    }
 }

@@ -13,6 +13,8 @@ import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedNetworkString;
 
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Joystick;
@@ -305,5 +307,12 @@ public class RobotContainer {
         if (Robot.isReal()) return;
 
         Logger.recordOutput("FieldSimulation/RobotPosition", driveSimulation.getSimulatedDriveTrainPose());
+    }
+
+    public void setIdleMode(boolean isBrakeMode) {
+        driveBase.setIdleMode(isBrakeMode ? IdleMode.kBrake : IdleMode.kCoast);
+        superstructure.setIdleMode(isBrakeMode);
+        coral.setIdleMode(isBrakeMode);
+        algae.setIdleMode(isBrakeMode);
     }
 }

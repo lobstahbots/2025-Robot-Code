@@ -163,4 +163,7 @@ public class ElevatorIOSim implements ElevatorIO {
     public void stop() {
         rightMotor.stopMotor();
     }
+
+    @Override
+    public void setIdleMode(boolean isBrake) { }
 }

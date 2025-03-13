@@ -123,4 +123,9 @@ public class ElevatorIOTalonFX implements ElevatorIO {
     public void stop() {
         rightElevatorMotor.stopMotor();
     }
+
+    @Override
+    public void setIdleMode(boolean isBrake) {
+        leftElevatorMotor.setNeutralMode(isBrake ? NeutralModeValue.Brake : NeutralModeValue.Coast);
+    }
 }

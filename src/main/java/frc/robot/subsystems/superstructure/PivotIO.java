@@ -50,4 +50,6 @@ public interface PivotIO {
      */
     public void stop();
 
+    /** Enable or disable brake mode on the motors. */
+    public void setIdleMode(boolean isBrake);
 }

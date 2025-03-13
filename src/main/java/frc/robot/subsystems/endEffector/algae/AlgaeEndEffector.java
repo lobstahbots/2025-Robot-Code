@@ -29,4 +29,8 @@ public class AlgaeEndEffector extends SubsystemBase {
         io.updateInputs(inputs);
         Logger.processInputs("AlgaeEndEffector", inputs);
     }
+
+    public void setIdleMode(boolean isBrake) {
+        io.setIdleMode(isBrake);
+    }
 }

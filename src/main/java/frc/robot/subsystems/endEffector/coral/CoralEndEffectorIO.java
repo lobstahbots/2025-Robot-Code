@@ -39,5 +39,8 @@ public interface CoralEndEffectorIO {
      */
     public void setSpeed(double speed);
 
+    /** Enable or disable brake mode on the motors. */
+    public void setIdleMode(boolean isBrake);
+
     public default void periodic() {};
 }
