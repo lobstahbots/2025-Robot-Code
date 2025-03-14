@@ -163,7 +163,8 @@ public class CameraIOSim implements CameraIO {
         if (poseOptional.isPresent()) {
             estimatedPose = poseOptional.get();
             inputs.updateFrom(estimatedPose);
-        }
+            inputs.pipelineResult = camResult;
+        } else inputs.clearInputs();
     }
 
     public List<PhotonTrackedTarget> getTrackedTargets() {

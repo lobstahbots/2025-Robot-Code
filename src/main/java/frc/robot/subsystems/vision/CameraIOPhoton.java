@@ -38,11 +38,13 @@ public class CameraIOPhoton implements CameraIO {
     public void updateInputs(CameraIOInputs inputs, Pose3d robotPoseMeters) {
         List<PhotonPipelineResult> poseResults = camera.getAllUnreadResults();
         if (poseResults.size() > 0) {
+            PhotonPipelineResult latestResult = poseResults.get(poseResults.size() - 1);
             Optional<LobstahEstimatedRobotPose> poseOptional = poseEstimator
-                    .update(poseResults.get(poseResults.size() - 1));
+                    .update(latestResult);
             if (poseOptional.isPresent()) {
                 estimatedPose = poseOptional.get();
                 inputs.updateFrom(estimatedPose);
+                inputs.pipelineResult = latestResult;
             } else {
                 inputs.clearInputs();
             }

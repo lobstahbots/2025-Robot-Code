@@ -3,6 +3,7 @@ package frc.robot.subsystems.vision;
 import java.util.List;
 
 import org.littletonrobotics.junction.AutoLog;
+import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
 import edu.wpi.first.math.geometry.Pose3d;
@@ -45,6 +46,11 @@ public interface CameraIO {
         public double totalArea = 0.0;
 
         /**
+         * The photon pipeline result
+         */
+        public PhotonPipelineResult pipelineResult = new PhotonPipelineResult();
+
+        /**
          * Update from a {@link LobstahEstimatedRobotPose}.
          * 
          * @param estimatedRobotPose pose to get information from
@@ -71,6 +77,7 @@ public interface CameraIO {
             ambiguity = 0;
             visibleFiducialIDs = new int[] {};
             totalArea = 0.0;
+            pipelineResult = new PhotonPipelineResult();
         }
     }
 
