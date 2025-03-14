@@ -10,20 +10,45 @@ import edu.wpi.first.math.geometry.Pose3d;
 public interface CameraIO {
     @AutoLog
     public static class CameraIOInputs {
+        /**
+         * Estimated robot pose with least reprojection error
+         */
         public Pose3d bestEstimatedPose = Pose3d.kZero;
+        /**
+         * Estimated robot pose with most reprojection error
+         */
         public Pose3d altEstimatedPose = Pose3d.kZero;
-
+        /**
+         * Reprojection error of best robot pose
+         */
         public double bestReprojErr = 0.0;
+        /**
+         * Reprojection error of worst robot pose
+         */
         public double altReprojErr = 0.0;
-
+        /**
+         * Multi-tag ambiguity - is equal to {@code bestReprojError} divided by
+         * {@code altReprojError}
+         */
         public double ambiguity = 0.0;
-
+        /**
+         * Estimated time of the pose
+         */
         public double estimatedPoseTimestamp = 0.0;
-
+        /**
+         * Visible fiducial IDs
+         */
         public int[] visibleFiducialIDs = new int[] {};
-
+        /**
+         * Total area of targets as a fraction of the total image area
+         */
         public double totalArea = 0.0;
 
+        /**
+         * Update from a {@link LobstahEstimatedRobotPose}.
+         * 
+         * @param estimatedRobotPose pose to get information from
+         */
         public void updateFrom(LobstahEstimatedRobotPose estimatedRobotPose) {
             bestEstimatedPose = estimatedRobotPose.bestEstimatedPose;
             altEstimatedPose = estimatedRobotPose.alternateEstimatedPose;
@@ -35,9 +60,12 @@ public interface CameraIO {
             totalArea = estimatedRobotPose.totalArea;
         }
 
+        /**
+         * Set all inputs to their empty value.
+         */
         public void clearInputs() {
-            bestEstimatedPose = null;
-            altEstimatedPose = null;
+            bestEstimatedPose = Pose3d.kZero;
+            altEstimatedPose = Pose3d.kZero;
             bestReprojErr = 0;
             altReprojErr = 0;
             ambiguity = 0;
@@ -46,10 +74,20 @@ public interface CameraIO {
         }
     }
 
+    /**
+     * Get a list of the tracked targets.
+     * 
+     * @return the list of tracked targets
+     */
     public List<PhotonTrackedTarget> getTrackedTargets();
 
     public void updateInputs(CameraIOInputs inputs, Pose3d robotPose);
 
+    /**
+     * Get the name of this camera
+     * 
+     * @return the name as a string
+     */
     public String getCameraName();
 
     public Pose3d[] getTagPoses();
