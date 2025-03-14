@@ -176,7 +176,8 @@ public class RobotContainer {
             superstructure = new Superstructure(new ElevatorIOSim(), new PivotIOSim());
         }
 
-        coral = new CoralEndEffector(new CoralEndEffectorIOSparkMax(CoralEndEffectorConstants.LEFT_ID, CoralEndEffectorConstants.BEAM_BREAK_ID));
+        coral = new CoralEndEffector(new CoralEndEffectorIOSparkMax(CoralEndEffectorConstants.LEFT_ID,
+                CoralEndEffectorConstants.BEAM_BREAK_ID));
         algae = new AlgaeEndEffector(new AlgaeEndEffectorIOSparkMax(AlgaeEndEffectorConstants.MOTOR_ID));
 
         this.autoFactory = new AutoFactory(driveBase, coral, superstructure, autoChooser::getResponses);
@@ -192,7 +193,8 @@ public class RobotContainer {
                 () -> -driverJoystick.getRawAxis(ControllerIOConstants.LEFT_STICK_VERTICAL),
                 () -> -driverJoystick.getRawAxis(ControllerIOConstants.LEFT_STICK_HORIZONTAL),
                 () -> -driverJoystick.getRawAxis(ControllerIOConstants.RIGHT_STICK_HORIZONTAL),
-                () -> DriveConstants.FIELD_CENTRIC, ControllerIOConstants.SQUARE_INPUTS));
+                () -> DriveConstants.FIELD_CENTRIC, ControllerIOConstants.SQUARE_INPUTS,
+                () -> -0.5 / RobotConstants.L4_STATE.elevatorHeight * superstructure.getExtension() + 1));
         // superstructure.setDefaultCommand(new PivotCommand(superstructure, () -> driverJoystick.getRawAxis(OperatorIOConstants.MANUAL_ARM_AXIS)));
         // superstructure.setDefaultCommand(new PivotPositionCommand(superstructure, () -> Rotation2d.fromRotations(
         //         superstructure.getPivotRotation().getRotations() + PivotConstants.JOYSTICK_SCALING * MathUtil
