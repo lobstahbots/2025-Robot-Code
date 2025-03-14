@@ -215,7 +215,7 @@ public class RobotContainer {
                         Commands.run(
                                 () -> superstructure.setState(new SuperstructureState(
                                         superstructure.getGoal().pivotRotation
-                                                .plus(Rotation2d.fromRadians(-0.1 * operatorJoystick
+                                                .plus(Rotation2d.fromRadians(0.1 * operatorJoystick
                                                         .getRawAxis(ControllerIOConstants.LEFT_STICK_VERTICAL))),
                                         superstructure.getGoal().elevatorHeight + operatorJoystick
                                                 .getRawAxis(ControllerIOConstants.RIGHT_STICK_VERTICAL) * -2,

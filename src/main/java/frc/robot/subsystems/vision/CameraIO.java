@@ -10,8 +10,8 @@ import edu.wpi.first.math.geometry.Pose3d;
 public interface CameraIO {
     @AutoLog
     public static class CameraIOInputs {
-        public Pose3d bestEstimatedPose = null;
-        public Pose3d altEstimatedPose = null;
+        public Pose3d bestEstimatedPose = Pose3d.kZero;
+        public Pose3d altEstimatedPose = Pose3d.kZero;
 
         public double bestReprojErr = 0.0;
         public double altReprojErr = 0.0;
