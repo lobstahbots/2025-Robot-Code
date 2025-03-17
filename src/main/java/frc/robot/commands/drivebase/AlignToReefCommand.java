@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.subsystems.drive.DriveBase;
 import frc.robot.util.math.LobstahMath;
+import frc.robot.util.trajectory.AlliancePoseMirror;
 
 /*
  * You should consider using the more terse Command factories API instead
@@ -20,15 +21,16 @@ import frc.robot.util.math.LobstahMath;
  * command-based.html#defining-commands
  */
 public class AlignToReefCommand extends Command {
-    private final PIDController xController = new PIDController(DriveConstants.TRANSLATION_PID_CONSTANTS.kP * 0.8,
-            DriveConstants.TRANSLATION_PID_CONSTANTS.kI, DriveConstants.TRANSLATION_PID_CONSTANTS.kD);
-    private final PIDController yController = new PIDController(DriveConstants.TRANSLATION_PID_CONSTANTS.kP * 0.8,
-            DriveConstants.TRANSLATION_PID_CONSTANTS.kI, DriveConstants.TRANSLATION_PID_CONSTANTS.kD);
+    private final PIDController xController = new PIDController(1.5 * DriveConstants.TRANSLATION_PID_CONSTANTS.kP,
+            0.05, DriveConstants.TRANSLATION_PID_CONSTANTS.kD);
+    private final PIDController yController = new PIDController(1.5 * DriveConstants.TRANSLATION_PID_CONSTANTS.kP,
+            0.05, DriveConstants.TRANSLATION_PID_CONSTANTS.kD);
     private final PIDController thetaController = new PIDController(DriveConstants.ROTATION_PID_CONSTANTS.kP,
             DriveConstants.ROTATION_PID_CONSTANTS.kI, DriveConstants.ROTATION_PID_CONSTANTS.kD);
 
     private final DriveBase driveBase;
     private final boolean ccw;
+    private Pose2d targetPose;
 
     /** Creates a new DriveToPoseCommand. */
     public AlignToReefCommand(DriveBase driveBase, boolean ccw) {
@@ -39,7 +41,10 @@ public class AlignToReefCommand extends Command {
 
     @Override
     public void initialize() {
-        Pose2d targetPose = LobstahMath.getNearestScoringPose(driveBase.getPose(), ccw);
+        xController.reset();
+        yController.reset();
+        thetaController.reset();
+        targetPose = LobstahMath.getNearestScoringPose(driveBase.getPose(), ccw);
         Logger.recordOutput("AutoAlignTargetPose", targetPose);
         xController.setSetpoint(targetPose.getX());
         yController.setSetpoint(targetPose.getY());
@@ -49,9 +54,11 @@ public class AlignToReefCommand extends Command {
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
+        double translationScaling = LobstahMath.getDistBetweenPoses(driveBase.getPose(), targetPose) + 0.25;
         driveBase.driveRobotRelative(ChassisSpeeds.fromFieldRelativeSpeeds(
-                xController.calculate(driveBase.getPose().getX()), yController.calculate(driveBase.getPose().getY()),
-                thetaController.calculate(driveBase.getPose().getRotation().getRadians()), driveBase.getGyroAngle()));
+                translationScaling * xController.calculate(driveBase.getPose().getX()), translationScaling * yController.calculate(driveBase.getPose().getY()),
+                thetaController.calculate(driveBase.getPose().getRotation().getRadians()),
+                driveBase.getPose().getRotation()));
     }
 
     // Called once the command ends or is interrupted.

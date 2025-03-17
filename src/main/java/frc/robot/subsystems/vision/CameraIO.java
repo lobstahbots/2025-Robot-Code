@@ -49,6 +49,8 @@ public interface CameraIO {
          * The photon pipeline result
          */
         public PhotonPipelineResult pipelineResult = new PhotonPipelineResult();
+        
+        public boolean connected = false;
 
         /**
          * Update from a {@link LobstahEstimatedRobotPose}.

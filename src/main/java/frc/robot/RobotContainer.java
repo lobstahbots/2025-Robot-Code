@@ -188,7 +188,7 @@ public class RobotContainer {
                 () -> -driverJoystick.getRawAxis(ControllerIOConstants.LEFT_STICK_HORIZONTAL),
                 () -> -driverJoystick.getRawAxis(ControllerIOConstants.RIGHT_STICK_HORIZONTAL),
                 () -> DriveConstants.FIELD_CENTRIC, ControllerIOConstants.SQUARE_INPUTS,
-                () -> -0.5 / RobotConstants.L4_STATE.elevatorHeight * superstructure.getExtension() + 1));
+                () -> 0 / RobotConstants.L4_STATE.elevatorHeight * superstructure.getExtension() + 1));
         // superstructure.setDefaultCommand(new PivotCommand(superstructure, () -> driverJoystick.getRawAxis(OperatorIOConstants.MANUAL_ARM_AXIS)));
         // superstructure.setDefaultCommand(new PivotPositionCommand(superstructure, () -> Rotation2d.fromRotations(
         //         superstructure.getPivotRotation().getRotations() + PivotConstants.JOYSTICK_SCALING * MathUtil
@@ -211,7 +211,7 @@ public class RobotContainer {
                         Commands.run(
                                 () -> superstructure.setState(new SuperstructureState(
                                         superstructure.getGoal().pivotRotation
-                                                .plus(Rotation2d.fromRadians(0.1 * operatorJoystick
+                                                .minus(Rotation2d.fromRadians(0.1 * operatorJoystick
                                                         .getRawAxis(ControllerIOConstants.LEFT_STICK_VERTICAL))),
                                         superstructure.getGoal().elevatorHeight + operatorJoystick
                                                 .getRawAxis(ControllerIOConstants.RIGHT_STICK_VERTICAL) * -2,
@@ -272,6 +272,8 @@ public class RobotContainer {
     }
 
     public void smartDashSetup() {
+        autoChooser.addRoutine("Leave", List.of(), autoFactory::getLeaveAuto);
+
         autoChooser.addRoutine("Characterize", List.of(
                 new AutoQuestion<>("Which Subsystem?", Map.of("DriveBase", driveBase, "Elevator", superstructure)),
                 new AutoQuestion<>("Which Routine",

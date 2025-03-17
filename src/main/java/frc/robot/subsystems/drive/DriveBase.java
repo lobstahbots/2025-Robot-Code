@@ -281,9 +281,10 @@ public class DriveBase extends CharacterizableSubsystem {
         SmartDashboard.putBoolean("Has seen tag", hasSeenTag);
         for (Camera camera : cameras) {
             camera.periodic();
+            if (camera.getName().startsWith("back")) continue;
             Pose estimatedPose = camera.getEstimatedPose(getPose());
             if (estimatedPose.pose().isPresent() && (hasSeenTag == false
-                    || LobstahMath.getDistBetweenPoses(estimatedPose.pose().get().toPose2d(), getPose()) <= 1)) {
+                    || LobstahMath.getDistBetweenPoses(estimatedPose.pose().get().toPose2d(), getPose()) <= 8) && Math.abs(estimatedPose.pose().get().getZ()) < 0.1) {
                 if (hasSeenTag == false) {
                     resetPose(new Pose2d(estimatedPose.pose().get().getX(), estimatedPose.pose().get().getY(),
                             getGyroAngle()));
@@ -291,7 +292,9 @@ public class DriveBase extends CharacterizableSubsystem {
                 }
                 swerveOdometry.addVisionMeasurement(estimatedPose.pose().get().toPose2d(),
                         estimatedPose.timestamp().get(), estimatedPose.stdev().get());
+                Logger.recordOutput("Vision/" + camera.getName() + "Used", true);
             }
+            else Logger.recordOutput("Vision/" + camera.getName() + "Used", false);
         }
         resetPose(new Pose2d(MathUtil.clamp(getPose().getX(), 0, FieldConstants.FIELD_LENGTH),
                 MathUtil.clamp(getPose().getY(), 0, FieldConstants.FIELD_WIDTH), getPose().getRotation()));

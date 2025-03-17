@@ -192,7 +192,7 @@ public class Superstructure extends CharacterizableSubsystem {
         Logger.processInputs("Superstructure/Elevator", elevatorInputs);
         Logger.processInputs("Superstructure/Pivot", pivotInputs);
         if (limitSwitch.getAsBoolean()) elevatorIO.resetEncoder(ElevatorConstants.BOTTOM_HEIGHT);
-        elevatorLigament.setLength(getExtension());
+        elevatorLigament.setLength(getExtension() / 100);
         pivotLigament.setAngle(getRotation());
         SmartDashboard.putData("Superstructure", mechanism);
         Logger.recordOutput("Superstructure", pivotInputs.position);

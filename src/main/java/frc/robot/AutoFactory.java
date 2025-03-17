@@ -85,7 +85,7 @@ public class AutoFactory {
 
         // Since AutoBuilder is configured, we can use it to build pathfinding commands
         Command pathfindingCommand = AutoBuilder.pathfindToPoseFlipped(targetPose,
-                new PathConstraints(4, 1, PathConstants.CONSTRAINTS.maxAngularVelocityRadPerSec(),
+                new PathConstraints(3, 1, PathConstants.CONSTRAINTS.maxAngularVelocityRadPerSec(),
                         PathConstants.CONSTRAINTS.maxAngularAccelerationRadPerSecSq()),
                 0.0 // Goal end velocity in meters/sec
         ).andThen(new SwerveDriveStopCommand(driveBase));
@@ -198,8 +198,12 @@ public class AutoFactory {
         return pathCommand;
     }
 
+    public Command getLeaveAuto() {
+        return new SwerveDriveCommand(driveBase, 0.2, 0, 0, false, false).withTimeout(3);
+    }
+
     public Command getSimpleTimedAuto() {
-        return getPathFindToPoseCommand(Poses.H).alongWith(new CoralCommand(coral, 0.2)).withTimeout(5)
+        return getPathFindToPoseCommand(Poses.H).alongWith(new CoralCommand(coral, 0.2)).withTimeout(9)
                 .andThen(new CoralCommand(coral, -0.5).withTimeout(1))
                 .deadlineFor(superstructure.getSetpointCommand(RobotConstants.L4_STATE))
                 .andThen(new SwerveDriveCommand(driveBase, -0.2, 0, 0, false, false).withTimeout(2))

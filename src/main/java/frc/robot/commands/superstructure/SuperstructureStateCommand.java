@@ -18,7 +18,7 @@ public class SuperstructureStateCommand extends Command {
         this.superstructure = superstructure;
         this.goalSupplier = goalSupplier;
         addRequirements(superstructure);
-    }
+    }  
 
     public SuperstructureStateCommand(Superstructure superstructure, SuperstructureState goal) {
         this(superstructure, () -> goal);

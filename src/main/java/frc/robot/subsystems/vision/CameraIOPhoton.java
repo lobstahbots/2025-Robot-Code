@@ -49,6 +49,7 @@ public class CameraIOPhoton implements CameraIO {
                 inputs.clearInputs();
             }
         }
+        inputs.connected = camera.isConnected();
         disconnectedAlert.set(!camera.isConnected());
     }
 

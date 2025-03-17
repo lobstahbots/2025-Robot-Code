@@ -251,8 +251,8 @@ public final class Constants {
 
     public static class SimConstants {
         public static final double LOOP_TIME = 0.02;
-        public static final boolean REPLAY = false;
-        public static final String REPLAY_LOG_PATH = "akit_25-03-13_20-48-49_rikin.wpilog";
+        public static final boolean REPLAY = true;
+        public static final String REPLAY_LOG_PATH = "akit_25-03-15_11-28-47_rikin_q71.wpilog";
 
         public static final int[] SWERVE_CHANNELS = { 1, 2, 3, 4, 5, 6, 7, 8 };
         public static final int[] ELEVATOR_CHANNELS = { 9, 10 };
@@ -269,10 +269,10 @@ public final class Constants {
                     new Rotation3d(Degrees.of(0), Degrees.of(-20), Degrees.of(-35))));
             CAMERA_TRANSFORMS.put("frontright", new Transform3d(Inches.of(11.2435), Inches.of(-13.42), Inches.of(7.164),
                     new Rotation3d(Degrees.of(0), Degrees.of(-20), Degrees.of(35))));
-            // CAMERA_TRANSFORMS.put("backleft", new Transform3d(Inches.of(2.775), Inches.of(10.5285), Inches.of(37.1935),
-            //         new Rotation3d(Degrees.of(0), Degrees.of(20), Degrees.of(35 + 180))));
-            // CAMERA_TRANSFORMS.put("backright", new Transform3d(Inches.of(2.689), Inches.of(-10.5585),
-            //         Inches.of(37.0995), new Rotation3d(Degrees.of(0), Degrees.of(20), Degrees.of(-35 - 180))));
+            CAMERA_TRANSFORMS.put("backleft", new Transform3d(Inches.of(2.775), Inches.of(10.5285), Inches.of(37.1935),
+                    new Rotation3d(Degrees.of(0), Degrees.of(-20), Degrees.of(215))));
+            CAMERA_TRANSFORMS.put("backright", new Transform3d(Inches.of(2.689), Inches.of(-10.5585),
+                    Inches.of(37.0995), new Rotation3d(Degrees.of(0), Degrees.of(-20), Degrees.of(145))));
         }
         public static final double VISION_ODOMETRY_DIFFERENCE_FILTER_THRESHOLD = 5;
         public static final int CAMERA_RES_WIDTH = 1280;
