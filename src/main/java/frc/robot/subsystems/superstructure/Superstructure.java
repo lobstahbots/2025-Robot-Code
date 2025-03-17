@@ -211,6 +211,13 @@ public class Superstructure extends CharacterizableSubsystem {
         SmartDashboard.putData("PivotVelocityPID", armVelocityPID);
         Logger.recordOutput("PivotVelocitySetpoint", armPID.getSetpoint().velocity);
 
+        double elevatorHeight = elevatorInputs.leftPosition * 0.4 / RobotConstants.L3_STATE.elevatorHeight;
+        Logger.recordOutput("ComponentPoses", new Pose3d[] {
+            new Pose3d(0.1906, 0, 0.121 + elevatorHeight / 2, Rotation3d.kZero),
+            new Pose3d(0.1906, 0, 0.1464 + elevatorHeight, Rotation3d.kZero),
+            new Pose3d(0.1906, 0, 0.614 + elevatorHeight, new Rotation3d(0, Units.degreesToRadians(-67) - pivotInputs.position.getRadians(), 0))
+        });
+
         if (pivotIsClosedLoop) pivotIO.setVoltage(armPID.calculate(pivotInputs.position.getRadians())
                 + armFeedforward.calculate(armPID.getSetpoint().position, armPID.getSetpoint().velocity)
                 + armVelocityPID.calculate(getRotation().getRadians(), armPID.getSetpoint().velocity)
