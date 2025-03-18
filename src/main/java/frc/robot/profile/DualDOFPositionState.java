@@ -3,7 +3,7 @@ package frc.robot.profile;
 /**
  * A record to store the position of two degrees of freedom
  */
-public record PositionState(
+public record DualDOFPositionState(
         /**
          * The position of the first DOF
          */
