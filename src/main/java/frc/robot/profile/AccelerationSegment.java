@@ -1,5 +1,9 @@
 package frc.robot.profile;
 
+import edu.wpi.first.math.MatBuilder;
+import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.numbers.N2;
+
 /**
  * A profile segment consisting of accelerating to certain speeds
  */
@@ -40,6 +44,13 @@ public class AccelerationSegment implements DualDOFProfileSegment {
         this.dof2Acc = (dof2Vel - initialState.dof2Vel()) / duration;
     }
 
+    private AccelerationSegment(DualDOFState initialState, double duration, double dof1Acc, double dof2Acc) {
+        this.initialState = initialState;
+        this.duration = duration;
+        this.dof1Acc = dof1Acc;
+        this.dof2Acc = dof2Acc;
+    }
+
     /**
      * Create an acceleration segment which will decelerate to a specified position
      * from specified velocities with specified (positive) acceleration limits. That
@@ -63,7 +74,49 @@ public class AccelerationSegment implements DualDOFProfileSegment {
         return new AccelerationSegment(
                 new DualDOFState(decelerateTo.dof1Pos() - duration * duration * dof1Acc / 2,
                         decelerateTo.dof2Pos() - duration * duration * dof2Acc / 2, dof1Vel, dof2Vel),
-                0, 0, dof1Acc, dof2Acc);
+                duration, dof1Acc, dof2Acc);
+    }
+
+    /**
+     * Get an acceleration segment for a velocity change segment. A velocity change
+     * segment is one where you come in with a certain velocity vector and come out
+     * with a certain velocity vector, and you have a certain waypoint. The waypoint
+     * is not where you pass through, rather it allows you to specify where you
+     * would pass through if you slowed down to zero. Basically you take the two
+     * tangents to the curve and find their intersection point and the waypoint
+     * allows you to specify where that is.
+     * 
+     * @param waypoint       the waypoint
+     * @param dof1InitialVel the incoming velocity of the first DOF
+     * @param dof2InitialVel the incoming velocity of the second DOF
+     * @param dof1FinalVel   the final velocity of the first DOF
+     * @param dof2FinalVel   the final velocity of the second DOF
+     * @param dof1AccMax     the maximum acceleration of the first DOF
+     * @param dof2AccMax     the maximum acceleration of the second DOF
+     * @return the constructed acceleration segment representing the velocity change
+     *         segment
+     */
+    public static AccelerationSegment getVelocityChangeSegment(DualDOFPositionState waypoint, double dof1InitialVel,
+            double dof2InitialVel, double dof1FinalVel, double dof2FinalVel, double dof1AccMax, double dof2AccMax) {
+        double duration = Math.max(Math.abs(dof1FinalVel - dof1InitialVel) / dof1AccMax,
+                Math.abs(dof2FinalVel - dof2InitialVel) / dof2AccMax);
+        double dof1Acc = (dof1FinalVel - dof1InitialVel) / duration;
+        double dof2Acc = (dof2FinalVel - dof2InitialVel) / duration;
+        double dof1Travel = dof1InitialVel * duration + duration * duration * dof1Acc / 2;
+        double dof2Travel = dof2InitialVel * duration + duration * duration * dof2Acc / 2;
+        // We now need to solve the following system of linear equations:
+        // (in order to determine which point our starting point is if the waypoint is the origin)
+        // (x - dof1Travel) * dof2FinalVel - (y - dof2Travel) * dof1FinalVel = 0 (1)
+        // x * dof2InitialVel - y * dof1InitialVel = 0 (2)
+        // (1) can be simplified to:
+        // x * dof2FinalVel - y * dof1FinalVel = dof1Travel * dof2FinalVel - dof2Travel * dof1FinalVel
+        var solVector = MatBuilder
+                .fill(N2.instance, N2.instance, dof2FinalVel, -dof1FinalVel, dof2InitialVel, -dof1InitialVel).inv()
+                .times(VecBuilder.fill(dof1Travel * dof2FinalVel - dof2Travel * dof1FinalVel, 0));
+        DualDOFState solInitialState = new DualDOFState(waypoint.dof1Pos() + solVector.get(0, 0),
+                waypoint.dof2Pos() + solVector.get(0, 1), dof1InitialVel, dof2InitialVel);
+        return new AccelerationSegment(solInitialState, duration, dof1Acc, dof2Acc);
+
     }
 
     public double getDuration() {
