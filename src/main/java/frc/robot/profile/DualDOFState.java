@@ -9,15 +9,16 @@ public record DualDOFState(
          */
         double dof1Pos,
         /**
+         * The position of the second DOF
+         */
+        double dof2Pos,
+        /**
          * The velocity of the first DOF
          */
         double dof1Vel,
         /**
-         * The position of the second DOF
+         * The velocity of the second DOF
          */
-        double dof2Pos, /**
-                         * The velocity of the second DOF
-                         */
         double dof2Vel) {
     /**
      * Get this as a position state, ignoring velocities

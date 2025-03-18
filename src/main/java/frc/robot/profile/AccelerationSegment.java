@@ -54,8 +54,8 @@ public class AccelerationSegment implements DualDOFProfileSegment {
 
     public DualDOFState calculate(double time) {
         return new DualDOFState(initialState.dof1Pos() + time * initialState.dof1Vel() + time * time * dof1Acc / 2,
-                initialState.dof1Vel() + time * dof1Acc,
                 initialState.dof2Pos() + time * initialState.dof2Vel() + time * time * dof2Acc / 2,
+                initialState.dof1Vel() + time * dof1Acc,
                 initialState.dof2Vel() + time * dof2Acc);
     }
 }
