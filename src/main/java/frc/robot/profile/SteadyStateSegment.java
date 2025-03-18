@@ -78,4 +78,12 @@ public class SteadyStateSegment implements DualDOFProfileSegment {
         return new DualDOFState(initialState.dof1Pos() + dof1Vel * time, initialState.dof2Pos() + dof2Vel * time,
                 dof1Vel, dof2Vel);
     }
+
+    public DualDOFState getInitialState() {
+        return new DualDOFState(initialState.dof1Pos(), initialState.dof2Pos(), dof1Vel, dof2Vel);
+    }
+
+    public DualDOFState getFinalState() {
+        return calculate(duration);
+    }
 }

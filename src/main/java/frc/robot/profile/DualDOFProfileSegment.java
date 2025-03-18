@@ -19,4 +19,18 @@ public interface DualDOFProfileSegment {
      *         position and velocity)
      */
     public DualDOFState calculate(double time);
+
+    /**
+     * Get the initial state in the profile segment
+     * 
+     * @return the initial state
+     */
+    public DualDOFState getInitialState();
+
+    /**
+     * Get the state when this is done executing
+     * 
+     * @return the state when this is done executing
+     */
+    public DualDOFState getFinalState();
 }

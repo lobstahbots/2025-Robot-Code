@@ -44,11 +44,10 @@ public class AccelerationSegment implements DualDOFProfileSegment {
         return duration;
     }
 
-    /**
-     * Get the state when this is done executing
-     * 
-     * @return the state when this is done executing
-     */
+    public DualDOFState getInitialState() {
+        return initialState;
+    }
+
     public DualDOFState getFinalState() {
         return calculate(duration);
     }
