@@ -12,11 +12,11 @@ public interface DualDOFProfileSegment {
     public double getDuration();
 
     /**
-     * Get the profile state at a given time
+     * Get the profile state at a given time after the start of this segment
      * 
      * @param time time to get state at, in seconds
      * @return the {@link DualDOFState} representing the desired state (DOF 1/2
      *         position and velocity)
      */
-    public DualDOFState getStateAtTime(double time);
+    public DualDOFState calculate(double time);
 }

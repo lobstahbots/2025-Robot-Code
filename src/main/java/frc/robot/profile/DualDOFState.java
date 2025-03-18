@@ -15,8 +15,16 @@ public record DualDOFState(
         /**
          * The position of the second DOF
          */
-        double dof2Pos,
-        /**
-         * The velocity of the second DOF
-         */
-        double dof2Vel) {}
+        double dof2Pos, /**
+                         * The velocity of the second DOF
+                         */
+        double dof2Vel) {
+    /**
+     * Get this as a position state, ignoring velocities
+     * 
+     * @return just the position state
+     */
+    public DualDOFPositionState getPositionState() {
+        return new DualDOFPositionState(dof1Pos, dof2Pos);
+    }
+}
