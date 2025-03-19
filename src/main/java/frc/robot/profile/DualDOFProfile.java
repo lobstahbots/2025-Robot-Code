@@ -46,11 +46,11 @@ public class DualDOFProfile {
             if (Math.abs(segmentEnd.dof1Pos() - segmentStart.dof1Pos())
                     / Math.abs(segmentEnd.dof2Pos() - segmentStart.dof2Pos()) > dof1Constraints.maxVelocity
                             / dof2Constraints.maxVelocity) {
-                dof1Vel = dof1Constraints.maxVelocity;
+                dof1Vel = Math.copySign(dof1Constraints.maxVelocity, segmentEnd.dof1Pos() - segmentStart.dof1Pos());
                 dof2Vel = (segmentEnd.dof2Pos() - segmentStart.dof2Pos())
                         / (segmentEnd.dof1Pos() - segmentStart.dof1Pos()) * dof1Vel;
             } else {
-                dof2Vel = dof2Constraints.maxVelocity;
+                dof2Vel = Math.copySign(dof2Constraints.maxVelocity, segmentEnd.dof2Pos() - segmentStart.dof1Pos());
                 dof1Vel = (segmentEnd.dof1Pos() - segmentStart.dof1Pos())
                         / (segmentEnd.dof2Pos() - segmentStart.dof2Pos()) * dof2Vel;
             }
@@ -64,7 +64,7 @@ public class DualDOFProfile {
                     velocities.get(i - 1).getFirst(), velocities.get(i - 1).getSecond(), velocities.get(i).getFirst(),
                     velocities.get(i).getSecond(), dof1Constraints.maxAcceleration, dof2Constraints.maxAcceleration));
         }
-        segments.add(AccelerationSegment.getAccelerationSegment(end, velocities.get(velocities.size() - 1).getFirst(),
+        segments.add(AccelerationSegment.getDecelerationSegment(end, velocities.get(velocities.size() - 1).getFirst(),
                 velocities.get(velocities.size() - 1).getSecond(), dof1Constraints.maxAcceleration,
                 dof2Constraints.maxAcceleration));
         for (int i = 0; i < waypoints.size() - 1; i++) {

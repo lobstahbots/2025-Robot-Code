@@ -67,7 +67,7 @@ public class AccelerationSegment implements DualDOFProfileSegment {
      */
     public static AccelerationSegment getAccelerationSegment(DualDOFPositionState accelerateFrom, double dof1Vel,
             double dof2Vel, double dof1AccMax, double dof2AccMax) {
-        return new AccelerationSegment(new DualDOFState(accelerateFrom.dof1Pos(), accelerateFrom.dof2Pos(), 0, 0),
+        return new AccelerationSegment(new DualDOFState(accelerateFrom.dof1Pos(), accelerateFrom.dof2Pos(), 0, 0), dof1Vel,
                 dof2Vel, dof1AccMax, dof2AccMax);
     }
 
@@ -86,14 +86,14 @@ public class AccelerationSegment implements DualDOFProfileSegment {
      *                     negative
      * @return the created acceleration segment
      */
-    public static AccelerationSegment getDeclerationSegment(DualDOFPositionState decelerateTo, double dof1Vel,
+    public static AccelerationSegment getDecelerationSegment(DualDOFPositionState decelerateTo, double dof1Vel,
             double dof2Vel, double dof1AccMax, double dof2AccMax) {
         double duration = Math.max(Math.abs(dof1Vel) / dof1AccMax, Math.abs(dof2Vel) / dof2AccMax);
         double dof1Acc = -dof1Vel / duration;
         double dof2Acc = -dof2Vel / duration;
         return new AccelerationSegment(
-                new DualDOFState(decelerateTo.dof1Pos() - duration * duration * dof1Acc / 2,
-                        decelerateTo.dof2Pos() - duration * duration * dof2Acc / 2, dof1Vel, dof2Vel),
+                new DualDOFState(decelerateTo.dof1Pos() + duration * duration * dof1Acc / 2,
+                        decelerateTo.dof2Pos() + duration * duration * dof2Acc / 2, dof1Vel, dof2Vel),
                 duration, dof1Acc, dof2Acc);
     }
 
@@ -126,15 +126,15 @@ public class AccelerationSegment implements DualDOFProfileSegment {
         double dof2Travel = dof2InitialVel * duration + duration * duration * dof2Acc / 2;
         // We now need to solve the following system of linear equations:
         // (in order to determine which point our starting point is if the waypoint is the origin)
-        // (x - dof1Travel) * dof2FinalVel - (y - dof2Travel) * dof1FinalVel = 0 (1)
+        // (x + dof1Travel) * dof2FinalVel - (y + dof2Travel) * dof1FinalVel = 0 (1)
         // x * dof2InitialVel - y * dof1InitialVel = 0 (2)
         // (1) can be simplified to:
-        // x * dof2FinalVel - y * dof1FinalVel = dof1Travel * dof2FinalVel - dof2Travel * dof1FinalVel
+        // x * dof2FinalVel - y * dof1FinalVel = dof2Travel * dof1FinalVel - dof1Travel * dof2FinalVel
         var solVector = MatBuilder
                 .fill(N2.instance, N2.instance, dof2FinalVel, -dof1FinalVel, dof2InitialVel, -dof1InitialVel).inv()
-                .times(VecBuilder.fill(dof1Travel * dof2FinalVel - dof2Travel * dof1FinalVel, 0));
+                .times(VecBuilder.fill(dof2Travel * dof1FinalVel - dof1Travel * dof2FinalVel, 0));
         DualDOFState solInitialState = new DualDOFState(waypoint.dof1Pos() + solVector.get(0, 0),
-                waypoint.dof2Pos() + solVector.get(0, 1), dof1InitialVel, dof2InitialVel);
+                waypoint.dof2Pos() + solVector.get(1, 0), dof1InitialVel, dof2InitialVel);
         return new AccelerationSegment(solInitialState, duration, dof1Acc, dof2Acc);
 
     }
