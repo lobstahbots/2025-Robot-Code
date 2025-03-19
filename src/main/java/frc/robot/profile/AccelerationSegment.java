@@ -52,6 +52,26 @@ public class AccelerationSegment implements DualDOFProfileSegment {
     }
 
     /**
+     * Create an acceleration segment which will accelerate from a specified
+     * position to specified velocities with specified (positive) acceleration
+     * limits. That is, specified velocities can be negative, but specified
+     * acceleration limits are treated as limits on the absolute value of
+     * acceleration.
+     * 
+     * @param accelerateFrom the position you start at
+     * @param dof1Vel        the velocity to accelerate the first DOF to
+     * @param dof2Vel        the velocity to accelerate the second DOF to
+     * @param dof1AccMax     the maximum acceleration of the first DOF
+     * @param dof2AccMax     the maximum acceleration of the second DOF
+     * @return the created acceleration segment
+     */
+    public static AccelerationSegment getAccelerationSegment(DualDOFPositionState accelerateFrom, double dof1Vel,
+            double dof2Vel, double dof1AccMax, double dof2AccMax) {
+        return new AccelerationSegment(new DualDOFState(accelerateFrom.dof1Pos(), accelerateFrom.dof2Pos(), 0, 0),
+                dof2Vel, dof1AccMax, dof2AccMax);
+    }
+
+    /**
      * Create an acceleration segment which will decelerate to a specified position
      * from specified velocities with specified (positive) acceleration limits. That
      * is, specified velocities can be negative, but specified acceleration limits
