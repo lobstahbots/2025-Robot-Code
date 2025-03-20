@@ -51,7 +51,7 @@ public class DualDOFProfile {
                 dof2Vel = (segmentEnd.dof2Pos() - segmentStart.dof2Pos())
                         / (segmentEnd.dof1Pos() - segmentStart.dof1Pos()) * dof1Vel;
             } else {
-                dof2Vel = Math.copySign(dof2Constraints.maxVelocity, segmentEnd.dof2Pos() - segmentStart.dof1Pos());
+                dof2Vel = Math.copySign(dof2Constraints.maxVelocity, segmentEnd.dof2Pos() - segmentStart.dof2Pos());
                 dof1Vel = (segmentEnd.dof1Pos() - segmentStart.dof1Pos())
                         / (segmentEnd.dof2Pos() - segmentStart.dof2Pos()) * dof2Vel;
             }
