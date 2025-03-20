@@ -30,7 +30,6 @@ import frc.robot.commands.coralEndEffectorCommands.CoralCommand;
 import frc.robot.commands.drivebase.DriveToPoseCommand;
 import frc.robot.commands.drivebase.SwerveDriveCommand;
 import frc.robot.commands.drivebase.SwerveDriveStopCommand;
-import frc.robot.commands.superstructure.SuperstructureStateCommand;
 import frc.robot.subsystems.drive.DriveBase;
 import frc.robot.subsystems.endEffector.coral.CoralEndEffector;
 import frc.robot.subsystems.superstructure.Superstructure;
@@ -333,7 +332,7 @@ public class AutoFactory {
     public Command getCoralStationCommand(CoralStation coralStation, char pipe) {
         return getPathFindToPathCommand(coralStation.name() + "_" + pipe, PathType.CHOREO, 1)
                 .alongWith(Commands.waitSeconds(0.5)
-                        .andThen(new SuperstructureStateCommand(superstructure, RobotConstants.INTAKE_STATE)))
+                        .andThen(superstructure.getSetpointCommand(RobotConstants.INTAKE_STATE)))
                 .andThen(new CoralCommand(coral, -CoralEndEffectorConstants.MOTOR_SPEED).withTimeout(1));
     }
 
@@ -346,7 +345,7 @@ public class AutoFactory {
      */
     public Command getScoreCommand(CoralStation coralStation, char pipe) {
         return getPathFindToPathCommand(coralStation.name() + "_" + pipe, PathType.CHOREO, 0)
-                .alongWith(new SuperstructureStateCommand(superstructure, RobotConstants.L4_STATE))
+                .alongWith(superstructure.getSetpointCommand(RobotConstants.L4_STATE))
                 .andThen(new CoralCommand(coral, CoralEndEffectorConstants.MOTOR_SPEED).withTimeout(1));
     }
 

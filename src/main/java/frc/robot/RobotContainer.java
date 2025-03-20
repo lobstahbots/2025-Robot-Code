@@ -45,7 +45,6 @@ import frc.robot.commands.algaeEndEffector.StopAlgaeCommand;
 import frc.robot.commands.coralEndEffectorCommands.CoralCommand;
 import frc.robot.commands.drivebase.AlignToReefCommand;
 import frc.robot.commands.drivebase.SwerveDriveCommand;
-import frc.robot.commands.superstructure.SuperstructureStateCommand;
 import frc.robot.subsystems.drive.DriveBase;
 import frc.robot.subsystems.drive.GyroIONavX;
 import frc.robot.subsystems.drive.GyroIOSim;
@@ -257,9 +256,9 @@ public class RobotContainer {
         operatorYButton.whileTrue(superstructure.getSetpointCommand(RobotConstants.L3_STATE));
         operatorBButton.whileTrue(superstructure.getSetpointCommand(RobotConstants.L4_STATE));
 
-        operatorDpadDown.whileTrue(new SuperstructureStateCommand(superstructure, RobotConstants.L2_ALGAE_STATE));
+        operatorDpadDown.whileTrue(superstructure.getSetpointCommand(RobotConstants.L2_ALGAE_STATE));
         operatorDpadDown.whileTrue(new AlgaeCommand(algae, -0.75));
-        operatorDpadUp.whileTrue(new SuperstructureStateCommand(superstructure, RobotConstants.L3_ALGAE_STATE));
+        operatorDpadUp.whileTrue(superstructure.getSetpointCommand(RobotConstants.L3_ALGAE_STATE));
         operatorDpadUp.whileTrue(new AlgaeCommand(algae, -0.75));
     }
 
