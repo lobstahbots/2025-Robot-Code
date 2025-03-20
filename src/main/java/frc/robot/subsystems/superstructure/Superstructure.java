@@ -89,7 +89,7 @@ public class Superstructure extends CharacterizableSubsystem {
     }
 
     public SuperstructureState getGoal() {
-        return goal;
+        return goal == null ? currentSetpoint : goal;
     }
 
     public void setElevatorVoltage(double voltage) {
@@ -144,16 +144,23 @@ public class Superstructure extends CharacterizableSubsystem {
         return this.defer(() -> {
             final Timer timer = new Timer();
             DualDOFProfile profile;
+            System.out.println(setpoint);
+            System.out.println((setpoint.pivotRotation.getRotations() < PivotConstants.LOWER_DANGER_ZONE.getRotations()
+            && getRotation().getRotations() > PivotConstants.LOWER_DANGER_ZONE.getRotations())
+            || (getRotation().getRotations() < PivotConstants.LOWER_DANGER_ZONE.getRotations()
+                    && setpoint.pivotRotation.getRotations() > PivotConstants.LOWER_DANGER_ZONE
+                            .getRotations()));
             if ((setpoint.pivotRotation.getRotations() < PivotConstants.LOWER_DANGER_ZONE.getRotations()
                     && getRotation().getRotations() > PivotConstants.LOWER_DANGER_ZONE.getRotations())
                     || (getRotation().getRotations() < PivotConstants.LOWER_DANGER_ZONE.getRotations()
                             && setpoint.pivotRotation.getRotations() > PivotConstants.LOWER_DANGER_ZONE
-                                    .getRotations())) {
+                                    .getRotations()) && setpoint.elevatorHeight != 0) {
                 profile = DualDOFProfile.fromWaypoints(
                         List.of(getState().toDualDOFState().getPositionState(),
-                                new DualDOFPositionState(0, PivotConstants.LOWER_DANGER_ZONE.getRadians()),
+                                new DualDOFPositionState(30, PivotConstants.LOWER_DANGER_ZONE.getRadians()),
                                 setpoint.toDualDOFState().getPositionState()),
                         ElevatorConstants.CONSTRAINTS, PivotConstants.CONSTRAINTS);
+                System.out.println(profile);
             } else {
                 profile = DualDOFProfile.fromWaypoints(
                         List.of(getState().toDualDOFState().getPositionState(),
@@ -191,12 +198,12 @@ public class Superstructure extends CharacterizableSubsystem {
         pivotLigament.setAngle(getRotation());
         SmartDashboard.putData("Superstructure", mechanism);
         Logger.recordOutput("Superstructure", pivotInputs.position);
-        Logger.recordOutput("Goal", goal.pivotRotation);
+        Logger.recordOutput("Goal", goal == null ? Rotation2d.kZero : goal.pivotRotation);
         Logger.recordOutput("Setpoint", currentSetpoint.pivotRotation);
         SmartDashboard.putData("pivotPID", armPID);
 
         Logger.recordOutput("ElevatorPosition", elevatorInputs.leftPosition);
-        Logger.recordOutput("ElevatorGoal", goal.elevatorHeight);
+        Logger.recordOutput("ElevatorGoal", goal == null ? 0 : goal.elevatorHeight);
         Logger.recordOutput("ElevatorSetpoint", currentSetpoint.elevatorHeight);
         SmartDashboard.putData("ElevatorPID", elevatorPID);
         Logger.recordOutput("PivotAtGoal", atPivotSetpoint());
