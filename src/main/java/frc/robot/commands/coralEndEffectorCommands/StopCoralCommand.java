@@ -7,33 +7,38 @@ package frc.robot.commands.coralEndEffectorCommands;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.endEffector.coral.CoralEndEffector;
 
-/* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
+/*
+ * You should consider using the more terse Command factories API instead
+ * https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-
+ * command-based.html#defining-commands
+ */
 public class StopCoralCommand extends Command {
-  /** Creates a new StopOuttakeCommand. */
-  private final CoralEndEffector endEffector;
-  public StopCoralCommand(CoralEndEffector endEffector) {
-    // Use addRequirements() here to declare subsystem dependencies.
-    this.endEffector = endEffector;
-    addRequirements(endEffector);
-  }
+    /** Creates a new StopOuttakeCommand. */
+    private final CoralEndEffector endEffector;
 
-  // Called when the command is initially scheduled.
-  @Override
-  public void initialize() {}
+    public StopCoralCommand(CoralEndEffector endEffector) {
+        // Use addRequirements() here to declare subsystem dependencies.
+        this.endEffector = endEffector;
+        addRequirements(endEffector);
+    }
 
-  // Called every time the scheduler runs while the command is scheduled.
-  @Override
-  public void execute() {
-    endEffector.stopMotor();
-  }
+    // Called when the command is initially scheduled.
+    @Override
+    public void initialize() {}
 
-  // Called once the command ends or is interrupted.
-  @Override
-  public void end(boolean interrupted) {}
+    // Called every time the scheduler runs while the command is scheduled.
+    @Override
+    public void execute() {
+        endEffector.stopMotor();
+    }
 
-  // Returns true when the command should end.
-  @Override
-  public boolean isFinished() {
-    return false;
-  }
+    // Called once the command ends or is interrupted.
+    @Override
+    public void end(boolean interrupted) {}
+
+    // Returns true when the command should end.
+    @Override
+    public boolean isFinished() {
+        return false;
+    }
 }
