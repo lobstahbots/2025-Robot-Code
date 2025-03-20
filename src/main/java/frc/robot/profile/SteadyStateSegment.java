@@ -48,10 +48,14 @@ public class SteadyStateSegment implements DualDOFProfileSegment {
      *                     for the duration of this segment
      * @param finalState   The position where it should end up at. The position for
      *                     DOF 2 is ignored and only the position for DOF 1 is used
-     *                     to calculate how long this profile should take.
+     *                     to calculate how long this profile should take, unless
+     *                     the velocity for DOF 1 is zero, in which case only the
+     *                     second DOF is used.
      */
     public SteadyStateSegment(DualDOFState initialState, DualDOFPositionState finalState) {
-        this(initialState, (finalState.dof1Pos() - initialState.dof1Pos()) / (initialState.dof1Vel()));
+        this(initialState,
+                initialState.dof1Vel() != 0 ? (finalState.dof1Pos() - initialState.dof1Pos()) / initialState.dof1Vel()
+                        : (finalState.dof2Pos() - initialState.dof2Pos()) / initialState.dof2Vel());
     }
 
     /**

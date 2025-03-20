@@ -36,7 +36,8 @@ public class DualDOFProfile {
      */
     public static DualDOFProfile fromWaypoints(List<DualDOFPositionState> waypoints,
             TrapezoidProfile.Constraints dof1Constraints, TrapezoidProfile.Constraints dof2Constraints) {
-        if (waypoints.size() < 2) throw new IllegalArgumentException("waypoints must have at least 2 waypoints");
+        if (waypoints.size() < 2)
+            throw new IllegalArgumentException("waypoints must have at least 2 waypoints");
         DualDOFPositionState start = waypoints.get(0);
         DualDOFPositionState end = waypoints.get(waypoints.size() - 1);
         List<Pair<Double, Double>> velocities = new ArrayList<>(waypoints.size() - 1);
@@ -60,13 +61,55 @@ public class DualDOFProfile {
         segments.add(AccelerationSegment.getAccelerationSegment(start, velocities.get(0).getFirst(),
                 velocities.get(0).getSecond(), dof1Constraints.maxAcceleration, dof2Constraints.maxAcceleration));
         for (int i = 1; i < waypoints.size() - 1; i++) {
-            segments.add(AccelerationSegment.getVelocityChangeSegment(waypoints.get(i),
+            var segment = AccelerationSegment.getVelocityChangeSegment(waypoints.get(i),
                     velocities.get(i - 1).getFirst(), velocities.get(i - 1).getSecond(), velocities.get(i).getFirst(),
-                    velocities.get(i).getSecond(), dof1Constraints.maxAcceleration, dof2Constraints.maxAcceleration));
+                    velocities.get(i).getSecond(), dof1Constraints.maxAcceleration, dof2Constraints.maxAcceleration);
+            if ((segment.getInitialState().dof1Pos() - segments.get(i - 1).getFinalState().dof1Pos())
+                    / velocities.get(i - 1).getFirst() < 0
+                    || (segment.getInitialState().dof2Pos() - segments.get(i - 1).getFinalState().dof2Pos())
+                            / velocities.get(i - 1).getSecond() < 0) {
+                velocities.set(i - 1,
+                        new Pair<>(0.95 * velocities.get(i - 1).getFirst(), 0.95 * velocities.get(i - 1).getSecond()));
+                segments.remove(i - 1);
+                if (i == 1) {
+                    i--;
+                    segments.add(AccelerationSegment.getAccelerationSegment(start, velocities.get(0).getFirst(),
+                            velocities.get(0).getSecond(), dof1Constraints.maxAcceleration,
+                            dof2Constraints.maxAcceleration));
+                    continue;
+                }
+                i -= 2;
+                continue;
+            }
+            segments.add(segment);
         }
-        segments.add(AccelerationSegment.getDecelerationSegment(end, velocities.get(velocities.size() - 1).getFirst(),
+        var segment = AccelerationSegment.getDecelerationSegment(end, velocities.get(velocities.size() - 1).getFirst(),
                 velocities.get(velocities.size() - 1).getSecond(), dof1Constraints.maxAcceleration,
-                dof2Constraints.maxAcceleration));
+                dof2Constraints.maxAcceleration);
+        int j = waypoints.size() - 1;
+        while ((segment.getInitialState().dof1Pos() - segments.get(j - 1).getFinalState().dof1Pos())
+                / velocities.get(j - 1).getFirst() < 0
+                || (segment.getInitialState().dof2Pos() - segments.get(j - 1).getFinalState().dof2Pos())
+                        / velocities.get(j - 1).getSecond() < 0) {
+            velocities.set(j - 1,
+                    new Pair<>(0.95 * velocities.get(j - 1).getFirst(), 0.95 * velocities.get(j - 1).getSecond()));
+            segments.remove(j - 1);
+            if (j == 1) {
+                segments.add(AccelerationSegment.getAccelerationSegment(start, velocities.get(0).getFirst(),
+                        velocities.get(0).getSecond(), dof1Constraints.maxAcceleration,
+                        dof2Constraints.maxAcceleration));
+            } else {
+                segments.add(AccelerationSegment.getVelocityChangeSegment(waypoints.get(j - 1),
+                        velocities.get(j - 2).getFirst(), velocities.get(j - 2).getSecond(),
+                        velocities.get(j - 1).getFirst(),
+                        velocities.get(j - 1).getSecond(), dof1Constraints.maxAcceleration,
+                        dof2Constraints.maxAcceleration));
+            }
+            segment = AccelerationSegment.getDecelerationSegment(end, velocities.get(velocities.size() - 1).getFirst(),
+                    velocities.get(velocities.size() - 1).getSecond(), dof1Constraints.maxAcceleration,
+                    dof2Constraints.maxAcceleration);
+        }
+        segments.add(segment);
         for (int i = 0; i < waypoints.size() - 1; i++) {
             segments.add(2 * i + 1, new SteadyStateSegment(segments.get(2 * i).getFinalState(),
                     segments.get(2 * i + 1).getInitialState()));
@@ -90,6 +133,8 @@ public class DualDOFProfile {
      * @return the calculated state
      */
     public DualDOFState calculate(double time) {
+        if (time > duration)
+            return segments.get(segments.size() - 1).getFinalState();
         int i = 0;
         if (time >= startTimes.get(startTimes.size() - 1))
             i = startTimes.size() - 1;
