@@ -23,6 +23,7 @@ import frc.robot.Constants.PivotConstants;
 import frc.robot.Constants.RobotConstants;
 import frc.robot.profile.DualDOFPositionState;
 import frc.robot.profile.DualDOFProfile;
+import frc.robot.util.led.LEDs;
 import frc.robot.util.sysId.CharacterizableSubsystem;
 
 public class Superstructure extends CharacterizableSubsystem {
@@ -233,5 +234,7 @@ public class Superstructure extends CharacterizableSubsystem {
                     + elevatorFeedforward.calculate(currentSetpoint.elevatorVelocity)
                     + elevatorVelocityPID.calculate(elevatorInputs.leftVelocity, currentSetpoint.elevatorVelocity));
         }
+
+        LEDs.getInstance().setReadyForIntake(goal == RobotConstants.INTAKE_STATE && atSetpoint());
     }
 }

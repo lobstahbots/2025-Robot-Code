@@ -17,6 +17,7 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -36,6 +37,7 @@ import frc.robot.Constants.DriveConstants.FrontLeftModuleConstants;
 import frc.robot.Constants.DriveConstants.FrontRightModuleConstants;
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.IOConstants.ControllerIOConstants;
+import frc.robot.Constants.LEDConstants;
 import frc.robot.Constants.PivotConstants;
 import frc.robot.Constants.RobotConstants;
 import frc.robot.Constants.SimConstants;
@@ -65,8 +67,11 @@ import frc.robot.subsystems.vision.CameraIOPhoton;
 import frc.robot.subsystems.vision.CameraIOSim;
 import frc.robot.util.auto.AutonSelector;
 import frc.robot.util.auto.AutonSelector.AutoQuestion;
+import frc.robot.util.led.LEDs;
 
 public class RobotContainer {
+    private final LEDs leds = new LEDs(new AddressableLED(LEDConstants.LED_PORT));
+
     private final DriveBase driveBase;
     private final Superstructure superstructure;
     private final CoralEndEffector coral;
