@@ -24,6 +24,7 @@ import frc.robot.Constants.RobotConstants;
 import frc.robot.commands.superstructure.ElevatorPositionCommand;
 import frc.robot.commands.superstructure.PivotPositionCommand;
 import frc.robot.commands.superstructure.SuperstructureStateCommand;
+import frc.robot.util.led.LEDs;
 import frc.robot.util.sysId.CharacterizableSubsystem;
 
 public class Superstructure extends CharacterizableSubsystem {
@@ -225,9 +226,13 @@ public class Superstructure extends CharacterizableSubsystem {
                 + armVelocityPID.calculate(getRotation().getRadians(), armPID.getSetpoint().velocity)
                 + Math.cos(pivotInputs.position.plus(PivotConstants.COG_OFFSET).getRadians()) * PivotConstants.kG);
 
-        if (elevatorIsClosedLoop) setElevatorVoltage(elevatorPID.calculate(elevatorInputs.leftPosition)
+        if (elevatorIsClosedLoop) { 
+            setElevatorVoltage(elevatorPID.calculate(elevatorInputs.leftPosition)
                 + elevatorFeedforward.calculate(elevatorPID.getSetpoint().velocity)
                 + elevatorVelocityPID.calculate(elevatorInputs.leftVelocity, elevatorPID.getSetpoint().velocity));
 
+        }
+
+        // LEDs.getInstance().setReadyForIntake(goal == RobotConstants.INTAKE_STATE && atSetpoint());
     }
 }

@@ -12,6 +12,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.subsystems.drive.DriveBase;
+import frc.robot.util.led.LEDs;
 import frc.robot.util.math.LobstahMath;
 import frc.robot.util.trajectory.AlliancePoseMirror;
 
@@ -41,6 +42,7 @@ public class AlignToReefCommand extends Command {
 
     @Override
     public void initialize() {
+        LEDs.getInstance().setAligning(true);
         xController.reset();
         yController.reset();
         thetaController.reset();
@@ -65,6 +67,7 @@ public class AlignToReefCommand extends Command {
     @Override
     public void end(boolean interrupted) {
         driveBase.stopMotors();
+        LEDs.getInstance().setAligning(false);
     }
 
     // Returns true when the command should end.

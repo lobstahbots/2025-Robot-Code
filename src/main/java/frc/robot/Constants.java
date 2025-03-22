@@ -34,6 +34,7 @@ import static edu.wpi.first.units.Units.KilogramSquareMeters;
 import static edu.wpi.first.units.Units.Pounds;
 import edu.wpi.first.units.measure.Mass;
 import edu.wpi.first.units.measure.MomentOfInertia;
+import edu.wpi.first.wpilibj.util.Color;
 import frc.robot.subsystems.drive.SwerveKinematicLimits;
 import frc.robot.subsystems.superstructure.SuperstructureState;
 import frc.robot.util.choreo.ChoreoVariables;
@@ -65,7 +66,7 @@ public final class Constants {
             public static final int LEFT_STICK_VERTICAL = 1;
             public static final int RIGHT_STICK_HORIZONTAL = 4;
             public static final int RIGHT_STICK_VERTICAL = 5;
-            
+
             public static final int A_BUTTON = 1;
             public static final int B_BUTTON = 2;
             public static final int X_BUTTON = 3;
@@ -73,10 +74,10 @@ public final class Constants {
 
             public static final int LT_BUTTON = 2;
             public static final int RT_BUTTON = 3;
-            
+
             public static final int LB_BUTTON = 5;
             public static final int RB_BUTTON = 6;
-            
+
             public static final int RIGHT_PADDLE = 7;
             public static final int LEFT_PADDLE = 8;
 
@@ -84,7 +85,7 @@ public final class Constants {
             public static final int D_PAD_DOWN = 180;
             public static final int D_PAD_LEFT = 180;
             public static final int D_PAD_RIGHT = 0;
-            
+
             public static final boolean SQUARE_INPUTS = true;
         }
         //NOTE: useless probably
@@ -129,12 +130,14 @@ public final class Constants {
                 0, 0);
         public static final SuperstructureState L2_STATE = new SuperstructureState(Rotation2d.fromRadians(0.956),
                 ElevatorConstants.BOTTOM_HEIGHT, 0, 0);
-        public static final SuperstructureState L3_STATE = new SuperstructureState(Rotation2d.fromRadians(1.03), 41.2, 0,
+        public static final SuperstructureState L3_STATE = new SuperstructureState(Rotation2d.fromRadians(1.03), 41.2,
+                0, 0);
+        public static final SuperstructureState L4_STATE = new SuperstructureState(Rotation2d.fromRadians(0.2), 124, 0,
                 0);
-        public static final SuperstructureState L4_STATE = new SuperstructureState(Rotation2d.fromRadians(0.2), 124
-        , 0, 0);
-        public static final SuperstructureState L2_ALGAE_STATE = new SuperstructureState(Rotation2d.fromRadians(-0.2), 0, 0, 0);
-        public static final SuperstructureState L3_ALGAE_STATE = new SuperstructureState(Rotation2d.fromRadians(-0.2), 41.2, 0, 0);
+        public static final SuperstructureState L2_ALGAE_STATE = new SuperstructureState(Rotation2d.fromRadians(-0.2),
+                0, 0, 0);
+        public static final SuperstructureState L3_ALGAE_STATE = new SuperstructureState(Rotation2d.fromRadians(-0.2),
+                41.2, 0, 0);
         public static final double ELEVATOR_THRESHOLD = 10;
     }
 
@@ -338,11 +341,6 @@ public final class Constants {
         public static final int ENDGAME_ALERT_2_TIME = 30;
     }
 
-    public static class LEDConstants {
-        public static final int LED_PORT = 0;
-        public static final int LED_LENGTH = 100;
-    }
-
     public static class LoggingConstants {
         public static final double LOG_ALERT_INTERVAL = 5; // Interval (in s) between logs of an alert if its text doesn't change
     }
@@ -386,7 +384,7 @@ public final class Constants {
         public static final double kP = 0.3; // TODO: Find actual value NOTE: was 3.596
         public static final double kI = 0.01; // TODO: Find actual value
         public static final double kD = 0; //TODO: Find actual value
-        
+
         public static final double VELOCITY_kP = 0.008;
         public static final double VELOCITY_kI = 0;
         public static final double VELOCITY_kD = 0;
@@ -439,4 +437,38 @@ public final class Constants {
         public static final int MOTOR_ID = 44;
     }
 
+    public static class LEDConstants {
+        public static final int LED_PORT = 0;
+
+        public static class LengthConstants {
+            // LEFT MID RIGHT
+            public static final int LEFT = 23;
+            public static final int MID = 21;
+            public static final int RIGHT = 24;
+
+            public static final int TOTAL = LEFT + MID + RIGHT;
+        }
+
+        public static class ColorConstants {
+            public static final Color LOADING = Color.kWhite;
+            public static final Color SUCCESS = new Color(77, 255, 79);
+            public static final Color RED = new Color(255, 25, 25);
+            public static final Color PINK = new Color(255, 69, 70);
+            public static final Color BLUE = new Color(25, 25, 255);
+            public static final Color TEAL = new Color(160, 170, 255);
+            public static final Color AUTON_1 = new Color(255, 69, 118);
+            public static final Color AUTON_2 = new Color(255, 30, 180);
+            public static final Color AUTON_3 = new Color(100, 25, 25);
+            public static final Color USER_SIGNAL = Color.kWhite;
+
+            public static final Color PRIDE_RED = Color.kRed;
+            public static final Color PRIDE_ORANGE = Color.kOrangeRed;
+            public static final Color PRIDE_YELLOW = Color.kYellow;
+            public static final Color PRIDE_GREEN = Color.kGreen;
+            public static final Color PRIDE_BLUE = Color.kBlue;
+            public static final Color PRIDE_PURPLE = Color.kPurple;
+            public static final Color TRANS_PINK = Color.kDeepPink;
+            public static final Color TRANS_TEAL = new Color(0.15, 0.3, 1.0);
+        }
+    }
 }
