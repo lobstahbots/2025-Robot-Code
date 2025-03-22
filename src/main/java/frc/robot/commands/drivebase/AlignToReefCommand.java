@@ -8,12 +8,14 @@ import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.PathConstants;
+import frc.robot.profile.Pose2dProfile;
 import frc.robot.subsystems.drive.DriveBase;
 import frc.robot.util.math.LobstahMath;
-import frc.robot.util.trajectory.AlliancePoseMirror;
 
 /*
  * You should consider using the more terse Command factories API instead
@@ -22,11 +24,13 @@ import frc.robot.util.trajectory.AlliancePoseMirror;
  */
 public class AlignToReefCommand extends Command {
     private final PIDController xController = new PIDController(1.5 * DriveConstants.TRANSLATION_PID_CONSTANTS.kP,
-            0.05, DriveConstants.TRANSLATION_PID_CONSTANTS.kD);
-    private final PIDController yController = new PIDController(1.5 * DriveConstants.TRANSLATION_PID_CONSTANTS.kP,
-            0.05, DriveConstants.TRANSLATION_PID_CONSTANTS.kD);
+            DriveConstants.TRANSLATION_PID_CONSTANTS.kI, DriveConstants.TRANSLATION_PID_CONSTANTS.kD);
+    private final PIDController yController = new PIDController(DriveConstants.TRANSLATION_PID_CONSTANTS.kP,
+            DriveConstants.TRANSLATION_PID_CONSTANTS.kI, DriveConstants.TRANSLATION_PID_CONSTANTS.kD);
     private final PIDController thetaController = new PIDController(DriveConstants.ROTATION_PID_CONSTANTS.kP,
             DriveConstants.ROTATION_PID_CONSTANTS.kI, DriveConstants.ROTATION_PID_CONSTANTS.kD);
+
+    private Pose2dProfile profile = new Pose2dProfile(PathConstants.CONSTRAINTS);
 
     private final DriveBase driveBase;
     private final boolean ccw;
@@ -37,6 +41,8 @@ public class AlignToReefCommand extends Command {
         thetaController.enableContinuousInput(-Math.PI, Math.PI);
         this.driveBase = driveBase;
         this.ccw = ccw;
+        xController.setTolerance(0.01);
+        yController.setTolerance(0.01);
     }
 
     @Override
@@ -46,18 +52,17 @@ public class AlignToReefCommand extends Command {
         thetaController.reset();
         targetPose = LobstahMath.getNearestScoringPose(driveBase.getPose(), ccw);
         Logger.recordOutput("AutoAlignTargetPose", targetPose);
-        xController.setSetpoint(targetPose.getX());
-        yController.setSetpoint(targetPose.getY());
-        thetaController.setSetpoint(targetPose.getRotation().getRadians());
     }
 
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        double translationScaling = LobstahMath.getDistBetweenPoses(driveBase.getPose(), targetPose) + 0.25;
+        Pose2d setpoint = profile.calculate(driveBase.getPose(),
+                driveBase.getFieldRelativeChassisSpeeds(driveBase.getRobotRelativeSpeeds()), targetPose);
         driveBase.driveRobotRelative(ChassisSpeeds.fromFieldRelativeSpeeds(
-                translationScaling * xController.calculate(driveBase.getPose().getX()), translationScaling * yController.calculate(driveBase.getPose().getY()),
-                thetaController.calculate(driveBase.getPose().getRotation().getRadians()),
+                xController.calculate(driveBase.getPose().getX(), setpoint.getX()),
+                yController.calculate(driveBase.getPose().getY(), setpoint.getY()), thetaController
+                        .calculate(driveBase.getPose().getRotation().getRadians(), setpoint.getRotation().getRadians()),
                 driveBase.getPose().getRotation()));
     }
 
@@ -70,6 +75,8 @@ public class AlignToReefCommand extends Command {
     // Returns true when the command should end.
     @Override
     public boolean isFinished() {
-        return xController.atSetpoint() && yController.atSetpoint() && thetaController.atSetpoint();
+        Transform2d diff = targetPose.minus(driveBase.getPose());
+        return Math.abs(diff.getX()) < 0.01 && Math.abs(diff.getY()) < 0.01
+                && Math.abs(diff.getRotation().getRadians()) < 0.05;
     }
 }
