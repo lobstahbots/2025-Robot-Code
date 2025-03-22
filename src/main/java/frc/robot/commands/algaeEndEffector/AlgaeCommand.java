@@ -7,37 +7,42 @@ package frc.robot.commands.algaeEndEffector;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.endEffector.algae.AlgaeEndEffector;
 
-/* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
+/*
+ * You should consider using the more terse Command factories API instead
+ * https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-
+ * command-based.html#defining-commands
+ */
 public class AlgaeCommand extends Command {
-  /** Creates a new OuttakeCommand. */
-  private final AlgaeEndEffector endEffector;
-  private final double speed;
-  public AlgaeCommand(AlgaeEndEffector endEffector, double speed) {
-    // Use addRequirements() here to declare subsystem dependencies.
-    this.endEffector = endEffector;
-    this.speed = speed;
-    addRequirements(endEffector);
-  }
+    /** Creates a new OuttakeCommand. */
+    private final AlgaeEndEffector endEffector;
+    private final double speed;
 
-  // Called when the command is initially scheduled.
-  @Override
-  public void initialize() {}
+    public AlgaeCommand(AlgaeEndEffector endEffector, double speed) {
+        // Use addRequirements() here to declare subsystem dependencies.
+        this.endEffector = endEffector;
+        this.speed = speed;
+        addRequirements(endEffector);
+    }
 
-  // Called every time the scheduler runs while the command is scheduled.
-  @Override
-  public void execute() {
-    endEffector.setSpeed(speed);
-  }
+    // Called when the command is initially scheduled.
+    @Override
+    public void initialize() {}
 
-  // Called once the command ends or is interrupted.
-  @Override
-  public void end(boolean interrupted) {
-    endEffector.stopMotor();
-  }
+    // Called every time the scheduler runs while the command is scheduled.
+    @Override
+    public void execute() {
+        endEffector.setSpeed(speed);
+    }
 
-  // Returns true when the command should end.
-  @Override
-  public boolean isFinished() {
-    return false;
-  }
+    // Called once the command ends or is interrupted.
+    @Override
+    public void end(boolean interrupted) {
+        endEffector.stopMotor();
+    }
+
+    // Returns true when the command should end.
+    @Override
+    public boolean isFinished() {
+        return false;
+    }
 }

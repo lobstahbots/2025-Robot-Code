@@ -1,32 +1,33 @@
 package frc.robot.subsystems.superstructure;
 
+import java.util.List;
+
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.DeferredCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.PivotConstants;
 import frc.robot.Constants.RobotConstants;
-import frc.robot.commands.superstructure.ElevatorPositionCommand;
-import frc.robot.commands.superstructure.PivotPositionCommand;
-import frc.robot.commands.superstructure.SuperstructureStateCommand;
+import frc.robot.profile.DualDOFPositionState;
+import frc.robot.profile.DualDOFProfile;
 import frc.robot.util.sysId.CharacterizableSubsystem;
 
 public class Superstructure extends CharacterizableSubsystem {
+    private SuperstructureState currentSetpoint;
+    private SuperstructureState goal;
 
     private final ElevatorIO elevatorIO;
     private final ElevatorIOInputsAutoLogged elevatorInputs = new ElevatorIOInputsAutoLogged();
@@ -45,22 +46,20 @@ public class Superstructure extends CharacterizableSubsystem {
     private final MechanismLigament2d pivotLigament = elevatorLigament
             .append(new MechanismLigament2d("pivot", PivotConstants.ARM_LENGTH, 90));
 
-    private final ProfiledPIDController armPID = new ProfiledPIDController(PivotConstants.kP, PivotConstants.kI,
-            PivotConstants.kD, PivotConstants.CONSTRAINTS);
+    private final PIDController armPID = new PIDController(PivotConstants.kP, PivotConstants.kI, PivotConstants.kD);
     private final PIDController armVelocityPID = new PIDController(PivotConstants.VELOCITY_kP,
             PivotConstants.VELOCITY_kI, PivotConstants.VELOCITY_kD);
     private final ArmFeedforward armFeedforward = new ArmFeedforward(PivotConstants.kS, 0, PivotConstants.kV,
             PivotConstants.kA);
 
-    private final ProfiledPIDController elevatorPID = new ProfiledPIDController(ElevatorConstants.kP,
-            ElevatorConstants.kI, ElevatorConstants.kD, ElevatorConstants.CONSTRAINTS);
+    private final PIDController elevatorPID = new PIDController(ElevatorConstants.kP, ElevatorConstants.kI,
+            ElevatorConstants.kD);
     private final PIDController elevatorVelocityPID = new PIDController(ElevatorConstants.VELOCITY_kP,
             ElevatorConstants.VELOCITY_kI, ElevatorConstants.VELOCITY_kD);
     private final ElevatorFeedforward elevatorFeedforward = new ElevatorFeedforward(ElevatorConstants.kS,
             ElevatorConstants.kG, ElevatorConstants.kV, ElevatorConstants.kA);
 
-    private boolean pivotIsClosedLoop = true;
-    private boolean elevatorIsClosedLoop = true;
+    private boolean closedLoop = true;
 
     public final Trigger atSetpoint = new Trigger(this::atSetpoint);
 
@@ -73,13 +72,9 @@ public class Superstructure extends CharacterizableSubsystem {
     }
 
     public void setState(SuperstructureState state) {
-        setExtension(state.elevatorHeight, state.elevatorVelocity);
-        setRotation(state.pivotRotation, state.pivotVelocity);
-    }
-
-    public void setRotation(Rotation2d rotation, double velocity) {
-        armPID.setGoal(new TrapezoidProfile.State(rotation.getRadians(), velocity));
-        pivotIsClosedLoop = true;
+        closedLoop = true;
+        currentSetpoint = state;
+        goal = null;
     }
 
     public void stopMotion() {
@@ -88,24 +83,13 @@ public class Superstructure extends CharacterizableSubsystem {
         pivotIO.stop();
     }
 
-    public void setExtension(double height, double velocity) {
-        elevatorPID.setGoal(new TrapezoidProfile.State(height, velocity));
-        elevatorIsClosedLoop = true;
-    }
-
-    public void setRotation(Rotation2d rotation) {
-        armPID.setGoal(rotation.getRadians());
-        pivotIsClosedLoop = true;
-    }
-
     public SuperstructureState getState() {
         return new SuperstructureState(pivotInputs.position, getExtension(), pivotInputs.velocity,
                 elevatorInputs.rightVelocity);
     }
 
     public SuperstructureState getGoal() {
-        return new SuperstructureState(Rotation2d.fromRadians(armPID.getGoal().position),
-                elevatorPID.getGoal().position, armPID.getGoal().velocity, elevatorPID.getGoal().velocity);
+        return goal == null ? currentSetpoint : goal;
     }
 
     public void setElevatorVoltage(double voltage) {
@@ -118,7 +102,7 @@ public class Superstructure extends CharacterizableSubsystem {
 
     public void setPivotVoltage(double voltage) {
         pivotIO.setVoltage(voltage);
-        pivotIsClosedLoop = false;
+        closedLoop = false;
     }
 
     public double getExtension() {
@@ -129,13 +113,11 @@ public class Superstructure extends CharacterizableSubsystem {
         return pivotInputs.position;
     }
 
-    public void reset(SuperstructureState state) {
-        armPID.reset(state.pivotRotation.getRadians());
-        elevatorPID.reset(state.elevatorHeight);
-    }
-
-    public void resetRotations(SuperstructureState state) {
-        armPID.reset(state.pivotRotation.getRadians());
+    public void reset() {
+        armPID.reset();
+        elevatorPID.reset();
+        armVelocityPID.reset();
+        elevatorVelocityPID.reset();
     }
 
     public boolean atSetpoint() {
@@ -143,11 +125,13 @@ public class Superstructure extends CharacterizableSubsystem {
     }
 
     public boolean atElevatorSetpoint() {
-        return elevatorPID.atGoal();
+        if (goal == null) return elevatorPID.atSetpoint();
+        return Math.abs(getExtension() - goal.elevatorHeight) < 0.05;
     }
 
     public boolean atPivotSetpoint() {
-        return armPID.atGoal();
+        if (goal == null) return elevatorPID.atSetpoint();
+        return Math.abs(getRotation().minus(goal.pivotRotation).getRadians()) < 0.2;
     }
 
     /**
@@ -158,23 +142,39 @@ public class Superstructure extends CharacterizableSubsystem {
      */
     public Command getSetpointCommand(SuperstructureState setpoint) {
         return this.defer(() -> {
-            Command superstructureCommand = new SuperstructureStateCommand(this, setpoint);
-            if (setpoint.pivotRotation.getRotations() < PivotConstants.LOWER_DANGER_ZONE.getRotations()
-                    && getRotation().getRotations() > PivotConstants.LOWER_DANGER_ZONE.getRotations()) {
-                superstructureCommand = new SuperstructureStateCommand(this, new SuperstructureState(
-                        PivotConstants.LOWER_DANGER_ZONE, RobotConstants.INTAKE_STATE.elevatorHeight, 0, 0))
-                                .until(() -> {
-                                    System.out.println(getExtension());
-                                    return getExtension() < 1;
-                                }).andThen(superstructureCommand);
+            final Timer timer = new Timer();
+            DualDOFProfile profile;
+            System.out.println(setpoint);
+            System.out.println((setpoint.pivotRotation.getRotations() < PivotConstants.LOWER_DANGER_ZONE.getRotations()
+            && getRotation().getRotations() > PivotConstants.LOWER_DANGER_ZONE.getRotations())
+            || (getRotation().getRotations() < PivotConstants.LOWER_DANGER_ZONE.getRotations()
+                    && setpoint.pivotRotation.getRotations() > PivotConstants.LOWER_DANGER_ZONE
+                            .getRotations()));
+            if ((setpoint.pivotRotation.getRotations() < PivotConstants.LOWER_DANGER_ZONE.getRotations()
+                    && getRotation().getRotations() > PivotConstants.LOWER_DANGER_ZONE.getRotations())
+                    || (getRotation().getRotations() < PivotConstants.LOWER_DANGER_ZONE.getRotations()
+                            && setpoint.pivotRotation.getRotations() > PivotConstants.LOWER_DANGER_ZONE
+                                    .getRotations()) && setpoint.elevatorHeight != 0) {
+                profile = DualDOFProfile.fromWaypoints(
+                        List.of(getState().toDualDOFState().getPositionState(),
+                                new DualDOFPositionState(30, PivotConstants.LOWER_DANGER_ZONE.getRadians()),
+                                setpoint.toDualDOFState().getPositionState()),
+                        ElevatorConstants.CONSTRAINTS, PivotConstants.CONSTRAINTS);
+                System.out.println(profile);
+            } else {
+                profile = DualDOFProfile.fromWaypoints(
+                        List.of(getState().toDualDOFState().getPositionState(),
+                                setpoint.toDualDOFState().getPositionState()),
+                        ElevatorConstants.CONSTRAINTS, PivotConstants.CONSTRAINTS);
             }
 
-            if (getRotation().getRotations() < PivotConstants.LOWER_DANGER_ZONE.getRotations()
-                    && setpoint.pivotRotation.getRotations() > PivotConstants.LOWER_DANGER_ZONE.getRotations()) {
-                return new PivotPositionCommand(this, PivotConstants.LOWER_DANGER_ZONE).andThen(superstructureCommand);
-            }
-
-            return superstructureCommand;
+            return startRun(() -> {
+                goal = setpoint;
+                closedLoop = true;
+                timer.restart();
+            }, () -> {
+                currentSetpoint = SuperstructureState.fromDualDOFState(profile.calculate(timer.get()));
+            });
         });
     }
 
@@ -198,36 +198,40 @@ public class Superstructure extends CharacterizableSubsystem {
         pivotLigament.setAngle(getRotation());
         SmartDashboard.putData("Superstructure", mechanism);
         Logger.recordOutput("Superstructure", pivotInputs.position);
-        Logger.recordOutput("Goal", armPID.getGoal().position);
-        Logger.recordOutput("Setpoint", armPID.getSetpoint().position);
+        Logger.recordOutput("Goal", goal == null ? Rotation2d.kZero : goal.pivotRotation);
+        Logger.recordOutput("Setpoint", currentSetpoint.pivotRotation);
         SmartDashboard.putData("pivotPID", armPID);
 
-        Logger.recordOutput("ElevatorPOsition", elevatorInputs.leftPosition);
-        Logger.recordOutput("ElevatorGoal", elevatorPID.getGoal().position);
-        Logger.recordOutput("ElevatorSetpoint", elevatorPID.getSetpoint().position);
+        Logger.recordOutput("ElevatorPosition", elevatorInputs.leftPosition);
+        Logger.recordOutput("ElevatorGoal", goal == null ? 0 : goal.elevatorHeight);
+        Logger.recordOutput("ElevatorSetpoint", currentSetpoint.elevatorHeight);
         SmartDashboard.putData("ElevatorPID", elevatorPID);
         Logger.recordOutput("PivotAtGoal", atPivotSetpoint());
         Logger.recordOutput("ElevatorAtGoal", atElevatorSetpoint());
-        Logger.recordOutput("ElevatorVelocitySetpoint", elevatorPID.getSetpoint().velocity);
+        Logger.recordOutput("ElevatorVelocitySetpoint", currentSetpoint.elevatorVelocity);
         SmartDashboard.putData("ElevatorVelocityPID", elevatorVelocityPID);
         SmartDashboard.putData("PivotVelocityPID", armVelocityPID);
-        Logger.recordOutput("PivotVelocitySetpoint", armPID.getSetpoint().velocity);
+        Logger.recordOutput("PivotVelocitySetpoint", currentSetpoint.pivotVelocity);
 
         double elevatorHeight = elevatorInputs.leftPosition * 0.4 / RobotConstants.L3_STATE.elevatorHeight;
         Logger.recordOutput("ComponentPoses", new Pose3d[] {
-            new Pose3d(0.1906, 0, 0.121 + elevatorHeight / 2, Rotation3d.kZero),
-            new Pose3d(0.1906, 0, 0.1464 + elevatorHeight, Rotation3d.kZero),
-            new Pose3d(0.1906, 0, 0.614 + elevatorHeight, new Rotation3d(0, Units.degreesToRadians(-67) - pivotInputs.position.getRadians(), 0))
-        });
+                new Pose3d(0.1906, 0, 0.121 + elevatorHeight / 2, Rotation3d.kZero),
+                new Pose3d(0.1906, 0, 0.1464 + elevatorHeight, Rotation3d.kZero),
+                new Pose3d(0.1906, 0, 0.614 + elevatorHeight,
+                        new Rotation3d(0, Units.degreesToRadians(-67) - pivotInputs.position.getRadians(), 0)) });
 
-        if (pivotIsClosedLoop) pivotIO.setVoltage(armPID.calculate(pivotInputs.position.getRadians())
-                + armFeedforward.calculate(armPID.getSetpoint().position, armPID.getSetpoint().velocity)
-                + armVelocityPID.calculate(getRotation().getRadians(), armPID.getSetpoint().velocity)
-                + Math.cos(pivotInputs.position.plus(PivotConstants.COG_OFFSET).getRadians()) * PivotConstants.kG);
+        if (closedLoop) {
+            pivotIO.setVoltage(
+                    armPID.calculate(pivotInputs.position.getRadians(), currentSetpoint.pivotRotation.getRadians())
+                            + armFeedforward.calculate(currentSetpoint.pivotRotation.getRadians(),
+                                    currentSetpoint.pivotVelocity)
+                            + armVelocityPID.calculate(pivotInputs.velocity, currentSetpoint.pivotVelocity)
+                            + Math.cos(pivotInputs.position.plus(PivotConstants.COG_OFFSET).getRadians())
+                                    * PivotConstants.kG);
 
-        if (elevatorIsClosedLoop) setElevatorVoltage(elevatorPID.calculate(elevatorInputs.leftPosition)
-                + elevatorFeedforward.calculate(elevatorPID.getSetpoint().velocity)
-                + elevatorVelocityPID.calculate(elevatorInputs.leftVelocity, elevatorPID.getSetpoint().velocity));
-
+            setElevatorVoltage(elevatorPID.calculate(elevatorInputs.leftPosition, currentSetpoint.elevatorHeight)
+                    + elevatorFeedforward.calculate(currentSetpoint.elevatorVelocity)
+                    + elevatorVelocityPID.calculate(elevatorInputs.leftVelocity, currentSetpoint.elevatorVelocity));
+        }
     }
 }

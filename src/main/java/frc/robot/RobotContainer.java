@@ -45,7 +45,6 @@ import frc.robot.commands.algaeEndEffector.StopAlgaeCommand;
 import frc.robot.commands.coralEndEffectorCommands.CoralCommand;
 import frc.robot.commands.drivebase.AlignToReefCommand;
 import frc.robot.commands.drivebase.SwerveDriveCommand;
-import frc.robot.commands.superstructure.SuperstructureStateCommand;
 import frc.robot.subsystems.drive.DriveBase;
 import frc.robot.subsystems.drive.GyroIONavX;
 import frc.robot.subsystems.drive.GyroIOSim;
@@ -232,7 +231,7 @@ public class RobotContainer {
 
         //driver
         driverLTButton.whileTrue(new CoralCommand(coral, -0.75));
-        driverRBButton.whileTrue(superstructure.getSetpointCommand(RobotConstants.INTAKE_STATE));
+        driverRBButton.onTrue(superstructure.getSetpointCommand(RobotConstants.INTAKE_STATE));
         driverRBButton.whileTrue(new CoralCommand(coral, 0.5));
         driverLBButton.whileTrue(new AlgaeCommand(algae, 1));
         driverRTButton.whileTrue(new CoralCommand(coral, 0.5));
@@ -251,15 +250,15 @@ public class RobotContainer {
         //operator
         operatorLTButton.whileTrue(new CoralCommand(coral, -0.5));
         operatorRTButton.whileTrue(new CoralCommand(coral, 0.5));
-        operatorRBButton.whileTrue(superstructure.getSetpointCommand(RobotConstants.INTAKE_STATE));
+        operatorRBButton.onTrue(superstructure.getSetpointCommand(RobotConstants.INTAKE_STATE));
 
-        operatorXButton.whileTrue(superstructure.getSetpointCommand(RobotConstants.L2_STATE));
-        operatorYButton.whileTrue(superstructure.getSetpointCommand(RobotConstants.L3_STATE));
-        operatorBButton.whileTrue(superstructure.getSetpointCommand(RobotConstants.L4_STATE));
+        operatorXButton.onTrue(superstructure.getSetpointCommand(RobotConstants.L2_STATE));
+        operatorYButton.onTrue(superstructure.getSetpointCommand(RobotConstants.L3_STATE));
+        operatorBButton.onTrue(superstructure.getSetpointCommand(RobotConstants.L4_STATE));
 
-        operatorDpadDown.whileTrue(new SuperstructureStateCommand(superstructure, RobotConstants.L2_ALGAE_STATE));
+        operatorDpadDown.onTrue(superstructure.getSetpointCommand(RobotConstants.L2_ALGAE_STATE));
         operatorDpadDown.whileTrue(new AlgaeCommand(algae, -0.75));
-        operatorDpadUp.whileTrue(new SuperstructureStateCommand(superstructure, RobotConstants.L3_ALGAE_STATE));
+        operatorDpadUp.onTrue(superstructure.getSetpointCommand(RobotConstants.L3_ALGAE_STATE));
         operatorDpadUp.whileTrue(new AlgaeCommand(algae, -0.75));
     }
 

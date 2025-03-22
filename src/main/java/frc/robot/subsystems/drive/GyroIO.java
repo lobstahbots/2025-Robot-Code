@@ -12,20 +12,22 @@ import edu.wpi.first.math.geometry.Rotation2d;
 public interface GyroIO {
     @AutoLog
     public static class GyroIOInputs {
-      public boolean connected = false;
-      public Rotation2d rollPosition = new Rotation2d();
-      public Rotation2d pitchPosition = new Rotation2d();
-      public Rotation2d yawPosition = new Rotation2d();
-      public double rollVelocity = 0.0;
-      public double pitchVelocity = 0.0;
-      public double yawVelocity= 0.0;
-      public boolean isCalibrating = true;
+        public boolean connected = false;
+        public Rotation2d rollPosition = new Rotation2d();
+        public Rotation2d pitchPosition = new Rotation2d();
+        public Rotation2d yawPosition = new Rotation2d();
+        public double rollVelocity = 0.0;
+        public double pitchVelocity = 0.0;
+        public double yawVelocity = 0.0;
+        public boolean isCalibrating = true;
     }
-  
+
     /* Zeroes the gyro. */
     public default void zeroGyro() {}
 
-    public default boolean isCalibrating() { return false; }
+    public default boolean isCalibrating() {
+        return false;
+    }
 
     public default void updateInputs(GyroIOInputs inputs) {}
 }
