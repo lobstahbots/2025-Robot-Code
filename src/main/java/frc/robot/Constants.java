@@ -439,4 +439,17 @@ public final class Constants {
         public static final int MOTOR_ID = 44;
     }
 
+    public static class OTBCoralConstants {
+        public static final int JOINT_1_ENCODER_CHANNEL = 0;
+        public static final int JOINT_2_ENCODER_CHANNEL = 0;
+        public static final int JOINT_MOTOR_CURRENT_LIMIT = 0;
+        public static final int DRIVER_MOTOR_CURRENT_LIMIT = 0;
+
+        public static final double JOINT_1_kP = 0;
+        public static final double JOINT_1_kI = 0;
+        public static final double JOINT_1_kD = 0;
+
+        
+    }
+
 }
