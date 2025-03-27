@@ -43,6 +43,7 @@ import frc.robot.Constants.VisionConstants;
 import frc.robot.commands.algaeEndEffector.AlgaeCommand;
 import frc.robot.commands.algaeEndEffector.StopAlgaeCommand;
 import frc.robot.commands.coralEndEffectorCommands.CoralCommand;
+import frc.robot.commands.drivebase.AlignToBargeCommand;
 import frc.robot.commands.drivebase.AlignToReefCommand;
 import frc.robot.commands.drivebase.SwerveDriveCommand;
 import frc.robot.commands.superstructure.SuperstructureStateCommand;
@@ -189,20 +190,7 @@ public class RobotContainer {
                 () -> -driverJoystick.getRawAxis(ControllerIOConstants.RIGHT_STICK_HORIZONTAL),
                 () -> DriveConstants.FIELD_CENTRIC, ControllerIOConstants.SQUARE_INPUTS,
                 () -> 0 / RobotConstants.L4_STATE.elevatorHeight * superstructure.getExtension() + 1));
-        // superstructure.setDefaultCommand(new PivotCommand(superstructure, () -> driverJoystick.getRawAxis(OperatorIOConstants.MANUAL_ARM_AXIS)));
-        // superstructure.setDefaultCommand(new PivotPositionCommand(superstructure, () -> Rotation2d.fromRotations(
-        //         superstructure.getPivotRotation().getRotations() + PivotConstants.JOYSTICK_SCALING * MathUtil
-        //                 .applyDeadband(-operatorJoystick.getRawAxis(OperatorIOConstants.MANUAL_ARM_AXIS), 0.1))));
-        // superstructure.setDefaultCommand(new SuperstructureStateCommand(superstructure, () -> Rotation2d.fromRotations(superstructure.getPivotRotation().getRotations() + PivotConstants.JOYSTICK_SCALING * MathUtil.applyDeadband(-operatorJoystick.getRawAxis(OperatorIOConstants.MANUAL_ARM_AXIS), 0.1))));
-        // superstructure.setDefaultCommand(superstructure.run(() -> {
-        //     superstructure.setRotation(superstructure.getPivotRotation().plus(Rotation2d.fromRotations(PivotConstants.JOYSTICK_SCALING * MathUtil.applyDeadband(-operatorJoystick.getRawAxis(OperatorIOConstants.MANUAL_ARM_AXIS), 0.1))));
-        //     superstructure.setExtension(superstructure.getExtension() + MathUtil.applyDeadband(operatorJoystick.getRawAxis(OperatorIOConstants.MANUAL_ELEVATOR_AXIS), 0.1), 0);
-        // }));
-        // superstructure.setDefaultCommand(Commands.run(() -> superstructure.setState(superstructure.getState()), superstructure));
-        //  coral.setDefaultCommand(coral.spinCommand(CoralEndEffectorConstants.MOTOR_SPEED)
-        //  .until(() -> coral.getCurrent() > CoralEndEffectorConstants.CURRENT_THRESHOLD)
-        //  .andThen(new RunCommand(() -> {
-        //  })));
+        
         SmartDashboard.putData("thing", superstructure);
         coral.setDefaultCommand(new CoralCommand(coral, 0.1));
         algae.setDefaultCommand(new StopAlgaeCommand(algae));
@@ -232,12 +220,15 @@ public class RobotContainer {
 
         //driver
         driverLTButton.whileTrue(new CoralCommand(coral, -0.75));
-        driverRBButton.whileTrue(superstructure.getSetpointCommand(RobotConstants.INTAKE_STATE));
-        driverRBButton.whileTrue(new CoralCommand(coral, 0.5));
-        driverLBButton.whileTrue(new AlgaeCommand(algae, 1));
-        driverRTButton.whileTrue(new CoralCommand(coral, 0.5));
-        //driverRBButton.whileTrue(superstructure.getSetpointCommand(RobotConstants.INTAKE_STATE)); //NOTE: Fancy collision avoidance that is untested and doesn't necessarily work and is messing things up
-
+        // driverRBButton.whileTrue(superstructure.getSetpointCommand(RobotConstants.INTAKE_STATE));
+        // driverRBButton.whileTrue(new CoralCommand(coral, 0.5));
+        driverRBButton.whileTrue(superstructure.getSetpointCommand(RobotConstants.INTAKE_STATE).alongWith(new CoralCommand(coral, 0.5)).until(manualArm).until(() -> coral.getBeamBreak()));
+        driverRTButton.whileTrue(new CoralCommand(coral, 0.75));
+        //driverLBButton.whileTrue(new AlignToBargeCommand(driveBase).alongWith(superstructure.getSetpointCommand(RobotConstants.BARGE_STATE)).andThen(new AlgaeCommand(algae, 1))); //DON'T UNCOMMENT THIS UNTIL AFTER YOUVE TESTED LINE 241
+        driverLBButton.whileTrue(new AlignToBargeCommand(driveBase)); //TEST THIS VERSION FIRST
+        driverLeftPaddle.whileTrue(new AlignToReefCommand(driveBase, true));
+        driverRightPaddle.whileTrue(new AlignToReefCommand(driveBase, false));
+    
         // driverXButton.whileTrue(superstructure.getSetpointCommand(RobotConstants.L2_STATE));
         // driverYButton.whileTrue(superstructure.getSetpointCommand(RobotConstants.L3_STATE);
         // driverBButton.whileTrue(superstructure.getSetpointCommand(RobotConstants.L4_STATE));
@@ -245,12 +236,9 @@ public class RobotContainer {
         // driverDpadDown.whileTrue(new SuperstructureStateCommand(superstructure, RobotConstants.L2_ALGAE_STATE));
         // driverDpadUp.whileTrue(new SuperstructureStateCommand(superstructure, RobotConstants.L3_ALGAE_STATE));
 
-        driverLeftPaddle.whileTrue(new AlignToReefCommand(driveBase, true));
-        driverRightPaddle.whileTrue(new AlignToReefCommand(driveBase, false));
-
         //operator
-        operatorLTButton.whileTrue(new CoralCommand(coral, -0.5));
-        operatorRTButton.whileTrue(new CoralCommand(coral, 0.5));
+        operatorLTButton.whileTrue(new CoralCommand(coral, -0.75));
+        operatorRTButton.whileTrue(new CoralCommand(coral, 0.75));
         operatorRBButton.whileTrue(superstructure.getSetpointCommand(RobotConstants.INTAKE_STATE));
 
         operatorXButton.whileTrue(superstructure.getSetpointCommand(RobotConstants.L2_STATE));
@@ -258,9 +246,9 @@ public class RobotContainer {
         operatorBButton.whileTrue(superstructure.getSetpointCommand(RobotConstants.L4_STATE));
 
         operatorDpadDown.whileTrue(new SuperstructureStateCommand(superstructure, RobotConstants.L2_ALGAE_STATE));
-        operatorDpadDown.whileTrue(new AlgaeCommand(algae, -0.75));
+        operatorDpadDown.whileTrue(new AlgaeCommand(algae, -1));
         operatorDpadUp.whileTrue(new SuperstructureStateCommand(superstructure, RobotConstants.L3_ALGAE_STATE));
-        operatorDpadUp.whileTrue(new AlgaeCommand(algae, -0.75));
+        operatorDpadUp.whileTrue(new AlgaeCommand(algae, -1));
     }
 
     public boolean getOperatorConnected() {

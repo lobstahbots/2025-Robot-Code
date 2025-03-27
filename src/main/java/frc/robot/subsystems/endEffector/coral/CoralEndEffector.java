@@ -30,6 +30,10 @@ public class CoralEndEffector extends SubsystemBase {
         return inputs.currentAmps;
     }
 
+    public boolean getBeamBreak() {
+        return inputs.beamBreakTriggered;
+    }
+
     public void periodic() {
         io.updateInputs(inputs);
         Logger.processInputs("CoralEndEffector", inputs);

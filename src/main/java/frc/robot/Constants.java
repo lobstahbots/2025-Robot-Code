@@ -125,17 +125,23 @@ public final class Constants {
         public static final Mass WEIGHT = Pounds.of(150);
         public static final MomentOfInertia MOI = KilogramSquareMeters.of(6);
 
+        //coral
         public static final SuperstructureState INTAKE_STATE = new SuperstructureState(Rotation2d.fromRadians(-2.34), 0,
                 0, 0);
+        public static final SuperstructureState L1_STATE = new SuperstructureState(Rotation2d.fromRadians(0), 0, 0, 0);
         public static final SuperstructureState L2_STATE = new SuperstructureState(Rotation2d.fromRadians(0.956),
                 ElevatorConstants.BOTTOM_HEIGHT, 0, 0);
         public static final SuperstructureState L3_STATE = new SuperstructureState(Rotation2d.fromRadians(1.03), 41.2, 0,
                 0);
         public static final SuperstructureState L4_STATE = new SuperstructureState(Rotation2d.fromRadians(0.2), 124
         , 0, 0);
+
+        //algae
         public static final SuperstructureState L2_ALGAE_STATE = new SuperstructureState(Rotation2d.fromRadians(-0.2), 0, 0, 0);
         public static final SuperstructureState L3_ALGAE_STATE = new SuperstructureState(Rotation2d.fromRadians(-0.2), 41.2, 0, 0);
         public static final SuperstructureState BARGE_STATE = new SuperstructureState(Rotation2d.fromRadians(0), 0, 0, 0);
+        public static final SuperstructureState PROCESSOR_STATE = new SuperstructureState(Rotation2d.fromRadians(0), 0, 0, 0);
+        
         public static final double ELEVATOR_THRESHOLD = 10;
     }
 
