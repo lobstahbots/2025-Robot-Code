@@ -135,6 +135,7 @@ public final class Constants {
         , 0, 0);
         public static final SuperstructureState L2_ALGAE_STATE = new SuperstructureState(Rotation2d.fromRadians(-0.2), 0, 0, 0);
         public static final SuperstructureState L3_ALGAE_STATE = new SuperstructureState(Rotation2d.fromRadians(-0.2), 41.2, 0, 0);
+        public static final SuperstructureState BARGE_STATE = new SuperstructureState(Rotation2d.fromRadians(0), 0, 0, 0);
         public static final double ELEVATOR_THRESHOLD = 10;
     }
 
@@ -320,6 +321,8 @@ public final class Constants {
             public static final Pose2d J = ChoreoVariables.getPose("J");
             public static final Pose2d K = ChoreoVariables.getPose("K");
             public static final Pose2d L = ChoreoVariables.getPose("L");
+
+            public static final double BARGE_TRANSLATION_DEPTH_SETPOINT = 0; //idk if this actually belongs here or if theres a way to get this from choreo since this isn't techncially an actual pose
 
             public static final Pose2d REEF_CENTER = ChoreoVariables.getPose("REEF_CENTER");
 
