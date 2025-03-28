@@ -151,11 +151,7 @@ public class Superstructure extends CharacterizableSubsystem {
             || (getRotation().getRotations() < PivotConstants.LOWER_DANGER_ZONE.getRotations()
                     && setpoint.pivotRotation.getRotations() > PivotConstants.LOWER_DANGER_ZONE
                             .getRotations()));
-            if ((setpoint.pivotRotation.getRotations() < PivotConstants.LOWER_DANGER_ZONE.getRotations()
-                    && getRotation().getRotations() > PivotConstants.LOWER_DANGER_ZONE.getRotations())
-                    || (getRotation().getRotations() < PivotConstants.LOWER_DANGER_ZONE.getRotations()
-                            && setpoint.pivotRotation.getRotations() > PivotConstants.LOWER_DANGER_ZONE
-                                    .getRotations()) && setpoint.elevatorHeight != 0) {
+            if (setpoint.elevatorHeight != 0 || getExtension() > 5) {
                 profile = DualDOFProfile.fromWaypoints(
                         List.of(getState().toDualDOFState().getPositionState(),
                                 new DualDOFPositionState(20, PivotConstants.LOWER_DANGER_ZONE.getRadians()),
