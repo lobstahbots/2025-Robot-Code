@@ -70,7 +70,7 @@ import frc.robot.util.auto.AutonSelector.AutoQuestion;
 import frc.robot.util.led.LEDs;
 
 public class RobotContainer {
-    private final LEDs leds = new LEDs(new AddressableLED(LEDConstants.LED_PORT));
+    // private final LEDs leds = new LEDs(new AddressableLED(LEDConstants.LED_PORT));
 
     private final DriveBase driveBase;
     private final Superstructure superstructure;

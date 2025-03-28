@@ -48,7 +48,7 @@ public class AlignToReefCommand extends Command {
 
     @Override
     public void initialize() {
-        LEDs.getInstance().setAligning(true);
+        // LEDs.getInstance().setAligning(true);
         xController.reset();
         yController.reset();
         thetaController.reset();
@@ -72,7 +72,7 @@ public class AlignToReefCommand extends Command {
     @Override
     public void end(boolean interrupted) {
         driveBase.stopMotors();
-        LEDs.getInstance().setAligning(false);
+        // LEDs.getInstance().setAligning(false);
     }
 
     // Returns true when the command should end.

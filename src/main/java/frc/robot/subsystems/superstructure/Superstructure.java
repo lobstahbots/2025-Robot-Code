@@ -158,7 +158,7 @@ public class Superstructure extends CharacterizableSubsystem {
                                     .getRotations()) && setpoint.elevatorHeight != 0) {
                 profile = DualDOFProfile.fromWaypoints(
                         List.of(getState().toDualDOFState().getPositionState(),
-                                new DualDOFPositionState(30, PivotConstants.LOWER_DANGER_ZONE.getRadians()),
+                                new DualDOFPositionState(20, PivotConstants.LOWER_DANGER_ZONE.getRadians()),
                                 setpoint.toDualDOFState().getPositionState()),
                         ElevatorConstants.CONSTRAINTS, PivotConstants.CONSTRAINTS);
                 System.out.println(profile);
@@ -235,6 +235,6 @@ public class Superstructure extends CharacterizableSubsystem {
                     + elevatorVelocityPID.calculate(elevatorInputs.leftVelocity, currentSetpoint.elevatorVelocity));
         }
 
-        LEDs.getInstance().setReadyForIntake(goal == RobotConstants.INTAKE_STATE && atSetpoint());
+        // LEDs.getInstance().setReadyForIntake(goal == RobotConstants.INTAKE_STATE && atSetpoint());
     }
 }
