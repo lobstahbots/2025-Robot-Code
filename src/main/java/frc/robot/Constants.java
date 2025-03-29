@@ -126,16 +126,16 @@ public final class Constants {
         public static final Mass WEIGHT = Pounds.of(150);
         public static final MomentOfInertia MOI = KilogramSquareMeters.of(6);
 
-        public static final SuperstructureState INTAKE_STATE = new SuperstructureState(Rotation2d.fromRadians(-2.34), 0,
+        public static final SuperstructureState INTAKE_STATE = new SuperstructureState(Rotation2d.fromRadians(-2.32), 0,
                 0, 0);
         public static final SuperstructureState L2_STATE = new SuperstructureState(Rotation2d.fromRadians(0.956),
                 ElevatorConstants.BOTTOM_HEIGHT, 0, 0);
         public static final SuperstructureState L3_STATE = new SuperstructureState(Rotation2d.fromRadians(1.03), 41.2,
                 0, 0);
-        public static final SuperstructureState L4_STATE = new SuperstructureState(Rotation2d.fromRadians(0.2), 124, 0,
+        public static final SuperstructureState L4_STATE = new SuperstructureState(Rotation2d.fromRadians(0.2), 127, 0,
                 0);
-        public static final SuperstructureState L2_ALGAE_STATE = new SuperstructureState(Rotation2d.fromRadians(-0.2),
-                0, 0, 0);
+        public static final SuperstructureState L2_ALGAE_STATE = new SuperstructureState(Rotation2d.fromRadians(-0.91),
+                22, 0, 0);
         public static final SuperstructureState L3_ALGAE_STATE = new SuperstructureState(Rotation2d.fromRadians(-0.2),
                 41.2, 0, 0);
         public static final double ELEVATOR_THRESHOLD = 10;
@@ -433,7 +433,7 @@ public final class Constants {
     }
 
     public static class AlgaeEndEffectorConstants {
-        public static final int CURRENT_LIMIT = 30;
+        public static final int CURRENT_LIMIT = 20;
         public static final int MOTOR_ID = 44;
     }
 

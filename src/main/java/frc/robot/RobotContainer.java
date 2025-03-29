@@ -262,9 +262,9 @@ public class RobotContainer {
         operatorBButton.onTrue(superstructure.getSetpointCommand(RobotConstants.L4_STATE));
 
         operatorDpadDown.onTrue(superstructure.getSetpointCommand(RobotConstants.L2_ALGAE_STATE));
-        operatorDpadDown.whileTrue(new AlgaeCommand(algae, -0.75));
+        operatorDpadDown.whileTrue(new AlgaeCommand(algae, -1));
         operatorDpadUp.onTrue(superstructure.getSetpointCommand(RobotConstants.L3_ALGAE_STATE));
-        operatorDpadUp.whileTrue(new AlgaeCommand(algae, -0.75));
+        operatorDpadUp.whileTrue(new AlgaeCommand(algae, -1));
     }
 
     public boolean getOperatorConnected() {
