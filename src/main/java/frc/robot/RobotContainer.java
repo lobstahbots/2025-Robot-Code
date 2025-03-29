@@ -83,9 +83,9 @@ public class RobotContainer {
 
     //Driver
     private final Trigger driverLTButton = new Trigger(
-            () -> driverJoystick.getRawAxis(ControllerIOConstants.LT_BUTTON) > 0.5);
+            () -> driverJoystick.getRawAxis(ControllerIOConstants.LT_BUTTON) > 0.2);
     private final Trigger driverRTButton = new Trigger(
-            () -> driverJoystick.getRawAxis(ControllerIOConstants.RT_BUTTON) > 0.5);
+            () -> driverJoystick.getRawAxis(ControllerIOConstants.RT_BUTTON) > 0.2);
 
     private final JoystickButton driverLBButton = new JoystickButton(driverJoystick, ControllerIOConstants.LB_BUTTON);
     private final JoystickButton driverRBButton = new JoystickButton(driverJoystick, ControllerIOConstants.RB_BUTTON);
