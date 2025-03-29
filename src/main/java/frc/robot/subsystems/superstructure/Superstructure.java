@@ -232,7 +232,5 @@ public class Superstructure extends CharacterizableSubsystem {
                 + elevatorVelocityPID.calculate(elevatorInputs.leftVelocity, elevatorPID.getSetpoint().velocity));
 
         }
-
-        // LEDs.getInstance().setReadyForIntake(goal == RobotConstants.INTAKE_STATE && atSetpoint());
     }
 }

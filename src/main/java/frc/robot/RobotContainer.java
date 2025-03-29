@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -261,6 +262,8 @@ public class RobotContainer {
         operatorLTButton.whileTrue(new CoralCommand(coral, -0.5));
         operatorRTButton.whileTrue(new CoralCommand(coral, 0.5));
         operatorRBButton.whileTrue(superstructure.getSetpointCommand(RobotConstants.INTAKE_STATE));
+        operatorLBButton.whileTrue(new InstantCommand(() -> leds.setUserSignal(true)).ignoringDisable(true))
+                .onFalse(new InstantCommand(() -> leds.setUserSignal(false)).ignoringDisable(true));
 
         operatorXButton.whileTrue(superstructure.getSetpointCommand(RobotConstants.L2_STATE));
         operatorYButton.whileTrue(superstructure.getSetpointCommand(RobotConstants.L3_STATE));
@@ -321,5 +324,12 @@ public class RobotContainer {
         superstructure.setIdleMode(isBrakeMode);
         coral.setIdleMode(isBrakeMode);
         algae.setIdleMode(isBrakeMode);
+    }
+
+    public void periodic() {
+        LEDs.getInstance().setReadyForIntake(
+            superstructure.getState() == RobotConstants.INTAKE_STATE
+            && superstructure.atSetpoint() &&
+            coral.getVelocity() > LEDConstants.INTAKE_VELOCITY_THRESHOLD);
     }
 }

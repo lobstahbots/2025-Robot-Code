@@ -112,6 +112,9 @@ public class Robot extends LoggedRobot {
             //         canStatus.receiveErrorCount, canStatus.transmitErrorCount, canStatus.percentBusUtilization));
         } else
             canAlert.set(false);
+
+            
+        m_robotContainer.periodic();
     }
 
     /** This function is called once each time the robot enters Disabled mode. */

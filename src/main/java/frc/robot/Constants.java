@@ -470,5 +470,7 @@ public final class Constants {
             public static final Color TRANS_PINK = Color.kDeepPink;
             public static final Color TRANS_TEAL = new Color(0.15, 0.3, 1.0);
         }
+        public static final double INTAKE_VELOCITY_THRESHOLD = 0.2;
+        // TODO CHANGE!!!!
     }
 }
