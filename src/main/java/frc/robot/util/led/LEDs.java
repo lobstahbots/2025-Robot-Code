@@ -8,26 +8,32 @@ import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.LEDConstants;
 import frc.robot.Constants.LEDConstants.*;
 
 public class LEDs extends SubsystemBase {
+    //#region SINGLETON, SETUP, AND CONSTRUCTOR
+
     private static LEDs instance = null;
 
     public static LEDs getInstance() {
         return instance;
     }
 
-    AddressableLED led;
+    AddressableLED led = new AddressableLED(LEDConstants.LED_PORT);
 
-    public LEDs(AddressableLED led) {
+    public LEDs() {
         if (instance != null) throw new IllegalStateException("LEDs already initialized");
         instance = this;
 
-        this.led = led;
+        led.setLength(LengthConstants.TOTAL);
         led.start();
 
        loadingNotifier.startPeriodic(0.02);
     }
+
+    //#endregion
+    //#region STATE VARIABLES
 
     public enum ConnectionState {
         DISCONNECTED, DS_ONLY, FMS
@@ -50,43 +56,22 @@ public class LEDs extends SubsystemBase {
 
     public Color debugColor = null;
 
-//    Timer possessionSignalTimer = new Timer();
+    //#endregion
+    //#region STATE GETTERS AND SETTERS
 
-    final Notifier loadingNotifier = new Notifier(() -> {
-        synchronized (this) {
-            led.setData(loading().toAdressableLEDBuffer());
-        }
-    });
+    void setFMSState(ConnectionState value) { connectionState = value; }
 
-    DisabledStandby disabledStandby = new DisabledStandby();
+    void setAlliance(DriverStation.Alliance value) { alliance = value; }
 
-    void setFMSState(ConnectionState value) {
-        connectionState = value;
-    }
+    public void setAligned(boolean aligned) { this.aligned = aligned; }
 
-    void setAlliance(DriverStation.Alliance value) {
-        alliance = value;
-    }
+    public void setAligning(boolean aligning) { this.aligning = aligning; }
 
-    public void setAligned(boolean aligned) {
-        this.aligned = aligned;
-    }
+    public void setReadyForIntake(boolean readyForIntake) { this.readyForIntake = readyForIntake; }
 
-    public void setAligning(boolean aligning) {
-        this.aligning = aligning;
-    }
+    public void setHasCoral(boolean hasCoral) { this.hasCoral = hasCoral; }
 
-    public void setReadyForIntake(boolean readyForIntake) {
-        this.readyForIntake = readyForIntake;
-    }
-
-    public void setHasCoral(boolean hasCoral) {
-        this.hasCoral = hasCoral;
-    }
-
-    public void setUserSignal(boolean userSignal) {
-        this.userSignal = userSignal;
-    }
+    public void setUserSignal(boolean userSignal) { this.userSignal = userSignal; }
 
     void setRobotMode(RobotMode value) {
         if (value == RobotMode.DISABLED && robotMode == RobotMode.AUTONOMOUS
@@ -99,6 +84,8 @@ public class LEDs extends SubsystemBase {
     void triggerTeleopCountdown() {}
 
     void triggerEndgameSignal() {}
+
+    //#endregion
 
     public void periodic() {
         loadingNotifier.stop();
@@ -122,7 +109,8 @@ public class LEDs extends SubsystemBase {
         } else {
             setRobotMode(RobotMode.DISABLED);
         }
-// Updates LED patterns
+
+        // Updates LEDs
         led.setData(
                 LobstahLEDBuffer
                         .layer(LengthConstants.TOTAL,
@@ -141,6 +129,19 @@ public class LEDs extends SubsystemBase {
                                 debugColor == null ? null : LobstahLEDBuffer.solid(LengthConstants.TOTAL, debugColor) //for testing
                               ).toAdressableLEDBuffer());
     }
+
+    //#region PATTERNS
+    //#region INSTANCES OF PATTERN-RELATED OBJECTS
+    // Timer possessionSignalTimer = new Timer();
+
+    final Notifier loadingNotifier = new Notifier(() -> {
+        synchronized (this) {
+            led.setData(loading().toAdressableLEDBuffer());
+        }
+    });
+
+    DisabledStandby disabledStandby = new DisabledStandby();
+    //#endregion
 
     static LobstahLEDBuffer segments(LobstahLEDBuffer left, LobstahLEDBuffer midSegment, LobstahLEDBuffer right) {
         return LobstahLEDBuffer.concat(
@@ -231,6 +232,6 @@ public class LEDs extends SubsystemBase {
                 LobstahLEDBuffer.solid(segmentLength, Color.kWhite),
                 LobstahLEDBuffer.solid(segmentLength, ColorConstants.TRANS_PINK),
                 LobstahLEDBuffer.solid(segmentLength, ColorConstants.TRANS_TEAL)).flip();
-    
     }
+    //#endregion
 }

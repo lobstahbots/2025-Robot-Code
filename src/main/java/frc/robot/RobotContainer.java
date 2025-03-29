@@ -76,7 +76,6 @@ import frc.robot.util.led.LEDs;
 import frc.robot.util.trajectory.AlliancePoseMirror;
 
 public class RobotContainer {
-    private final AddressableLED addressableLED = new AddressableLED(LEDConstants.LED_PORT);
     private final LEDs leds;
 
     private final DriveBase driveBase;
@@ -135,8 +134,7 @@ public class RobotContainer {
      * The container for the robot. Contains subsystems, OI devices, and commands.
      */
     public RobotContainer() {
-        addressableLED.setLength(LengthConstants.TOTAL);
-        leds = new LEDs(addressableLED);
+        leds = new LEDs();
         if (Robot.isReal()) {
             SwerveModuleIOSparkMax frontLeft = new SwerveModuleIOSparkMax(FrontLeftModuleConstants.moduleID,
                     "Front left ", FrontLeftModuleConstants.angleID, FrontLeftModuleConstants.driveID,
