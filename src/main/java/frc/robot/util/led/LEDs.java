@@ -9,7 +9,8 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.LEDConstants;
-import frc.robot.Constants.LEDConstants.*;
+import frc.robot.Constants.LEDConstants.ColorConstants;
+import frc.robot.Constants.LEDConstants.LengthConstants;
 
 public class LEDs extends SubsystemBase {
     //#region SINGLETON, SETUP, AND CONSTRUCTOR
@@ -35,19 +36,11 @@ public class LEDs extends SubsystemBase {
     //#endregion
     //#region STATE VARIABLES
 
-    public enum ConnectionState {
-        DISCONNECTED, DS_ONLY, FMS
-    }
-
+    public enum ConnectionState { DISCONNECTED, DS_ONLY, FMS }
     ConnectionState connectionState = ConnectionState.DISCONNECTED;
     DriverStation.Alliance alliance = DriverStation.Alliance.Red;
-
-    public enum RobotMode {
-        DISABLED, TELEOP, AUTONOMOUS, ESTOPPED
-    }
-
+    public enum RobotMode { DISABLED, TELEOP, AUTONOMOUS, ESTOPPED }
     RobotMode robotMode = RobotMode.DISABLED;
-
     boolean aligned = false;
     boolean aligning = false;
     boolean readyForIntake = false;
@@ -60,18 +53,14 @@ public class LEDs extends SubsystemBase {
     //#region STATE GETTERS AND SETTERS
 
     void setFMSState(ConnectionState value) { connectionState = value; }
-
     void setAlliance(DriverStation.Alliance value) { alliance = value; }
-
     public void setAligned(boolean aligned) { this.aligned = aligned; }
-
     public void setAligning(boolean aligning) { this.aligning = aligning; }
-
     public void setReadyForIntake(boolean readyForIntake) { this.readyForIntake = readyForIntake; }
-
     public void setHasCoral(boolean hasCoral) { this.hasCoral = hasCoral; }
-
     public void setUserSignal(boolean userSignal) { this.userSignal = userSignal; }
+    void triggerTeleopCountdown() {}
+    void triggerEndgameSignal() {}
 
     void setRobotMode(RobotMode value) {
         if (value == RobotMode.DISABLED && robotMode == RobotMode.AUTONOMOUS
@@ -81,9 +70,6 @@ public class LEDs extends SubsystemBase {
         robotMode = value;
     }
 
-    void triggerTeleopCountdown() {}
-
-    void triggerEndgameSignal() {}
 
     //#endregion
 
@@ -116,11 +102,10 @@ public class LEDs extends SubsystemBase {
                         .layer(LengthConstants.TOTAL,
                                 robotMode == RobotMode.DISABLED
                                         ? connectionState == ConnectionState.DISCONNECTED ? disconnected() // Disconnected
-                                                : disabledStandby.get(ColorConstants.RED, ColorConstants.PINK) //Standby
+                                                : disabledStandby() //Standby
                                         : null,
                                 robotMode == RobotMode.AUTONOMOUS ? autonomous() : null, //Auto
                                 aligned ? LobstahLEDBuffer.solid(LengthConstants.TOTAL, Color.kGreen) : null,
-                                
                                 aligning ? LobstahLEDBuffer.solid(LengthConstants.TOTAL, Color.kBlue) : null,
                                 readyForIntake ? LobstahLEDBuffer.solid(LengthConstants.TOTAL, Color.kRed) : null,
                                 hasCoral ? LobstahLEDBuffer.solid(LengthConstants.TOTAL, Color.kPurple) : null,
@@ -140,7 +125,6 @@ public class LEDs extends SubsystemBase {
         }
     });
 
-    DisabledStandby disabledStandby = new DisabledStandby();
     //#endregion
 
     static LobstahLEDBuffer segments(LobstahLEDBuffer left, LobstahLEDBuffer midSegment, LobstahLEDBuffer right) {
@@ -157,39 +141,6 @@ public class LEDs extends SubsystemBase {
         return segments(buffer, null, buffer);
     }
 
-    static class DisabledStandby {
-        int prevHeight1;
-        int prevHeight2;
-        int nextHeight1;
-        int nextHeight2;
-        Timer timer = new Timer();
-
-        DisabledStandby() {
-            timer.start();
-            generateHeights();
-        }
-
-        LobstahLEDBuffer get(Color color1, Color color2) {
-            if (timer.hasElapsed(0.2)) {
-                timer.restart();
-                generateHeights();
-            }
-            double time = Math.min(timer.get() * 5, 1);
-            int height1 = (int) (prevHeight1 + (nextHeight1 - prevHeight1) * time);
-            int height2 = (int) (prevHeight2 + (nextHeight2 - prevHeight2) * time);
-            return LobstahLEDBuffer.layer(LengthConstants.TOTAL,
-                    LobstahLEDBuffer.solid(LengthConstants.TOTAL, color1, 0.5), LobstahLEDBuffer.solid(height2, color2),
-                    LobstahLEDBuffer.solid(height1, color1));
-        }
-
-        void generateHeights() {
-            prevHeight1 = nextHeight1;
-            prevHeight2 = nextHeight2;
-            nextHeight1 = (int) (Math.random() * 20);
-            nextHeight2 = (int) (Math.random() * 20);
-        }
-    }
-
     static LobstahLEDBuffer disconnected() {
         int bouncyBallLength = 3;
         int bouncyBallOffset = (int) (AnimationEasing.sine(Timer.getFPGATimestamp(), 1.5, 0) * LengthConstants.MID
@@ -203,6 +154,12 @@ public class LEDs extends SubsystemBase {
 
         return segments(waves.tile(LengthConstants.LEFT), bouncyBall,
                 waves.cycle(-LengthConstants.RIGHT).tile(LengthConstants.RIGHT));
+    }
+
+    static LobstahLEDBuffer disabledStandby() {
+        return LobstahLEDBuffer.solid(LengthConstants.TOTAL, new Color("#FF5555"), 0.5)
+                    .mask(AlphaBuffer.sine(LengthConstants.TOTAL, 10, Timer.getFPGATimestamp() * 20))
+                    .layerAbove(LobstahLEDBuffer.solid(LengthConstants.TOTAL, Color.kRed));
     }
 
     static LobstahLEDBuffer autonomous() {
