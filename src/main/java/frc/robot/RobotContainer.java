@@ -17,6 +17,7 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -335,12 +336,17 @@ public class RobotContainer {
             coral.getVelocity() > LEDConstants.INTAKE_VELOCITY_THRESHOLD);
         
             var mirroredRobotPose = AlliancePoseMirror.mirrorPose2d(driveBase.getPose());
+            
             boolean aligned = false;
-
             for (Pose2d reefPose : Poses.REEF_POSES) {
-                if (reefPose.getTranslation().getDistance(mirroredRobotPose.getTranslation())) {
-
-                }            
+                Transform2d poseDelta = reefPose.minus(mirroredRobotPose);
+                double translationDistance = poseDelta.getTranslation().getNorm();
+                double angleDifference = Math.abs(poseDelta.getRotation().getDegrees());
+                if (translationDistance < LEDConstants.ALIGNED_DISTANCE
+                        && angleDifference < LEDConstants.ALIGNED_ANGLE) {
+                    aligned = true;
+                    break;
+                }
             }
 
             LEDs.getInstance().setAligned(aligned);

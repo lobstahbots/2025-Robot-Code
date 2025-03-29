@@ -472,5 +472,7 @@ public final class Constants {
         }
         public static final double INTAKE_VELOCITY_THRESHOLD = 0.2;
         // TODO CHANGE!!!!
+        public static final double ALIGNED_DISTANCE = Units.inchesToMeters(2); // Meters, I think
+        public static final double ALIGNED_ANGLE = 3; // Degrees
     }
 }
