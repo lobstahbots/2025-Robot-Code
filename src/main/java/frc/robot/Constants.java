@@ -429,7 +429,7 @@ public final class Constants {
         public static final int CURRENT_LIMIT = 30;
         public static final int LEFT_ID = 45;
         public static final int CURRENT_THRESHOLD = 10;
-        public static final int BEAM_BREAK_ID = 8;
+        public static final int BEAM_BREAK_ID = 7;
     }
 
     public static class AlgaeEndEffectorConstants {
