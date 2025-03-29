@@ -37,6 +37,7 @@ import frc.robot.Constants.DriveConstants.BackRightModuleConstants;
 import frc.robot.Constants.DriveConstants.FrontLeftModuleConstants;
 import frc.robot.Constants.DriveConstants.FrontRightModuleConstants;
 import frc.robot.Constants.ElevatorConstants;
+import frc.robot.Constants.FieldConstants.Poses;
 import frc.robot.Constants.IOConstants.ControllerIOConstants;
 import frc.robot.Constants.LEDConstants.LengthConstants;
 import frc.robot.Constants.LEDConstants;
@@ -71,6 +72,7 @@ import frc.robot.subsystems.vision.CameraIOSim;
 import frc.robot.util.auto.AutonSelector;
 import frc.robot.util.auto.AutonSelector.AutoQuestion;
 import frc.robot.util.led.LEDs;
+import frc.robot.util.trajectory.AlliancePoseMirror;
 
 public class RobotContainer {
     private final AddressableLED addressableLED = new AddressableLED(LEDConstants.LED_PORT);
@@ -331,5 +333,16 @@ public class RobotContainer {
             superstructure.getState() == RobotConstants.INTAKE_STATE
             && superstructure.atSetpoint() &&
             coral.getVelocity() > LEDConstants.INTAKE_VELOCITY_THRESHOLD);
+        
+            var mirroredRobotPose = AlliancePoseMirror.mirrorPose2d(driveBase.getPose());
+            boolean aligned = false;
+
+            for (Pose2d reefPose : Poses.REEF_POSES) {
+                if (reefPose.getTranslation().getDistance(mirroredRobotPose.getTranslation())) {
+
+                }            
+            }
+
+            LEDs.getInstance().setAligned(aligned);
     }
 }
