@@ -35,6 +35,8 @@ public class AlignToReefCommand extends Command {
 
     /** Creates a new DriveToPoseCommand. */
     public AlignToReefCommand(DriveBase driveBase, boolean ccw) {
+        xController.setTolerance(0.02);
+        yController.setTolerance(0.02);
         thetaController.enableContinuousInput(-Math.PI, Math.PI);
         this.driveBase = driveBase;
         this.ccw = ccw;
