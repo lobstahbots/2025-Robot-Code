@@ -24,8 +24,9 @@ public class LEDs extends SubsystemBase {
         instance = this;
 
         this.led = led;
+        led.start();
 
-        loadingNotifier.startPeriodic(0.02);
+       loadingNotifier.startPeriodic(0.02);
     }
 
     public enum ConnectionState {
@@ -44,10 +45,12 @@ public class LEDs extends SubsystemBase {
     boolean aligned = false;
     boolean aligning = false;
     boolean readyForIntake = false;
+    boolean hasCoral = false;
+    boolean userSignal = false;
 
     public Color debugColor = null;
 
-    Timer possessionSignalTimer = new Timer();
+//    Timer possessionSignalTimer = new Timer();
 
     final Notifier loadingNotifier = new Notifier(() -> {
         synchronized (this) {
@@ -77,6 +80,14 @@ public class LEDs extends SubsystemBase {
         this.readyForIntake = readyForIntake;
     }
 
+    public void setHasCoral(boolean hasCoral) {
+        this.hasCoral = hasCoral;
+    }
+
+    public void setUserSignal(boolean userSignal) {
+        this.userSignal = userSignal;
+    }
+
     void setRobotMode(RobotMode value) {
         if (value == RobotMode.DISABLED && robotMode == RobotMode.AUTONOMOUS
                 && connectionState == ConnectionState.FMS) {
@@ -92,6 +103,7 @@ public class LEDs extends SubsystemBase {
     public void periodic() {
         loadingNotifier.stop();
 
+        // Sets driver station state variables to reflect realtiy 
         if (!DriverStation.isDSAttached()) {
             setFMSState(ConnectionState.DISCONNECTED);
         } else if (DriverStation.isFMSAttached()) {
@@ -110,21 +122,24 @@ public class LEDs extends SubsystemBase {
         } else {
             setRobotMode(RobotMode.DISABLED);
         }
-
+// Updates LED patterns
         led.setData(
                 LobstahLEDBuffer
                         .layer(LengthConstants.TOTAL,
                                 robotMode == RobotMode.DISABLED
-                                        ? connectionState == ConnectionState.DISCONNECTED ? disconnected()
-                                                : disabledStandby.get(ColorConstants.RED, ColorConstants.PINK)
+                                        ? connectionState == ConnectionState.DISCONNECTED ? disconnected() // Disconnected
+                                                : disabledStandby.get(ColorConstants.RED, ColorConstants.PINK) //Standby
                                         : null,
-                                robotMode == RobotMode.AUTONOMOUS ? autonomous() : null,
-                                debugColor == null ? null : LobstahLEDBuffer.solid(LengthConstants.TOTAL, debugColor),
-                                aligned ? LobstahLEDBuffer.solid(LengthConstants.TOTAL, Color.kGreen)
-                                        : (aligning ? LobstahLEDBuffer.solid(LengthConstants.TOTAL, Color.kBlue)
-                                                : null),
-                                LobstahLEDBuffer.solid(LengthConstants.TOTAL, Color.kYellow))
-                        .toAdressableLEDBuffer());
+                                robotMode == RobotMode.AUTONOMOUS ? autonomous() : null, //Auto
+                                aligned ? LobstahLEDBuffer.solid(LengthConstants.TOTAL, Color.kGreen) : null,
+                                
+                                aligning ? LobstahLEDBuffer.solid(LengthConstants.TOTAL, Color.kBlue) : null,
+                                readyForIntake ? LobstahLEDBuffer.solid(LengthConstants.TOTAL, Color.kRed) : null,
+                                hasCoral ? LobstahLEDBuffer.solid(LengthConstants.TOTAL, Color.kPurple) : null,
+                                userSignal ? LobstahLEDBuffer.solid(LengthConstants.TOTAL, Color.kWhite) : null,
+                                // LobstahLEDBuffer.solid(LengthConstants.TOTAL, Color.kYellow))
+                                debugColor == null ? null : LobstahLEDBuffer.solid(LengthConstants.TOTAL, debugColor) //for testing
+                              ).toAdressableLEDBuffer());
     }
 
     static LobstahLEDBuffer segments(LobstahLEDBuffer left, LobstahLEDBuffer midSegment, LobstahLEDBuffer right) {
@@ -216,5 +231,6 @@ public class LEDs extends SubsystemBase {
                 LobstahLEDBuffer.solid(segmentLength, Color.kWhite),
                 LobstahLEDBuffer.solid(segmentLength, ColorConstants.TRANS_PINK),
                 LobstahLEDBuffer.solid(segmentLength, ColorConstants.TRANS_TEAL)).flip();
+    
     }
 }

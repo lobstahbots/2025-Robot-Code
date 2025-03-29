@@ -37,6 +37,7 @@ import frc.robot.Constants.DriveConstants.FrontLeftModuleConstants;
 import frc.robot.Constants.DriveConstants.FrontRightModuleConstants;
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.IOConstants.ControllerIOConstants;
+import frc.robot.Constants.LEDConstants.LengthConstants;
 import frc.robot.Constants.LEDConstants;
 import frc.robot.Constants.PivotConstants;
 import frc.robot.Constants.RobotConstants;
@@ -71,7 +72,8 @@ import frc.robot.util.auto.AutonSelector.AutoQuestion;
 import frc.robot.util.led.LEDs;
 
 public class RobotContainer {
-    private final LEDs leds = new LEDs(new AddressableLED(LEDConstants.LED_PORT));
+    private final AddressableLED addressableLED = new AddressableLED(LEDConstants.LED_PORT);
+    private final LEDs leds;
 
     private final DriveBase driveBase;
     private final Superstructure superstructure;
@@ -129,6 +131,8 @@ public class RobotContainer {
      * The container for the robot. Contains subsystems, OI devices, and commands.
      */
     public RobotContainer() {
+        addressableLED.setLength(LengthConstants.TOTAL);
+        leds = new LEDs(addressableLED);
         if (Robot.isReal()) {
             SwerveModuleIOSparkMax frontLeft = new SwerveModuleIOSparkMax(FrontLeftModuleConstants.moduleID,
                     "Front left ", FrontLeftModuleConstants.angleID, FrontLeftModuleConstants.driveID,
