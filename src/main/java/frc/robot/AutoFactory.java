@@ -202,15 +202,15 @@ public class AutoFactory {
     }
 
     public Command getSimpleTimedAuto() {
-        return getPathFindToPoseCommand(Poses.H).alongWith(new CoralCommand(coral, 0.2)).withTimeout(9)
+        return superstructure.getZeroCommand().andThen(getPathFindToPoseCommand(Poses.H).alongWith(new CoralCommand(coral, 0.2)).withTimeout(9)
                 .andThen(new CoralCommand(coral, -0.5).withTimeout(1))
                 .deadlineFor(superstructure.getSetpointCommand(RobotConstants.L4_STATE))
                 .andThen(new SwerveDriveCommand(driveBase, -0.2, 0, 0, false, false).withTimeout(2))
-                .andThen(superstructure.getSetpointCommand(RobotConstants.INTAKE_STATE));
+                .andThen(superstructure.getSetpointCommand(RobotConstants.INTAKE_STATE)));
     }
 
     public Command getTwoPieceHardCodedAuto() {
-        return getPathFindToPoseCommand(Poses.G).alongWith(new CoralCommand(coral, 0.2)).withTimeout(3)
+        return superstructure.getZeroCommand().andThen(getPathFindToPoseCommand(Poses.G).alongWith(new CoralCommand(coral, 0.2)).withTimeout(3)
                 .andThen(new CoralCommand(coral, -0.5).withTimeout(1))
                 .deadlineFor(superstructure.getSetpointCommand(RobotConstants.L4_STATE))
                 .andThen(new SwerveDriveCommand(driveBase, -0.4, 0, 0, false, false).withTimeout(1))
@@ -220,7 +220,7 @@ public class AutoFactory {
                 .andThen(getPathFindToPoseCommand(Poses.C)
                         .alongWith(new CoralCommand(coral, 1))
                         .alongWith(Commands.waitSeconds(1).andThen(superstructure.getSetpointCommand(RobotConstants.L4_STATE)))
-                );
+                ));
     }
 
     /**
