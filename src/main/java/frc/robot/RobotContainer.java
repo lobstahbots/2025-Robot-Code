@@ -117,6 +117,7 @@ public class RobotContainer {
     private final JoystickButton operatorXButton = new JoystickButton(operatorJoystick, ControllerIOConstants.X_BUTTON);
     private final JoystickButton operatorYButton = new JoystickButton(operatorJoystick, ControllerIOConstants.Y_BUTTON);
     private final JoystickButton operatorBButton = new JoystickButton(operatorJoystick, ControllerIOConstants.B_BUTTON);
+    private final JoystickButton operatorAButton = new Joystickbutton(operatorJoystick, ControllerIOConstants.A_BUTTON);
 
     private final POVButton operatorDpadUp = new POVButton(operatorJoystick, ControllerIOConstants.D_PAD_UP);
     private final POVButton operatorDpadDown = new POVButton(operatorJoystick, ControllerIOConstants.D_PAD_DOWN);
@@ -271,6 +272,7 @@ public class RobotContainer {
         operatorXButton.onTrue(superstructure.getSetpointCommand(RobotConstants.L2_STATE));
         operatorYButton.onTrue(superstructure.getSetpointCommand(RobotConstants.L3_STATE));
         operatorBButton.onTrue(superstructure.getSetpointCommand(RobotConstants.L4_STATE));
+        operatorAButton.onTrue(new AlgaeCommand(algae, 1));
 
         operatorDpadDown.onTrue(superstructure.getSetpointCommand(RobotConstants.L2_ALGAE_STATE));
         operatorDpadDown.whileTrue(new AlgaeCommand(algae, -1));
