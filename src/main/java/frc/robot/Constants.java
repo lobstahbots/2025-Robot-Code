@@ -132,7 +132,7 @@ public final class Constants {
                 ElevatorConstants.BOTTOM_HEIGHT, 0, 0);
         public static final SuperstructureState L3_STATE = new SuperstructureState(Rotation2d.fromRadians(1.03), 41.2,
                 0, 0);
-        public static final SuperstructureState L4_STATE = new SuperstructureState(Rotation2d.fromRadians(0.2), 127, 0,
+        public static final SuperstructureState L4_STATE = new SuperstructureState(Rotation2d.fromRadians(0.2), 130, 0,
                 0);
         public static final SuperstructureState L2_ALGAE_STATE = new SuperstructureState(Rotation2d.fromRadians(-0.91),
                 22, 0, 0);
@@ -142,12 +142,12 @@ public final class Constants {
     }
 
     public static class DriveConstants {
-        public static final double MAX_ACCELERATION = 30;
+        public static final double MAX_ACCELERATION = 45;
         public static final double MAX_DRIVE_SPEED = 100;
-        public static final double MAX_ANGULAR_SPEED = 40;
+        public static final double MAX_ANGULAR_SPEED = 50;
         public static final double SLOWDOWN_PERCENT = 0.5;
-        public static final int DRIVE_MOTOR_CURRENT_LIMIT = 40;
-        public static final int ANGLE_MOTOR_CURRENT_LIMIT = 40;
+        public static final int DRIVE_MOTOR_CURRENT_LIMIT = 30;
+        public static final int ANGLE_MOTOR_CURRENT_LIMIT = 20;
         public static final Translation2d[] MODULE_LOCATIONS = new Translation2d[] {
                 new Translation2d(RobotConstants.WHEELBASE / 2.0 - RobotConstants.EDGE_TO_MODULE_CENTER,
                         RobotConstants.TRACK_WIDTH / 2.0 - RobotConstants.EDGE_TO_MODULE_CENTER),
@@ -381,19 +381,19 @@ public final class Constants {
         public static final double GEAR_RATIO = 3.5;
         public static final double PITCH_DIAMETER = Units.inchesToMeters(1.273);
 
-        public static final double kP = 0.7; // TODO: Find actual value NOTE: was 3.596
+        public static final double kP = 0.45; // TODO: Find actual value NOTE: was 3.596
         public static final double kI = 0; // TODO: Find actual value
         public static final double kD = 0; //TODO: Find actual value
 
-        public static final double VELOCITY_kP = 0;
+        public static final double VELOCITY_kP = 0.04;
         public static final double VELOCITY_kI = 0;
         public static final double VELOCITY_kD = 0;
 
         public static final double kS = 0; // TODO: Find actual value NOTE: 1.2256
         public static final double kV = 0; // TODO: Find actual value NOTE: 0.034454
         public static final double kA = 0; // TODO: Find actual value NOTE: 0.2
-        public static final double kG = 0.4; // TODO: Find actual value NOTE: 0.28946
-        public static final TrapezoidProfile.Constraints CONSTRAINTS = new TrapezoidProfile.Constraints(140, 300);
+        public static final double kG = 0.35; // TODO: Find actual value NOTE: 0.28946
+        public static final TrapezoidProfile.Constraints CONSTRAINTS = new TrapezoidProfile.Constraints(100, 450);
 
         public static final double SUPPLY_CURRENT_LIMIT = 70;
         public static final double STATOR_CURRENT_LIMIT = 250;
@@ -438,7 +438,7 @@ public final class Constants {
     }
 
     public static class LEDConstants {
-        public static final int LED_PORT = 0;
+        public static final int LED_PORT = 9; 
 
         public static class LengthConstants {
             // LEFT MID RIGHT
@@ -472,7 +472,7 @@ public final class Constants {
         }
         public static final double INTAKE_VELOCITY_THRESHOLD = 0.2;
         // TODO CHANGE!!!!
-        public static final double ALIGNED_DISTANCE = Units.inchesToMeters(2); // Meters, I think
-        public static final double ALIGNED_ANGLE = 3; // Degrees
+        public static final double ALIGNED_DISTANCE = Units.inchesToMeters(1.5); // Meters, I think
+        public static final double ALIGNED_ANGLE = 2; // Degrees
     }
 }
