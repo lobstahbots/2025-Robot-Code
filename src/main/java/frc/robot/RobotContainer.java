@@ -17,11 +17,14 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -36,7 +39,10 @@ import frc.robot.Constants.DriveConstants.BackRightModuleConstants;
 import frc.robot.Constants.DriveConstants.FrontLeftModuleConstants;
 import frc.robot.Constants.DriveConstants.FrontRightModuleConstants;
 import frc.robot.Constants.ElevatorConstants;
+import frc.robot.Constants.FieldConstants.Poses;
 import frc.robot.Constants.IOConstants.ControllerIOConstants;
+import frc.robot.Constants.LEDConstants.LengthConstants;
+import frc.robot.Constants.LEDConstants;
 import frc.robot.Constants.LEDConstants;
 import frc.robot.Constants.PivotConstants;
 import frc.robot.Constants.RobotConstants;
@@ -68,9 +74,11 @@ import frc.robot.subsystems.vision.CameraIOSim;
 import frc.robot.util.auto.AutonSelector;
 import frc.robot.util.auto.AutonSelector.AutoQuestion;
 import frc.robot.util.led.LEDs;
+import frc.robot.util.trajectory.AlliancePoseMirror;
+import frc.robot.util.led.LEDs;
 
 public class RobotContainer {
-    // private final LEDs leds = new LEDs(new AddressableLED(LEDConstants.LED_PORT));
+    private final LEDs leds;
 
     private final DriveBase driveBase;
     private final Superstructure superstructure;
@@ -83,9 +91,9 @@ public class RobotContainer {
 
     //Driver
     private final Trigger driverLTButton = new Trigger(
-            () -> driverJoystick.getRawAxis(ControllerIOConstants.LT_BUTTON) > 0.5);
+            () -> driverJoystick.getRawAxis(ControllerIOConstants.LT_BUTTON) > 0.2);
     private final Trigger driverRTButton = new Trigger(
-            () -> driverJoystick.getRawAxis(ControllerIOConstants.RT_BUTTON) > 0.5);
+            () -> driverJoystick.getRawAxis(ControllerIOConstants.RT_BUTTON) > 0.2);
 
     private final JoystickButton driverLBButton = new JoystickButton(driverJoystick, ControllerIOConstants.LB_BUTTON);
     private final JoystickButton driverRBButton = new JoystickButton(driverJoystick, ControllerIOConstants.RB_BUTTON);
@@ -128,6 +136,7 @@ public class RobotContainer {
      * The container for the robot. Contains subsystems, OI devices, and commands.
      */
     public RobotContainer() {
+        leds = new LEDs();
         if (Robot.isReal()) {
             SwerveModuleIOSparkMax frontLeft = new SwerveModuleIOSparkMax(FrontLeftModuleConstants.moduleID,
                     "Front left ", FrontLeftModuleConstants.angleID, FrontLeftModuleConstants.driveID,
@@ -256,15 +265,17 @@ public class RobotContainer {
         operatorLTButton.whileTrue(new CoralCommand(coral, -0.5));
         operatorRTButton.whileTrue(new CoralCommand(coral, 0.5));
         operatorRBButton.onTrue(superstructure.getSetpointCommand(RobotConstants.INTAKE_STATE));
+        operatorLBButton.whileTrue(new InstantCommand(() -> leds.setUserSignal(true)).ignoringDisable(true))
+                .onFalse(new InstantCommand(() -> leds.setUserSignal(false)).ignoringDisable(true));
 
         operatorXButton.onTrue(superstructure.getSetpointCommand(RobotConstants.L2_STATE));
         operatorYButton.onTrue(superstructure.getSetpointCommand(RobotConstants.L3_STATE));
         operatorBButton.onTrue(superstructure.getSetpointCommand(RobotConstants.L4_STATE));
 
         operatorDpadDown.onTrue(superstructure.getSetpointCommand(RobotConstants.L2_ALGAE_STATE));
-        operatorDpadDown.whileTrue(new AlgaeCommand(algae, -0.75));
+        operatorDpadDown.whileTrue(new AlgaeCommand(algae, -1));
         operatorDpadUp.onTrue(superstructure.getSetpointCommand(RobotConstants.L3_ALGAE_STATE));
-        operatorDpadUp.whileTrue(new AlgaeCommand(algae, -0.75));
+        operatorDpadUp.whileTrue(new AlgaeCommand(algae, -1));
     }
 
     public boolean getOperatorConnected() {
@@ -316,5 +327,28 @@ public class RobotContainer {
         superstructure.setIdleMode(isBrakeMode);
         coral.setIdleMode(isBrakeMode);
         algae.setIdleMode(isBrakeMode);
+    }
+
+    public void periodic() {
+        LEDs.getInstance().setReadyForIntake(
+            superstructure.getState() == RobotConstants.INTAKE_STATE
+            && superstructure.atSetpoint() &&
+            coral.getVelocity() > LEDConstants.INTAKE_VELOCITY_THRESHOLD);
+        
+            var mirroredRobotPose = AlliancePoseMirror.mirrorPose2d(driveBase.getPose());
+            
+            boolean aligned = false;
+            for (Pose2d reefPose : Poses.REEF_POSES) {
+                Transform2d poseDelta = reefPose.minus(mirroredRobotPose);
+                double translationDistance = poseDelta.getTranslation().getNorm();
+                double angleDifference = Math.abs(poseDelta.getRotation().getDegrees());
+                if (translationDistance < LEDConstants.ALIGNED_DISTANCE
+                        && angleDifference < LEDConstants.ALIGNED_ANGLE) {
+                    aligned = true;
+                    break;
+                }
+            }
+
+            LEDs.getInstance().setAligned(aligned);
     }
 }
