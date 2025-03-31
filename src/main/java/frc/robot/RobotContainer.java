@@ -235,10 +235,15 @@ public class RobotContainer {
         driverLTButton.whileTrue(new CoralCommand(coral, () -> coralSpeed));
         // driverRBButton.whileTrue(superstructure.getSetpointCommand(RobotConstants.INTAKE_STATE));
         // driverRBButton.whileTrue(new CoralCommand(coral, 0.5));
-        driverRBButton.whileTrue(superstructure.getSetpointCommand(RobotConstants.INTAKE_STATE).alongWith(new CoralCommand(coral, 0.5)).until(manualArm).until(() -> coral.getBeamBreak()));
+        driverRBButton.whileTrue(superstructure.getSetpointCommand(RobotConstants.INTAKE_STATE)
+            .alongWith(new CoralCommand(coral, 0.5))
+            .until(manualArm).until(() -> coral.getBeamBreak()));
         driverRTButton.whileTrue(new CoralCommand(coral, 0.75));
-        //driverLBButton.onTrue(new AlignToBargeCommand(driveBase).alongWith(superstructure.getSetpointCommand(RobotConstants.BARGE_STATE)).andThen(new AlgaeCommand(algae, 1))); //DON'T UNCOMMENT THIS UNTIL AFTER YOUVE TESTED LINE 241
-        driverLBButton.onTrue(new AlignToBargeCommand(driveBase)); //TEST THIS VERSION FIRST
+        // driverLBButton.onTrue(new AlignToBargeCommand(driveBase)
+        //     .alongWith(superstructure.getSetpointCommand(RobotConstants.BARGE_STATE))
+        //     .andThen(new AlgaeCommand(algae, 1)).withTimeout(0.5)
+        //     .andThen(superstructure.getSetpointCommand(RobotConstants.INTAKE_STATE))); //DON'T UNCOMMENT THIS UNTIL AFTER YOUVE TESTED LINE 246
+        driverLBButton.onTrue(new AlignToBargeCommand(driveBase, () -> -driverJoystick.getRawAxis(ControllerIOConstants.LEFT_STICK_HORIZONTAL))); //TEST THIS VERSION FIRST
         driverLeftPaddle.whileTrue(new AlignToReefCommand(driveBase, true));
         driverRightPaddle.whileTrue(new AlignToReefCommand(driveBase, false));
     
