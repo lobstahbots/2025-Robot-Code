@@ -172,18 +172,18 @@ public class Superstructure extends CharacterizableSubsystem {
             }, () -> {
                 currentSetpoint = SuperstructureState.fromDualDOFState(profile.calculate(timer.get()));
             });
-        });
+        }).until(this::atSetpoint);
     }
 
     public Command getZeroCommand() {
         return runEnd(() -> {
-            setElevatorVoltage(-4);
+            setElevatorVoltage(-2);
             closedLoop = false;
         }, () -> {
             closedLoop = true;
             setState(RobotConstants.INTAKE_STATE);
             elevatorIO.resetEncoder(0);
-        }).until(() -> elevatorInputs.leftStatorCurrent > 80);
+        }).until(() -> elevatorInputs.leftStatorCurrent > 40);
     }
 
     public Rotation2d getPivotRotation() {

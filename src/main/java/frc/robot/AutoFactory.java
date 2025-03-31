@@ -84,7 +84,7 @@ public class AutoFactory {
 
         // Since AutoBuilder is configured, we can use it to build pathfinding commands
         Command pathfindingCommand = AutoBuilder.pathfindToPoseFlipped(targetPose,
-                new PathConstraints(2, 0.7, PathConstants.CONSTRAINTS.maxAngularVelocityRadPerSec(),
+                new PathConstraints(4, 1.5, PathConstants.CONSTRAINTS.maxAngularVelocityRadPerSec(),
                         PathConstants.CONSTRAINTS.maxAngularAccelerationRadPerSecSq()),
                 0.0 // Goal end velocity in meters/sec
         ).andThen(new SwerveDriveStopCommand(driveBase));
@@ -210,19 +210,18 @@ public class AutoFactory {
     }
 
     public Command getTwoPieceHardCodedAuto() {
-        return superstructure.getZeroCommand().andThen(getPathFindToPoseCommand(Poses.J).alongWith(new CoralCommand(coral, 0.2)).withTimeout(4.5)
-                .andThen(new CoralCommand(coral, -0.5).withTimeout(1))
+        return superstructure.getZeroCommand().andThen(getPathFindToPoseCommand(Poses.J).deadlineFor(new CoralCommand(coral, 0.2))
+                .andThen(new CoralCommand(coral, -0.5).withTimeout(0.5))
                 .deadlineFor(superstructure.getSetpointCommand(RobotConstants.L4_STATE))
                 .andThen(new SwerveDriveCommand(driveBase, -0.4, 0, 0, false, false).withTimeout(0.8))
                 .andThen(getPathFindToPoseCommand(Poses.LEFT_STATION)
                         .deadlineFor(superstructure.getSetpointCommand(RobotConstants.INTAKE_STATE)))
                 .andThen(new CoralCommand(coral, 1)
-                        .alongWith(new SwerveDriveCommand(driveBase, -0.6, 0, 0, false, false)).withTimeout(1))
+                        .alongWith(new SwerveDriveCommand(driveBase, -0.6, 0, 0, false, false)).withTimeout(1.5))
                 .andThen(getPathFindToPoseCommand(Poses.K)
-                        .andThen(new CoralCommand(coral, -0.5)
+                        .andThen(new CoralCommand(coral, -0.5).withTimeout(0.5)
                                 .andThen(new SwerveDriveCommand(driveBase, -0.4, 0, 0, false, false).withTimeout(1)))
-                        .deadlineFor(Commands.waitSeconds(1)
-                                .andThen(superstructure.getSetpointCommand(RobotConstants.L4_STATE)))));
+                        .deadlineFor(superstructure.getSetpointCommand(RobotConstants.L4_STATE))));
     }
 
     /**

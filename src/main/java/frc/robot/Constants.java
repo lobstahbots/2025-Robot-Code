@@ -138,6 +138,7 @@ public final class Constants {
                 22, 0, 0);
         public static final SuperstructureState L3_ALGAE_STATE = new SuperstructureState(Rotation2d.fromRadians(-0.2),
                 41.2, 0, 0);
+        public static final SuperstructureState BARGE_STATE = new SuperstructureState(Rotation2d.fromRadians(0.824), 136, 0, 0);
         public static final double ELEVATOR_THRESHOLD = 10;
     }
 
@@ -181,7 +182,12 @@ public final class Constants {
                         1 // number of drive motors per module
                 ), MODULE_LOCATIONS);
         public static final PIDConstants ROTATION_PID_CONSTANTS = new PIDConstants(10, 0.0, 0);
-        public static final PIDConstants TRANSLATION_PID_CONSTANTS = new PIDConstants(13, 0.0, 0);
+        public static final PIDConstants TRANSLATION_PID_CONSTANTS = new PIDConstants(7, 0.01, 0.15);
+
+        public static final double AUTO_ALIGN_TRANSLATION_kP = 5;
+        public static final double AUTO_ALIGN_TRANSLATION_kI = 0.2;
+        public static final double AUTO_ALIGN_TRANSLATION_kD = 0.25
+        ;
 
         public static final DriveTrainSimulationConfig MAPLE_SIM_CONFIG = DriveTrainSimulationConfig.Default()
                 .withCustomModuleTranslations(MODULE_LOCATIONS).withGyro(COTS.ofNav2X()).withRobotMass(Pounds.of(40))
