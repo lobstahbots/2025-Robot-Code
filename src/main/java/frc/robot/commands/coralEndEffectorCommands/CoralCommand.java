@@ -4,6 +4,8 @@
 
 package frc.robot.commands.coralEndEffectorCommands;
 
+import java.util.function.DoubleSupplier;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.endEffector.coral.CoralEndEffector;
 
@@ -15,13 +17,17 @@ import frc.robot.subsystems.endEffector.coral.CoralEndEffector;
 public class CoralCommand extends Command {
     /** Creates a new OuttakeCommand. */
     private final CoralEndEffector endEffector;
-    private final double speed;
+    private final DoubleSupplier speed;
 
-    public CoralCommand(CoralEndEffector endEffector, double speed) {
+    public CoralCommand(CoralEndEffector endEffector, DoubleSupplier speed) {
         // Use addRequirements() here to declare subsystem dependencies.
         this.endEffector = endEffector;
         this.speed = speed;
         addRequirements(endEffector);
+    }
+
+    public CoralCommand(CoralEndEffector endEffector, double speed) {
+        this(endEffector, () -> speed);
     }
 
     // Called when the command is initially scheduled.
@@ -31,7 +37,7 @@ public class CoralCommand extends Command {
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        endEffector.setSpeed(speed);
+        endEffector.setSpeed(speed.getAsDouble());
     }
 
     // Called once the command ends or is interrupted.

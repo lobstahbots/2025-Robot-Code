@@ -18,7 +18,6 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
-import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -80,6 +79,7 @@ public class RobotContainer {
     private final DriveBase driveBase;
     private final Superstructure superstructure;
     private final CoralEndEffector coral;
+    private double coralSpeed = -0.75;
     private final AlgaeEndEffector algae;
 
     //sticks
@@ -232,13 +232,13 @@ public class RobotContainer {
     public void configureButtonBindings() {
 
         //driver
-        driverLTButton.whileTrue(new CoralCommand(coral, -0.75));
+        driverLTButton.whileTrue(new CoralCommand(coral, () -> coralSpeed));
         // driverRBButton.whileTrue(superstructure.getSetpointCommand(RobotConstants.INTAKE_STATE));
         // driverRBButton.whileTrue(new CoralCommand(coral, 0.5));
         driverRBButton.whileTrue(superstructure.getSetpointCommand(RobotConstants.INTAKE_STATE).alongWith(new CoralCommand(coral, 0.5)).until(manualArm).until(() -> coral.getBeamBreak()));
         driverRTButton.whileTrue(new CoralCommand(coral, 0.75));
-        //driverLBButton.whileTrue(new AlignToBargeCommand(driveBase).alongWith(superstructure.getSetpointCommand(RobotConstants.BARGE_STATE)).andThen(new AlgaeCommand(algae, 1))); //DON'T UNCOMMENT THIS UNTIL AFTER YOUVE TESTED LINE 241
-        driverLBButton.whileTrue(new AlignToBargeCommand(driveBase)); //TEST THIS VERSION FIRST
+        //driverLBButton.onTrue(new AlignToBargeCommand(driveBase).alongWith(superstructure.getSetpointCommand(RobotConstants.BARGE_STATE)).andThen(new AlgaeCommand(algae, 1))); //DON'T UNCOMMENT THIS UNTIL AFTER YOUVE TESTED LINE 241
+        driverLBButton.onTrue(new AlignToBargeCommand(driveBase)); //TEST THIS VERSION FIRST
         driverLeftPaddle.whileTrue(new AlignToReefCommand(driveBase, true));
         driverRightPaddle.whileTrue(new AlignToReefCommand(driveBase, false));
     
@@ -250,7 +250,7 @@ public class RobotContainer {
         // driverDpadUp.whileTrue(new SuperstructureStateCommand(superstructure, RobotConstants.L3_ALGAE_STATE));
 
         //operator
-        operatorLTButton.whileTrue(new CoralCommand(coral, -0.5));
+        operatorLTButton.whileTrue(new CoralCommand(coral, () -> coralSpeed));
         operatorRTButton.whileTrue(new CoralCommand(coral, 0.5));
         operatorRBButton.onTrue(superstructure.getSetpointCommand(RobotConstants.INTAKE_STATE));
         operatorLBButton.whileTrue(new InstantCommand(() -> leds.setUserSignal(true)).ignoringDisable(true))
@@ -341,7 +341,7 @@ public class RobotContainer {
                 }
             }
 
-            LEDs.getInstance().setAligned(aligned);
-            driverJoystick.setRumble(RumbleType.kBothRumble, aligned ? .2 : 0);
+            coralSpeed = superstructure.getPivotRotation().getRadians() < 1.5 ? -0.4 : -0.75;
+            
     }
 }

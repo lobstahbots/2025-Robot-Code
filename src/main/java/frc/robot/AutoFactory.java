@@ -203,7 +203,7 @@ public class AutoFactory {
 
     public Command getSimpleTimedAuto() {
         return superstructure.getZeroCommand().andThen(getPathFindToPoseCommand(Poses.H).alongWith(new CoralCommand(coral, 0.2)).withTimeout(9)
-                .andThen(new CoralCommand(coral, -0.5).withTimeout(1))
+                .andThen(new CoralCommand(coral, () -> -0.5).withTimeout(1))
                 .deadlineFor(superstructure.getSetpointCommand(RobotConstants.L4_STATE))
                 .andThen(new SwerveDriveCommand(driveBase, -0.2, 0, 0, false, false).withTimeout(2))
                 .andThen(superstructure.getSetpointCommand(RobotConstants.INTAKE_STATE)));
