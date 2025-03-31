@@ -13,6 +13,7 @@ import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.FieldConstants;
 import frc.robot.subsystems.drive.DriveBase;
 import frc.robot.util.math.LobstahMath;
+import frc.robot.util.trajectory.AlliancePoseMirror;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class AlignToBargeCommand extends Command {
@@ -32,6 +33,7 @@ public class AlignToBargeCommand extends Command {
         // Use addRequirements() here to declare subsystem dependencies.
         thetaController.enableContinuousInput(-Math.PI, Math.PI);
         this.driveBase = driveBase;
+        addRequirements(driveBase);
     }
 
     // Called when the command is initially scheduled.
@@ -41,8 +43,8 @@ public class AlignToBargeCommand extends Command {
         yController.reset();
         thetaController.reset();
 
-        targetPose = new Pose2d(FieldConstants.Poses.BARGE_TRANSLATION_DEPTH_SETPOINT, targetPose.getY(), Rotation2d.fromRadians(0));
-        
+        targetPose = AlliancePoseMirror.mirrorPose2d(new Pose2d(FieldConstants.Poses.BARGE_TRANSLATION_DEPTH_SETPOINT, targetPose.getY(), Rotation2d.fromRadians(0)));
+
         xController.setSetpoint(targetPose.getX());
         yController.setSetpoint(targetPose.getY());
         thetaController.setSetpoint(targetPose.getRotation().getRadians());
