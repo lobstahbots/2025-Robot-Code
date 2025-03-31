@@ -34,6 +34,7 @@ import static edu.wpi.first.units.Units.KilogramSquareMeters;
 import static edu.wpi.first.units.Units.Pounds;
 import edu.wpi.first.units.measure.Mass;
 import edu.wpi.first.units.measure.MomentOfInertia;
+import edu.wpi.first.wpilibj.util.Color;
 import frc.robot.subsystems.drive.SwerveKinematicLimits;
 import frc.robot.subsystems.superstructure.SuperstructureState;
 import frc.robot.util.choreo.ChoreoVariables;
@@ -65,7 +66,7 @@ public final class Constants {
             public static final int LEFT_STICK_VERTICAL = 1;
             public static final int RIGHT_STICK_HORIZONTAL = 4;
             public static final int RIGHT_STICK_VERTICAL = 5;
-            
+
             public static final int A_BUTTON = 1;
             public static final int B_BUTTON = 2;
             public static final int X_BUTTON = 3;
@@ -73,10 +74,10 @@ public final class Constants {
 
             public static final int LT_BUTTON = 2;
             public static final int RT_BUTTON = 3;
-            
+
             public static final int LB_BUTTON = 5;
             public static final int RB_BUTTON = 6;
-            
+
             public static final int RIGHT_PADDLE = 7;
             public static final int LEFT_PADDLE = 8;
 
@@ -84,7 +85,7 @@ public final class Constants {
             public static final int D_PAD_DOWN = 180;
             public static final int D_PAD_LEFT = 180;
             public static final int D_PAD_RIGHT = 0;
-            
+
             public static final boolean SQUARE_INPUTS = true;
         }
         //NOTE: useless probably
@@ -125,33 +126,30 @@ public final class Constants {
         public static final Mass WEIGHT = Pounds.of(150);
         public static final MomentOfInertia MOI = KilogramSquareMeters.of(6);
 
-        //coral
-        public static final SuperstructureState INTAKE_STATE = new SuperstructureState(Rotation2d.fromRadians(-2.34), 0,
+        public static final SuperstructureState INTAKE_STATE = new SuperstructureState(Rotation2d.fromRadians(-2.32), 0,
                 0, 0);
         public static final SuperstructureState L1_STATE = new SuperstructureState(Rotation2d.fromRadians(0), 0, 0, 0);
         public static final SuperstructureState L2_STATE = new SuperstructureState(Rotation2d.fromRadians(0.956),
                 ElevatorConstants.BOTTOM_HEIGHT, 0, 0);
-        public static final SuperstructureState L3_STATE = new SuperstructureState(Rotation2d.fromRadians(1.03), 41.2, 0,
+        public static final SuperstructureState L3_STATE = new SuperstructureState(Rotation2d.fromRadians(1.03), 41.2,
+                0, 0);
+        public static final SuperstructureState L4_STATE = new SuperstructureState(Rotation2d.fromRadians(0.2), 130, 0,
                 0);
-        public static final SuperstructureState L4_STATE = new SuperstructureState(Rotation2d.fromRadians(0.2), 124
-        , 0, 0);
-
-        //algae
-        public static final SuperstructureState L2_ALGAE_STATE = new SuperstructureState(Rotation2d.fromRadians(-0.2), 0, 0, 0);
-        public static final SuperstructureState L3_ALGAE_STATE = new SuperstructureState(Rotation2d.fromRadians(-0.2), 41.2, 0, 0);
-        public static final SuperstructureState BARGE_STATE = new SuperstructureState(Rotation2d.fromRadians(0), 0, 0, 0);
-        public static final SuperstructureState PROCESSOR_STATE = new SuperstructureState(Rotation2d.fromRadians(0), 0, 0, 0);
-        
+        public static final SuperstructureState L2_ALGAE_STATE = new SuperstructureState(Rotation2d.fromRadians(-0.91),
+                22, 0, 0);
+        public static final SuperstructureState L3_ALGAE_STATE = new SuperstructureState(Rotation2d.fromRadians(-0.2),
+                41.2, 0, 0);
+        public static final SuperstructureState BARGE_STATE = new SuperstructureState(Rotation2d.fromRadians(0.824), 136, 0, 0);
         public static final double ELEVATOR_THRESHOLD = 10;
     }
 
     public static class DriveConstants {
-        public static final double MAX_ACCELERATION = 30;
+        public static final double MAX_ACCELERATION = 45;
         public static final double MAX_DRIVE_SPEED = 100;
-        public static final double MAX_ANGULAR_SPEED = 40;
+        public static final double MAX_ANGULAR_SPEED = 50;
         public static final double SLOWDOWN_PERCENT = 0.5;
-        public static final int DRIVE_MOTOR_CURRENT_LIMIT = 40;
-        public static final int ANGLE_MOTOR_CURRENT_LIMIT = 40;
+        public static final int DRIVE_MOTOR_CURRENT_LIMIT = 30;
+        public static final int ANGLE_MOTOR_CURRENT_LIMIT = 20;
         public static final Translation2d[] MODULE_LOCATIONS = new Translation2d[] {
                 new Translation2d(RobotConstants.WHEELBASE / 2.0 - RobotConstants.EDGE_TO_MODULE_CENTER,
                         RobotConstants.TRACK_WIDTH / 2.0 - RobotConstants.EDGE_TO_MODULE_CENTER),
@@ -185,7 +183,12 @@ public final class Constants {
                         1 // number of drive motors per module
                 ), MODULE_LOCATIONS);
         public static final PIDConstants ROTATION_PID_CONSTANTS = new PIDConstants(10, 0.0, 0);
-        public static final PIDConstants TRANSLATION_PID_CONSTANTS = new PIDConstants(13, 0.0, 0);
+        public static final PIDConstants TRANSLATION_PID_CONSTANTS = new PIDConstants(7, 0.01, 0.15);
+
+        public static final double AUTO_ALIGN_TRANSLATION_kP = 5;
+        public static final double AUTO_ALIGN_TRANSLATION_kI = 0.2;
+        public static final double AUTO_ALIGN_TRANSLATION_kD = 0.25
+        ;
 
         public static final DriveTrainSimulationConfig MAPLE_SIM_CONFIG = DriveTrainSimulationConfig.Default()
                 .withCustomModuleTranslations(MODULE_LOCATIONS).withGyro(COTS.ofNav2X()).withRobotMass(Pounds.of(40))
@@ -258,7 +261,7 @@ public final class Constants {
 
     public static class SimConstants {
         public static final double LOOP_TIME = 0.02;
-        public static final boolean REPLAY = true;
+        public static final boolean REPLAY = false;
         public static final String REPLAY_LOG_PATH = "akit_25-03-15_11-28-47_rikin_q71.wpilog";
 
         public static final int[] SWERVE_CHANNELS = { 1, 2, 3, 4, 5, 6, 7, 8 };
@@ -347,11 +350,6 @@ public final class Constants {
         public static final int ENDGAME_ALERT_2_TIME = 30;
     }
 
-    public static class LEDConstants {
-        public static final int LED_PORT = 0;
-        public static final int LED_LENGTH = 100;
-    }
-
     public static class LoggingConstants {
         public static final double LOG_ALERT_INTERVAL = 5; // Interval (in s) between logs of an alert if its text doesn't change
     }
@@ -389,22 +387,22 @@ public final class Constants {
     }
 
     public static class ElevatorConstants {
-        public static final double GEAR_RATIO = 64 / 16 / 2;
+        public static final double GEAR_RATIO = 3.5;
         public static final double PITCH_DIAMETER = Units.inchesToMeters(1.273);
 
-        public static final double kP = 0.3; // TODO: Find actual value NOTE: was 3.596
-        public static final double kI = 0.01; // TODO: Find actual value
+        public static final double kP = 0.45; // TODO: Find actual value NOTE: was 3.596
+        public static final double kI = 0; // TODO: Find actual value
         public static final double kD = 0; //TODO: Find actual value
-        
-        public static final double VELOCITY_kP = 0.008;
+
+        public static final double VELOCITY_kP = 0.04;
         public static final double VELOCITY_kI = 0;
         public static final double VELOCITY_kD = 0;
 
         public static final double kS = 0; // TODO: Find actual value NOTE: 1.2256
         public static final double kV = 0; // TODO: Find actual value NOTE: 0.034454
         public static final double kA = 0; // TODO: Find actual value NOTE: 0.2
-        public static final double kG = 0.47; // TODO: Find actual value NOTE: 0.28946
-        public static final TrapezoidProfile.Constraints CONSTRAINTS = new TrapezoidProfile.Constraints(140, 300);
+        public static final double kG = 0.35; // TODO: Find actual value NOTE: 0.28946
+        public static final TrapezoidProfile.Constraints CONSTRAINTS = new TrapezoidProfile.Constraints(100, 450);
 
         public static final double SUPPLY_CURRENT_LIMIT = 70;
         public static final double STATOR_CURRENT_LIMIT = 250;
@@ -440,12 +438,50 @@ public final class Constants {
         public static final int CURRENT_LIMIT = 30;
         public static final int LEFT_ID = 45;
         public static final int CURRENT_THRESHOLD = 10;
-        public static final int BEAM_BREAK_ID = 8;
+        public static final int BEAM_BREAK_ID = 7;
     }
 
     public static class AlgaeEndEffectorConstants {
-        public static final int CURRENT_LIMIT = 30;
+        public static final int CURRENT_LIMIT = 20;
         public static final int MOTOR_ID = 44;
     }
 
+    public static class LEDConstants {
+        public static final int LED_PORT = 9; 
+
+        public static class LengthConstants {
+            // LEFT MID RIGHT
+            public static final int LEFT = 23;
+            public static final int MID = 21;
+            public static final int RIGHT = 24;
+
+            public static final int TOTAL = LEFT + MID + RIGHT;
+        }
+
+        public static class ColorConstants {
+            public static final Color LOADING = Color.kWhite;
+            public static final Color SUCCESS = new Color(77, 255, 79);
+            public static final Color RED = new Color(255, 25, 25);
+            public static final Color PINK = new Color(255, 69, 70);
+            public static final Color BLUE = new Color(25, 25, 255);
+            public static final Color TEAL = new Color(160, 170, 255);
+            public static final Color AUTON_1 = new Color(255, 69, 118);
+            public static final Color AUTON_2 = new Color(255, 30, 180);
+            public static final Color AUTON_3 = new Color(100, 25, 25);
+            public static final Color USER_SIGNAL = Color.kWhite;
+
+            public static final Color PRIDE_RED = Color.kRed;
+            public static final Color PRIDE_ORANGE = Color.kOrangeRed;
+            public static final Color PRIDE_YELLOW = Color.kYellow;
+            public static final Color PRIDE_GREEN = Color.kGreen;
+            public static final Color PRIDE_BLUE = Color.kBlue;
+            public static final Color PRIDE_PURPLE = Color.kPurple;
+            public static final Color TRANS_PINK = Color.kDeepPink;
+            public static final Color TRANS_TEAL = new Color(0.15, 0.3, 1.0);
+        }
+        public static final double INTAKE_VELOCITY_THRESHOLD = 0.2;
+        // TODO CHANGE!!!!
+        public static final double ALIGNED_DISTANCE = Units.inchesToMeters(1.5); // Meters, I think
+        public static final double ALIGNED_ANGLE = 2; // Degrees
+    }
 }

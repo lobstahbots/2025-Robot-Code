@@ -4,6 +4,7 @@ import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.util.led.LEDs;
 
 public class CoralEndEffector extends SubsystemBase {
     private final CoralEndEffectorIOInputsAutoLogged inputs = new CoralEndEffectorIOInputsAutoLogged();
@@ -22,6 +23,10 @@ public class CoralEndEffector extends SubsystemBase {
         io.setSpeed(speed);
     }
 
+    public double getVelocity() {
+        return inputs.velocity;
+    }
+
     public void setVoltage(double voltage) {
         io.setVoltage(voltage);
     }
@@ -37,6 +42,7 @@ public class CoralEndEffector extends SubsystemBase {
     public void periodic() {
         io.updateInputs(inputs);
         Logger.processInputs("CoralEndEffector", inputs);
+            LEDs.getInstance().setHasCoral(inputs.beamBreakTriggered);
     }
 
     public void setIdleMode(boolean isBrake) {

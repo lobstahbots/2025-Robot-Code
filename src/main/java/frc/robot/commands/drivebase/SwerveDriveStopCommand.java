@@ -8,20 +8,21 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.drive.DriveBase;
 
 public class SwerveDriveStopCommand extends Command {
-  /** Creates a new SwerveDriveStopCommand. */
-  private final DriveBase driveBase;
-  public SwerveDriveStopCommand(DriveBase driveBase) {
-    this.driveBase = driveBase;
-    addRequirements(driveBase);
-  }
+    /** Creates a new SwerveDriveStopCommand. */
+    private final DriveBase driveBase;
 
-  @Override
-  public void execute() {
-    driveBase.stopMotors();
-  }
+    public SwerveDriveStopCommand(DriveBase driveBase) {
+        this.driveBase = driveBase;
+        addRequirements(driveBase);
+    }
 
-  @Override
-  public boolean isFinished() {
-    return true;
-  }
+    @Override
+    public void execute() {
+        driveBase.stopMotors();
+    }
+
+    @Override
+    public boolean isFinished() {
+        return true;
+    }
 }

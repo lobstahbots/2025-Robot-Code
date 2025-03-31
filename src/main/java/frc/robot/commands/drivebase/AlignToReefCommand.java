@@ -9,9 +9,11 @@ import org.littletonrobotics.junction.Logger;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.subsystems.drive.DriveBase;
+import frc.robot.util.led.LEDs;
 import frc.robot.util.math.LobstahMath;
 import frc.robot.util.trajectory.AlliancePoseMirror;
 
@@ -21,11 +23,11 @@ import frc.robot.util.trajectory.AlliancePoseMirror;
  * command-based.html#defining-commands
  */
 public class AlignToReefCommand extends Command {
-    private final PIDController xController = new PIDController(1.5 * DriveConstants.TRANSLATION_PID_CONSTANTS.kP,
-            0.05, DriveConstants.TRANSLATION_PID_CONSTANTS.kD);
-    private final PIDController yController = new PIDController(1.5 * DriveConstants.TRANSLATION_PID_CONSTANTS.kP,
-            0.05, DriveConstants.TRANSLATION_PID_CONSTANTS.kD);
-    private final PIDController thetaController = new PIDController(DriveConstants.ROTATION_PID_CONSTANTS.kP,
+    private static final PIDController xController = new PIDController(DriveConstants.AUTO_ALIGN_TRANSLATION_kP,
+            DriveConstants.AUTO_ALIGN_TRANSLATION_kI, DriveConstants.AUTO_ALIGN_TRANSLATION_kD);
+    private static final PIDController yController = new PIDController(DriveConstants.AUTO_ALIGN_TRANSLATION_kP,
+    DriveConstants.AUTO_ALIGN_TRANSLATION_kI, DriveConstants.AUTO_ALIGN_TRANSLATION_kD);
+    private static final PIDController thetaController = new PIDController(DriveConstants.ROTATION_PID_CONSTANTS.kP,
             DriveConstants.ROTATION_PID_CONSTANTS.kI, DriveConstants.ROTATION_PID_CONSTANTS.kD);
 
     private final DriveBase driveBase;
@@ -34,13 +36,18 @@ public class AlignToReefCommand extends Command {
 
     /** Creates a new DriveToPoseCommand. */
     public AlignToReefCommand(DriveBase driveBase, boolean ccw) {
+        xController.setTolerance(0.02);
+        yController.setTolerance(0.02);
         thetaController.enableContinuousInput(-Math.PI, Math.PI);
         this.driveBase = driveBase;
         this.ccw = ccw;
+        SmartDashboard.putData("X Auto Align PID", xController);
+        SmartDashboard.putData("Y Auto Align PID", yController);
     }
 
     @Override
     public void initialize() {
+        // LEDs.getInstance().setAligning(true);
         xController.reset();
         yController.reset();
         thetaController.reset();
@@ -54,9 +61,8 @@ public class AlignToReefCommand extends Command {
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        double translationScaling = LobstahMath.getDistBetweenPoses(driveBase.getPose(), targetPose) + 0.25;
         driveBase.driveRobotRelative(ChassisSpeeds.fromFieldRelativeSpeeds(
-                translationScaling * xController.calculate(driveBase.getPose().getX()), translationScaling * yController.calculate(driveBase.getPose().getY()),
+                xController.calculate(driveBase.getPose().getX()), yController.calculate(driveBase.getPose().getY()),
                 thetaController.calculate(driveBase.getPose().getRotation().getRadians()),
                 driveBase.getPose().getRotation()));
     }
@@ -65,6 +71,7 @@ public class AlignToReefCommand extends Command {
     @Override
     public void end(boolean interrupted) {
         driveBase.stopMotors();
+        // LEDs.getInstance().setAligning(false);
     }
 
     // Returns true when the command should end.
