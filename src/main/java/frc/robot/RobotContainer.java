@@ -88,39 +88,41 @@ public class RobotContainer {
 
     //Driver
     private final Trigger driverLTButton = new Trigger(
-            () -> driverJoystick.getRawAxis(ControllerIOConstants.LT_BUTTON) > 0.2);
+            () -> driverJoystick.getRawAxis(ControllerIOConstants.LT_BUTTON) > 0.2); //Outake Coral
     private final Trigger driverRTButton = new Trigger(
-            () -> driverJoystick.getRawAxis(ControllerIOConstants.RT_BUTTON) > 0.2);
+            () -> driverJoystick.getRawAxis(ControllerIOConstants.RT_BUTTON) > 0.2); //Outake Algae
 
-    private final JoystickButton driverLBButton = new JoystickButton(driverJoystick, ControllerIOConstants.LB_BUTTON);
-    private final JoystickButton driverRBButton = new JoystickButton(driverJoystick, ControllerIOConstants.RB_BUTTON);
+    private final JoystickButton driverLBButton = new JoystickButton(driverJoystick, ControllerIOConstants.LB_BUTTON); //Barge automation
+    private final JoystickButton driverRBButton = new JoystickButton(driverJoystick, ControllerIOConstants.RB_BUTTON); //Intake Sequence
 
     private final JoystickButton driverLeftPaddle = new JoystickButton(driverJoystick,
-            ControllerIOConstants.LEFT_PADDLE);
+            ControllerIOConstants.LEFT_PADDLE); //Autoalign left reef
     private final JoystickButton driverRightPaddle = new JoystickButton(driverJoystick,
-            ControllerIOConstants.RIGHT_PADDLE);
+            ControllerIOConstants.RIGHT_PADDLE); //Autoalign right reef
 
     //Operator
     private final Trigger operatorLTButton = new Trigger(
-            () -> operatorJoystick.getRawAxis(ControllerIOConstants.LT_BUTTON) > 0.5);
+            () -> operatorJoystick.getRawAxis(ControllerIOConstants.LT_BUTTON) > 0.5); //Outake Coral
     private final Trigger operatorRTButton = new Trigger(
-            () -> operatorJoystick.getRawAxis(ControllerIOConstants.RT_BUTTON) > 0.5);
+            () -> operatorJoystick.getRawAxis(ControllerIOConstants.RT_BUTTON) > 0.5); //Intake Coral
 
     private final JoystickButton operatorLBButton = new JoystickButton(operatorJoystick,
-            ControllerIOConstants.LB_BUTTON);
+            ControllerIOConstants.LB_BUTTON); //Outake Algae
     private final JoystickButton operatorRBButton = new JoystickButton(operatorJoystick,
-            ControllerIOConstants.RB_BUTTON);
+            ControllerIOConstants.RB_BUTTON); //L1 Setpoint (potentially to change)
 
-    private final JoystickButton operatorXButton = new JoystickButton(operatorJoystick, ControllerIOConstants.X_BUTTON);
-    private final JoystickButton operatorYButton = new JoystickButton(operatorJoystick, ControllerIOConstants.Y_BUTTON);
-    private final JoystickButton operatorBButton = new JoystickButton(operatorJoystick, ControllerIOConstants.B_BUTTON);
-    private final JoystickButton operatorAButton = new JoystickButton(operatorJoystick, ControllerIOConstants.A_BUTTON);
+    private final JoystickButton operatorXButton = new JoystickButton(operatorJoystick, ControllerIOConstants.X_BUTTON); //L2
+    private final JoystickButton operatorYButton = new JoystickButton(operatorJoystick, ControllerIOConstants.Y_BUTTON); //L3
+    private final JoystickButton operatorBButton = new JoystickButton(operatorJoystick, ControllerIOConstants.B_BUTTON); //L4
+    private final JoystickButton operatorAButton = new JoystickButton(operatorJoystick, ControllerIOConstants.A_BUTTON); //Theoretically L1 or intake
 
     private final JoystickButton operatorLeftPaddle = new JoystickButton(operatorJoystick, ControllerIOConstants.LEFT_PADDLE);
     private final JoystickButton operatorRightPaddle = new JoystickButton(operatorJoystick, ControllerIOConstants.RIGHT_PADDLE);
 
-    private final POVButton operatorDpadUp = new POVButton(operatorJoystick, ControllerIOConstants.D_PAD_UP);
-    private final POVButton operatorDpadDown = new POVButton(operatorJoystick, ControllerIOConstants.D_PAD_DOWN);
+    private final POVButton operatorDpadUp = new POVButton(operatorJoystick, ControllerIOConstants.D_PAD_UP); // L3 Algae Removal
+    private final POVButton operatorDpadDown = new POVButton(operatorJoystick, ControllerIOConstants.D_PAD_DOWN); // L2 Algae Removal
+    private final POVButton operatorDpadLeft = new POVButton(operatorJoystick, ControllerIOConstants.D_PAD_LEFT); // Barge Setpoint
+    private final POVButton operatorDpadRight = new POVButton(operatorJoystick, ControllerIOConstants.D_PAD_RIGHT); // Processor Setpoint
 
     private final Trigger manualArm = new Trigger(
             () -> operatorJoystick.getRawAxis(ControllerIOConstants.LEFT_STICK_VERTICAL) > 0.1);
@@ -237,7 +239,7 @@ public class RobotContainer {
         // driverRBButton.whileTrue(new CoralCommand(coral, 0.5));
         driverRBButton.whileTrue(superstructure.getSetpointCommand(RobotConstants.INTAKE_STATE)
             .alongWith(new CoralCommand(coral, 0.5))
-            .until(manualArm).until(() -> coral.getBeamBreak()));
+            .until(() -> coral.getBeamBreak()));
         driverRTButton.whileTrue(new CoralCommand(coral, 0.75));
         // driverLBButton.onTrue(new AlignToBargeCommand(driveBase)
         //     .alongWith(superstructure.getSetpointCommand(RobotConstants.BARGE_STATE))
@@ -347,6 +349,5 @@ public class RobotContainer {
             }
 
             coralSpeed = superstructure.getPivotRotation().getRadians() < 1.5 ? -0.4 : -0.75;
-            
     }
 }

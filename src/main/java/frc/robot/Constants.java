@@ -83,8 +83,8 @@ public final class Constants {
 
             public static final int D_PAD_UP = 0;
             public static final int D_PAD_DOWN = 180;
-            public static final int D_PAD_LEFT = 180;
-            public static final int D_PAD_RIGHT = 0;
+            public static final int D_PAD_LEFT = 270;
+            public static final int D_PAD_RIGHT = 90;
 
             public static final boolean SQUARE_INPUTS = true;
         }
