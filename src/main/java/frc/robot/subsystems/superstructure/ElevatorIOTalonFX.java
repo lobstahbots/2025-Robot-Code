@@ -55,12 +55,11 @@ public class ElevatorIOTalonFX implements ElevatorIO {
         config.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
         config.Feedback.SensorToMechanismRatio = ElevatorConstants.GEAR_RATIO * ElevatorConstants.PITCH_DIAMETER
                 * Math.PI;
-        config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 
         leftElevatorMotor.getConfigurator().apply(config);
         rightElevatorMotor.getConfigurator().apply(config);
 
-        leftElevatorMotor.setControl(new Follower(rightElevatorID, false)); // it should be true because they are opposed but phoenix 6 a[[ears to do the opposite of what we tell it to do
+        leftElevatorMotor.setControl(new Follower(rightElevatorID, true)); // it should be true because they are opposed but phoenix 6 a[[ears to do the opposite of what we tell it to do
 
         rightPosition = rightElevatorMotor.getPosition();
         rightVelocity = rightElevatorMotor.getVelocity();
@@ -119,6 +118,7 @@ public class ElevatorIOTalonFX implements ElevatorIO {
     @Override
     public void resetEncoder(double position) {
         rightElevatorMotor.setPosition(position);
+        leftElevatorMotor.setPosition(position);
     }
 
     @Override

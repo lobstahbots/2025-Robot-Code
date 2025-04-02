@@ -21,6 +21,7 @@ import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -117,9 +118,15 @@ public class RobotContainer {
     private final JoystickButton operatorXButton = new JoystickButton(operatorJoystick, ControllerIOConstants.X_BUTTON);
     private final JoystickButton operatorYButton = new JoystickButton(operatorJoystick, ControllerIOConstants.Y_BUTTON);
     private final JoystickButton operatorBButton = new JoystickButton(operatorJoystick, ControllerIOConstants.B_BUTTON);
+    private final JoystickButton operatorAButton = new JoystickButton(operatorJoystick, ControllerIOConstants.A_BUTTON);
+
+    private final JoystickButton operatorLeftPaddle = new JoystickButton(operatorJoystick, ControllerIOConstants.LEFT_PADDLE);
+    private final JoystickButton operatorRightPaddle = new JoystickButton(operatorJoystick, ControllerIOConstants.RIGHT_PADDLE);
 
     private final POVButton operatorDpadUp = new POVButton(operatorJoystick, ControllerIOConstants.D_PAD_UP);
     private final POVButton operatorDpadDown = new POVButton(operatorJoystick, ControllerIOConstants.D_PAD_DOWN);
+    private final POVButton operatorDpadLeft = new POVButton(operatorJoystick, ControllerIOConstants.D_PAD_LEFT);
+    private final POVButton operatorDpadRight = new POVButton(operatorJoystick, ControllerIOConstants.D_PAD_RIGHT);
 
     private final Trigger manualArm = new Trigger(
             () -> operatorJoystick.getRawAxis(ControllerIOConstants.LEFT_STICK_VERTICAL) > 0.1);
@@ -272,10 +279,15 @@ public class RobotContainer {
         operatorYButton.onTrue(superstructure.getSetpointCommand(RobotConstants.L3_STATE));
         operatorBButton.onTrue(superstructure.getSetpointCommand(RobotConstants.L4_STATE));
 
+        operatorLeftPaddle.whileTrue(new AlgaeCommand(algae, 1));
+        operatorRightPaddle.whileTrue(new AlgaeCommand(algae, -1));
+
         operatorDpadDown.onTrue(superstructure.getSetpointCommand(RobotConstants.L2_ALGAE_STATE));
         operatorDpadDown.whileTrue(new AlgaeCommand(algae, -1));
         operatorDpadUp.onTrue(superstructure.getSetpointCommand(RobotConstants.L3_ALGAE_STATE));
         operatorDpadUp.whileTrue(new AlgaeCommand(algae, -1));
+        operatorDpadLeft.onTrue(superstructure.getSetpointCommand(RobotConstants.BARGE_STATE));
+        operatorDpadRight.onTrue(superstructure.getSetpointCommand(RobotConstants.PROCESSOR_STATE));
     }
 
     public boolean getOperatorConnected() {
@@ -314,6 +326,8 @@ public class RobotContainer {
         autoChooser.addRoutine("Simple timed 1 piece", List.of(), autoFactory::getSimpleTimedAuto);
 
         autoChooser.addRoutine("hard-coded 2 piece", List.of(), autoFactory::getTwoPieceHardCodedAuto);
+
+        autoChooser.addRoutine("zero", List.of(), superstructure::getZeroCommand);
     }
 
     public void displaySimField() {
@@ -350,5 +364,6 @@ public class RobotContainer {
             }
 
             LEDs.getInstance().setAligned(aligned);
+            driverJoystick.setRumble(RumbleType.kBothRumble, aligned ? .2 : 0);
     }
 }

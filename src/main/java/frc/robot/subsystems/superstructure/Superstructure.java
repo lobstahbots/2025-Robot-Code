@@ -147,10 +147,10 @@ public class Superstructure extends CharacterizableSubsystem {
             DualDOFProfile profile;
             System.out.println(setpoint);
             System.out.println((setpoint.pivotRotation.getRotations() < PivotConstants.LOWER_DANGER_ZONE.getRotations()
-            && getRotation().getRotations() > PivotConstants.LOWER_DANGER_ZONE.getRotations())
-            || (getRotation().getRotations() < PivotConstants.LOWER_DANGER_ZONE.getRotations()
-                    && setpoint.pivotRotation.getRotations() > PivotConstants.LOWER_DANGER_ZONE
-                            .getRotations()));
+                    && getRotation().getRotations() > PivotConstants.LOWER_DANGER_ZONE.getRotations())
+                    || (getRotation().getRotations() < PivotConstants.LOWER_DANGER_ZONE.getRotations()
+                            && setpoint.pivotRotation.getRotations() > PivotConstants.LOWER_DANGER_ZONE
+                                    .getRotations()));
             if (setpoint.elevatorHeight != 0 || getExtension() > 5) {
                 profile = DualDOFProfile.fromWaypoints(
                         List.of(getState().toDualDOFState().getPositionState(),
@@ -172,7 +172,18 @@ public class Superstructure extends CharacterizableSubsystem {
             }, () -> {
                 currentSetpoint = SuperstructureState.fromDualDOFState(profile.calculate(timer.get()));
             });
-        });
+        }).until(this::atSetpoint);
+    }
+
+    public Command getZeroCommand() {
+        return runEnd(() -> {
+            setElevatorVoltage(-2);
+            closedLoop = false;
+        }, () -> {
+            closedLoop = true;
+            setState(RobotConstants.INTAKE_STATE);
+            elevatorIO.resetEncoder(0);
+        }).until(() -> elevatorInputs.leftStatorCurrent > 40);
     }
 
     public Rotation2d getPivotRotation() {
