@@ -266,7 +266,6 @@ public class RobotContainer {
         operatorXButton.onTrue(superstructure.getSetpointCommand(RobotConstants.L2_STATE));
         operatorYButton.onTrue(superstructure.getSetpointCommand(RobotConstants.L3_STATE));
         operatorBButton.onTrue(superstructure.getSetpointCommand(RobotConstants.L4_STATE));
-        operatorAButton.onTrue(superstructure.getSetpointCommand(RobotConstants.BARGE_STATE));
 
         operatorLeftPaddle.whileTrue(new AlgaeCommand(algae, 1));
         operatorRightPaddle.whileTrue(new AlgaeCommand(algae, -1));
@@ -275,6 +274,8 @@ public class RobotContainer {
         operatorDpadDown.whileTrue(new AlgaeCommand(algae, -1));
         operatorDpadUp.onTrue(superstructure.getSetpointCommand(RobotConstants.L3_ALGAE_STATE));
         operatorDpadUp.whileTrue(new AlgaeCommand(algae, -1));
+        operatorDpadLeft.onTrue(superstructure.getSetpointCommand(RobotConstants.BARGE_STATE));
+        operatorDpadRight.onTrue(superstructure.getSetpointCommand(RobotConstants.PROCESSOR_STATE));
     }
 
     public boolean getOperatorConnected() {
@@ -313,6 +314,8 @@ public class RobotContainer {
         autoChooser.addRoutine("Simple timed 1 piece", List.of(), autoFactory::getSimpleTimedAuto);
 
         autoChooser.addRoutine("hard-coded 2 piece", List.of(), autoFactory::getTwoPieceHardCodedAuto);
+
+        autoChooser.addRoutine("zero", List.of(), superstructure::getZeroCommand);
     }
 
     public void displaySimField() {
