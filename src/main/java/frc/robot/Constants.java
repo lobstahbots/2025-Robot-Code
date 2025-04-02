@@ -83,8 +83,8 @@ public final class Constants {
 
             public static final int D_PAD_UP = 0;
             public static final int D_PAD_DOWN = 180;
-            public static final int D_PAD_LEFT = 180;
-            public static final int D_PAD_RIGHT = 0;
+            public static final int D_PAD_LEFT = 90;
+            public static final int D_PAD_RIGHT = 270;
 
             public static final boolean SQUARE_INPUTS = true;
         }
@@ -139,6 +139,7 @@ public final class Constants {
         public static final SuperstructureState L3_ALGAE_STATE = new SuperstructureState(Rotation2d.fromRadians(-0.2),
                 41.2, 0, 0);
         public static final SuperstructureState BARGE_STATE = new SuperstructureState(Rotation2d.fromRadians(0.824), 136, 0, 0);
+        public static final SuperstructureState PROCESSOR_STATE = new SuperstructureState(Rotation2d.fromRadians(-2), 6.66, 0, 0);
         public static final double ELEVATOR_THRESHOLD = 10;
     }
 
@@ -352,17 +353,17 @@ public final class Constants {
     }
 
     public static class PivotConstants {
-        public static final double kP = 5;
-        public static final double kI = 0.2;
+        public static final double kP = 8;
+        public static final double kI = 0.35;
         public static final double kD = 0;
         public static final double kS = 0;
         public static final double kG = 0.4; //NOTE: 1.0129
         public static final double kV = 0; //NOTE: 1.0491
         public static final double kA = 0; //NOTE: 0.50095
-        public static final TrapezoidProfile.Constraints CONSTRAINTS = new TrapezoidProfile.Constraints(10, 10);
+        public static final TrapezoidProfile.Constraints CONSTRAINTS = new TrapezoidProfile.Constraints(20, 30);
 
         public static final double VELOCITY_kP = 0.025;
-        public static final double VELOCITY_kI = 0;
+        public static final double VELOCITY_kI = 0.002;
         public static final double VELOCITY_kD = 0;
 
         public static final Rotation2d COG_OFFSET = Rotation2d.fromRadians(-0.382);
@@ -387,11 +388,11 @@ public final class Constants {
         public static final double GEAR_RATIO = 3.5;
         public static final double PITCH_DIAMETER = Units.inchesToMeters(1.273);
 
-        public static final double kP = 0.45; // TODO: Find actual value NOTE: was 3.596
+        public static final double kP = 0.5; // TODO: Find actual value NOTE: was 3.596
         public static final double kI = 0; // TODO: Find actual value
-        public static final double kD = 0; //TODO: Find actual value
+        public static final double kD = 0.005; //TODO: Find actual value
 
-        public static final double VELOCITY_kP = 0.04;
+        public static final double VELOCITY_kP = 0.002;
         public static final double VELOCITY_kI = 0;
         public static final double VELOCITY_kD = 0;
 
@@ -399,7 +400,7 @@ public final class Constants {
         public static final double kV = 0; // TODO: Find actual value NOTE: 0.034454
         public static final double kA = 0; // TODO: Find actual value NOTE: 0.2
         public static final double kG = 0.35; // TODO: Find actual value NOTE: 0.28946
-        public static final TrapezoidProfile.Constraints CONSTRAINTS = new TrapezoidProfile.Constraints(100, 450);
+        public static final TrapezoidProfile.Constraints CONSTRAINTS = new TrapezoidProfile.Constraints(200, 450);
 
         public static final double SUPPLY_CURRENT_LIMIT = 70;
         public static final double STATOR_CURRENT_LIMIT = 250;
