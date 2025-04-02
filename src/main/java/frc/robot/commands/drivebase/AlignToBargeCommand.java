@@ -22,8 +22,8 @@ public class AlignToBargeCommand extends Command {
     private final PIDController xController = new PIDController(DriveConstants.AUTO_ALIGN_TRANSLATION_kP,
             DriveConstants.AUTO_ALIGN_TRANSLATION_kI, DriveConstants.AUTO_ALIGN_TRANSLATION_kD);
     
-    private final PIDController thetaController = new PIDController(DriveConstants.AUTO_ALIGN_TRANSLATION_kP,
-        DriveConstants.AUTO_ALIGN_TRANSLATION_kI, DriveConstants.AUTO_ALIGN_TRANSLATION_kD);
+    private final PIDController thetaController = new PIDController(DriveConstants.ROTATION_PID_CONSTANTS.kP,
+        DriveConstants.ROTATION_PID_CONSTANTS.kI, DriveConstants.ROTATION_PID_CONSTANTS.kD);
 
     private final DriveBase driveBase;
 
