@@ -241,21 +241,28 @@ public class RobotContainer {
         driverLTButton.whileTrue(new CoralCommand(coral, () -> coralSpeed));
         // driverRBButton.whileTrue(superstructure.getSetpointCommand(RobotConstants.INTAKE_STATE));
         // driverRBButton.whileTrue(new CoralCommand(coral, 0.5));
-        driverRBButton.whileTrue(superstructure.getSetpointCommand(RobotConstants.INTAKE_STATE)
-                .alongWith(new CoralCommand(coral, 0.5)).until(() -> coral.getBeamBreak()));
-        driverRTButton.whileTrue(new CoralCommand(coral, 0.75));
-        // driverLBButton.onTrue(new AlignToBargeCommand(driveBase)
-        //     .alongWith(superstructure.getSetpointCommand(RobotConstants.BARGE_STATE))
-        //     .andThen(new AlgaeCommand(algae, 1)).withTimeout(0.5)
-        //     .andThen(superstructure.getSetpointCommand(RobotConstants.INTAKE_STATE))); //DON'T UNCOMMENT THIS UNTIL AFTER YOUVE TESTED LINE 246
+        // driverRBButton.onTrue(superstructure.getSetpointCommand(RobotConstants.INTAKE_STATE)
+        //         .alongWith(new CoralCommand(coral, 0.5)).until(() -> coral.getBeamBreak()));
+
         driverLBButton.onTrue(Commands.select(Map.of(1,
                 new AlignToBargeCommand(driveBase,
-                        () -> -driverJoystick.getRawAxis(ControllerIOConstants.LEFT_STICK_HORIZONTAL)),
+                        () -> -driverJoystick.getRawAxis(ControllerIOConstants.LEFT_STICK_HORIZONTAL)).alongWith(superstructure.getSetpointCommand(RobotConstants.BARGE_STATE)),
                 2, new AlignToProcessorCommand(driveBase)), () -> {
                     if (AlliancePoseMirror.mirrorPose2d(driveBase.getPose()).getY() > FieldConstants.FIELD_WIDTH / 2)
                         return 1;
                     return 2;
                 })); //TEST THIS VERSION FIRST
+
+        driverRBButton.onTrue(superstructure.getSetpointCommand(RobotConstants.INTAKE_STATE));
+        driverRBButton.whileTrue(new CoralCommand(coral, 0.5));
+        driverRBButton.whileTrue(new InstantCommand(() -> leds.setUserSignal(true)).ignoringDisable(true))
+            .onFalse(new InstantCommand(() -> leds.setUserSignal(false)).ignoringDisable(true));
+        driverRTButton.whileTrue(new AlgaeCommand(algae, 1));
+        // driverLBButton.onTrue(new AlignToBargeCommand(driveBase)
+        //     .alongWith(superstructure.getSetpointCommand(RobotConstants.BARGE_STATE))
+        //     .andThen(new AlgaeCommand(algae, 1)).withTimeout(0.5)
+        //     .andThen(superstructure.getSetpointCommand(RobotConstants.INTAKE_STATE))); //DON'T UNCOMMENT THIS UNTIL AFTER YOUVE TESTED LINE 246
+        
         driverLeftPaddle.whileTrue(new AlignToReefCommand(driveBase, true));
         driverRightPaddle.whileTrue(new AlignToReefCommand(driveBase, false));
 
@@ -270,15 +277,14 @@ public class RobotContainer {
         operatorLTButton.whileTrue(new CoralCommand(coral, () -> coralSpeed));
         operatorRTButton.whileTrue(new CoralCommand(coral, 0.5));
         operatorRBButton.onTrue(superstructure.getSetpointCommand(RobotConstants.INTAKE_STATE));
-        operatorLBButton.whileTrue(new InstantCommand(() -> leds.setUserSignal(true)).ignoringDisable(true))
-                .onFalse(new InstantCommand(() -> leds.setUserSignal(false)).ignoringDisable(true));
+        operatorLBButton.whileTrue(new AlgaeCommand(algae, 1));
 
         operatorXButton.onTrue(superstructure.getSetpointCommand(RobotConstants.L2_STATE));
         operatorYButton.onTrue(superstructure.getSetpointCommand(RobotConstants.L3_STATE));
         operatorBButton.onTrue(superstructure.getSetpointCommand(RobotConstants.L4_STATE));
 
-        operatorLeftPaddle.whileTrue(new AlgaeCommand(algae, -1));
-        operatorRightPaddle.whileTrue(new AlgaeCommand(algae, 1));
+        //operatorLeftPaddle.whileTrue(new AlgaeCommand(algae, -1));
+        operatorRightPaddle.whileTrue(new AlgaeCommand(algae, -1));
 
         operatorDpadDown.onTrue(superstructure.getSetpointCommand(RobotConstants.L2_ALGAE_STATE));
         operatorDpadDown.whileTrue(new AlgaeCommand(algae, -1));
