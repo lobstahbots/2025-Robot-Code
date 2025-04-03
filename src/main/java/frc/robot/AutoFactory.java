@@ -26,6 +26,7 @@ import frc.robot.Constants.PathConstants;
 import frc.robot.Constants.RobotConstants;
 import frc.robot.Constants.FieldConstants.Poses;
 import frc.robot.commands.coralEndEffectorCommands.CoralCommand;
+import frc.robot.commands.drivebase.AlignToReefCommand;
 import frc.robot.commands.drivebase.DriveToPoseCommand;
 import frc.robot.commands.drivebase.SwerveDriveCommand;
 import frc.robot.commands.drivebase.SwerveDriveStopCommand;
@@ -206,7 +207,7 @@ public class AutoFactory {
                 new PathConstraints(2, 0.7, PathConstants.CONSTRAINTS.maxAngularVelocityRadPerSec(),
                         PathConstants.CONSTRAINTS.maxAngularAccelerationRadPerSecSq()),
                 0.0 // Goal end velocity in meters/sec
-        ).andThen(new SwerveDriveStopCommand(driveBase)).alongWith(new CoralCommand(coral, 0.2)).withTimeout(9)
+        ).andThen(new AlignToReefCommand(driveBase, true)).alongWith(new CoralCommand(coral, 0.2)).withTimeout(9)
                         .andThen(new CoralCommand(coral, () -> -0.5).withTimeout(1))
                         .deadlineFor(superstructure.getSetpointCommand(RobotConstants.L4_STATE))
                         .andThen(new SwerveDriveCommand(driveBase, -0.2, 0, 0, false, false).withTimeout(2))
