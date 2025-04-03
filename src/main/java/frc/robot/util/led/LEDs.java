@@ -2,6 +2,8 @@
 
 package frc.robot.util.led;
 
+import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
+
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Notifier;
@@ -48,6 +50,7 @@ public class LEDs extends SubsystemBase {
     boolean userSignal = false;
 
     public Color debugColor = null;
+    LoggedNetworkNumber debugLength = new LoggedNetworkNumber("/Tuning/LED/DebugLength", 0);
 
     //#endregion
     //#region STATE GETTERS AND SETTERS
@@ -107,11 +110,12 @@ public class LEDs extends SubsystemBase {
                                 robotMode == RobotMode.AUTONOMOUS ? autonomous() : null, //Auto
                                 aligned ? LobstahLEDBuffer.solid(LengthConstants.TOTAL, Color.kGreen) : null,
                                 aligning ? LobstahLEDBuffer.solid(LengthConstants.TOTAL, Color.kBlue) : null,
-                                readyForIntake ? LobstahLEDBuffer.solid(LengthConstants.TOTAL, Color.kRed) : null,
+                                readyForIntake ? prideFlagCycle(LengthConstants.TOTAL, 8) : null,
                                 hasCoral ? LobstahLEDBuffer.solid(LengthConstants.TOTAL, Color.kPurple) : null,
                                 userSignal ? LobstahLEDBuffer.solid(LengthConstants.TOTAL, Color.kWhite) : null,
                                 // LobstahLEDBuffer.solid(LengthConstants.TOTAL, Color.kYellow))
-                                debugColor == null ? null : LobstahLEDBuffer.solid(LengthConstants.TOTAL, debugColor) //for testing
+                                debugColor == null ? null : LobstahLEDBuffer.solid(LengthConstants.TOTAL, debugColor), //for testing
+                                LobstahLEDBuffer.solid((int)debugLength.get(), Color.kWhite)
                               ).toAdressableLEDBuffer());
     }
 
