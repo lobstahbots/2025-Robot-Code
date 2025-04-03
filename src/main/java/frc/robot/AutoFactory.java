@@ -202,7 +202,11 @@ public class AutoFactory {
 
     public Command getSimpleTimedAuto() {
         return superstructure.getZeroCommand()
-                .andThen(getPathFindToPoseCommand(Poses.H).alongWith(new CoralCommand(coral, 0.2)).withTimeout(9)
+                .andThen(AutoBuilder.pathfindToPoseFlipped(Poses.H,
+                new PathConstraints(2, 0.7, PathConstants.CONSTRAINTS.maxAngularVelocityRadPerSec(),
+                        PathConstants.CONSTRAINTS.maxAngularAccelerationRadPerSecSq()),
+                0.0 // Goal end velocity in meters/sec
+        ).andThen(new SwerveDriveStopCommand(driveBase)).alongWith(new CoralCommand(coral, 0.2)).withTimeout(9)
                         .andThen(new CoralCommand(coral, () -> -0.5).withTimeout(1))
                         .deadlineFor(superstructure.getSetpointCommand(RobotConstants.L4_STATE))
                         .andThen(new SwerveDriveCommand(driveBase, -0.2, 0, 0, false, false).withTimeout(2))
