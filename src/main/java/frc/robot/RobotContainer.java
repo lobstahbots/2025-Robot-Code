@@ -37,6 +37,7 @@ import frc.robot.Constants.DriveConstants.BackRightModuleConstants;
 import frc.robot.Constants.DriveConstants.FrontLeftModuleConstants;
 import frc.robot.Constants.DriveConstants.FrontRightModuleConstants;
 import frc.robot.Constants.ElevatorConstants;
+import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.FieldConstants.Poses;
 import frc.robot.Constants.IOConstants.ControllerIOConstants;
 import frc.robot.Constants.LEDConstants;
@@ -48,6 +49,7 @@ import frc.robot.commands.algaeEndEffector.AlgaeCommand;
 import frc.robot.commands.algaeEndEffector.StopAlgaeCommand;
 import frc.robot.commands.coralEndEffectorCommands.CoralCommand;
 import frc.robot.commands.drivebase.AlignToBargeCommand;
+import frc.robot.commands.drivebase.AlignToProcessorCommand;
 import frc.robot.commands.drivebase.AlignToReefCommand;
 import frc.robot.commands.drivebase.SwerveDriveCommand;
 import frc.robot.subsystems.drive.DriveBase;
@@ -116,8 +118,10 @@ public class RobotContainer {
     private final JoystickButton operatorBButton = new JoystickButton(operatorJoystick, ControllerIOConstants.B_BUTTON); //L4
     private final JoystickButton operatorAButton = new JoystickButton(operatorJoystick, ControllerIOConstants.A_BUTTON); //Theoretically L1 or intake
 
-    private final JoystickButton operatorLeftPaddle = new JoystickButton(operatorJoystick, ControllerIOConstants.LEFT_PADDLE);
-    private final JoystickButton operatorRightPaddle = new JoystickButton(operatorJoystick, ControllerIOConstants.RIGHT_PADDLE);
+    private final JoystickButton operatorLeftPaddle = new JoystickButton(operatorJoystick,
+            ControllerIOConstants.LEFT_PADDLE);
+    private final JoystickButton operatorRightPaddle = new JoystickButton(operatorJoystick,
+            ControllerIOConstants.RIGHT_PADDLE);
 
     private final POVButton operatorDpadUp = new POVButton(operatorJoystick, ControllerIOConstants.D_PAD_UP); // L3 Algae Removal
     private final POVButton operatorDpadDown = new POVButton(operatorJoystick, ControllerIOConstants.D_PAD_DOWN); // L2 Algae Removal
@@ -205,7 +209,7 @@ public class RobotContainer {
                 () -> -driverJoystick.getRawAxis(ControllerIOConstants.RIGHT_STICK_HORIZONTAL),
                 () -> DriveConstants.FIELD_CENTRIC, ControllerIOConstants.SQUARE_INPUTS,
                 () -> 0 / RobotConstants.L4_STATE.elevatorHeight * superstructure.getExtension() + 1));
-        
+
         SmartDashboard.putData("thing", superstructure);
         coral.setDefaultCommand(new CoralCommand(coral, 0.1));
         algae.setDefaultCommand(new StopAlgaeCommand(algae));
@@ -238,17 +242,23 @@ public class RobotContainer {
         // driverRBButton.whileTrue(superstructure.getSetpointCommand(RobotConstants.INTAKE_STATE));
         // driverRBButton.whileTrue(new CoralCommand(coral, 0.5));
         driverRBButton.whileTrue(superstructure.getSetpointCommand(RobotConstants.INTAKE_STATE)
-            .alongWith(new CoralCommand(coral, 0.5))
-            .until(() -> coral.getBeamBreak()));
+                .alongWith(new CoralCommand(coral, 0.5)).until(() -> coral.getBeamBreak()));
         driverRTButton.whileTrue(new CoralCommand(coral, 0.75));
         // driverLBButton.onTrue(new AlignToBargeCommand(driveBase)
         //     .alongWith(superstructure.getSetpointCommand(RobotConstants.BARGE_STATE))
         //     .andThen(new AlgaeCommand(algae, 1)).withTimeout(0.5)
         //     .andThen(superstructure.getSetpointCommand(RobotConstants.INTAKE_STATE))); //DON'T UNCOMMENT THIS UNTIL AFTER YOUVE TESTED LINE 246
-        driverLBButton.onTrue(new AlignToBargeCommand(driveBase, () -> -driverJoystick.getRawAxis(ControllerIOConstants.LEFT_STICK_HORIZONTAL))); //TEST THIS VERSION FIRST
+        driverLBButton.onTrue(Commands.select(Map.of(1,
+                new AlignToBargeCommand(driveBase,
+                        () -> -driverJoystick.getRawAxis(ControllerIOConstants.LEFT_STICK_HORIZONTAL)),
+                2, new AlignToProcessorCommand(driveBase)), () -> {
+                    if (AlliancePoseMirror.mirrorPose2d(driveBase.getPose()).getY() > FieldConstants.FIELD_WIDTH / 2)
+                        return 1;
+                    return 2;
+                })); //TEST THIS VERSION FIRST
         driverLeftPaddle.whileTrue(new AlignToReefCommand(driveBase, true));
         driverRightPaddle.whileTrue(new AlignToReefCommand(driveBase, false));
-    
+
         // driverXButton.whileTrue(superstructure.getSetpointCommand(RobotConstants.L2_STATE));
         // driverYButton.whileTrue(superstructure.getSetpointCommand(RobotConstants.L3_STATE);
         // driverBButton.whileTrue(superstructure.getSetpointCommand(RobotConstants.L4_STATE));
@@ -332,25 +342,22 @@ public class RobotContainer {
     }
 
     public void periodic() {
-        LEDs.getInstance().setReadyForIntake(
-            superstructure.getState() == RobotConstants.INTAKE_STATE
-            && superstructure.atSetpoint() &&
-            coral.getVelocity() > LEDConstants.INTAKE_VELOCITY_THRESHOLD);
-        
-            var mirroredRobotPose = AlliancePoseMirror.mirrorPose2d(driveBase.getPose());
-            
-            boolean aligned = false;
-            for (Pose2d reefPose : Poses.REEF_POSES) {
-                Transform2d poseDelta = reefPose.minus(mirroredRobotPose);
-                double translationDistance = poseDelta.getTranslation().getNorm();
-                double angleDifference = Math.abs(poseDelta.getRotation().getDegrees());
-                if (translationDistance < LEDConstants.ALIGNED_DISTANCE
-                        && angleDifference < LEDConstants.ALIGNED_ANGLE) {
-                    aligned = true;
-                    break;
-                }
-            }
+        LEDs.getInstance().setReadyForIntake(superstructure.getState() == RobotConstants.INTAKE_STATE
+                && superstructure.atSetpoint() && coral.getVelocity() > LEDConstants.INTAKE_VELOCITY_THRESHOLD);
 
-            coralSpeed = superstructure.getPivotRotation().getRadians() < 1.5 ? -0.4 : -0.75;
+        var mirroredRobotPose = AlliancePoseMirror.mirrorPose2d(driveBase.getPose());
+
+        boolean aligned = false;
+        for (Pose2d reefPose : Poses.REEF_POSES) {
+            Transform2d poseDelta = reefPose.minus(mirroredRobotPose);
+            double translationDistance = poseDelta.getTranslation().getNorm();
+            double angleDifference = Math.abs(poseDelta.getRotation().getDegrees());
+            if (translationDistance < LEDConstants.ALIGNED_DISTANCE && angleDifference < LEDConstants.ALIGNED_ANGLE) {
+                aligned = true;
+                break;
+            }
+        }
+
+        coralSpeed = superstructure.getPivotRotation().getRadians() < 1.5 ? -0.4 : -0.75;
     }
 }
