@@ -51,7 +51,7 @@ public class AlignToBargeCommand extends Command {
                 ? FieldConstants.FIELD_LENGTH - FieldConstants.Poses.BARGE_TRANSLATION_DEPTH_SETPOINT
                 : FieldConstants.Poses.BARGE_TRANSLATION_DEPTH_SETPOINT);
         thetaController.setSetpoint(
-                AlliancePoseMirror.isRedAlliance() ? Rotation2d.k180deg.getRadians() : Rotation2d.kZero.getRadians());
+                AlliancePoseMirror.isRedAlliance() ? Rotation2d.kZero.getRadians() : Rotation2d.k180deg.getRadians());
     }
 
     // Called every time the scheduler runs while the command is scheduled.

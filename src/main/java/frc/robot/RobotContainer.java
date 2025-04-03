@@ -19,6 +19,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -244,7 +245,7 @@ public class RobotContainer {
         // driverRBButton.onTrue(superstructure.getSetpointCommand(RobotConstants.INTAKE_STATE)
         //         .alongWith(new CoralCommand(coral, 0.5)).until(() -> coral.getBeamBreak()));
 
-        driverLBButton.onTrue(Commands.select(Map.of(1,
+        driverLBButton.whileTrue(Commands.select(Map.of(1,
                 new AlignToBargeCommand(driveBase,
                         () -> -driverJoystick.getRawAxis(ControllerIOConstants.LEFT_STICK_HORIZONTAL)).alongWith(superstructure.getSetpointCommand(RobotConstants.BARGE_STATE)),
                 2, new AlignToProcessorCommand(driveBase)), () -> {
@@ -363,6 +364,9 @@ public class RobotContainer {
                 break;
             }
         }
+
+        LEDs.getInstance().setAligned(aligned);
+        driverJoystick.setRumble(RumbleType.kBothRumble, aligned ? 0.5 : 0);
 
         coralSpeed = superstructure.getPivotRotation().getRadians() < 1.5 ? -0.4 : -0.75;
     }

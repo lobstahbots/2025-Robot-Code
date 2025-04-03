@@ -133,12 +133,12 @@ public final class Constants {
                 ElevatorConstants.BOTTOM_HEIGHT, 0, 0);
         public static final SuperstructureState L3_STATE = new SuperstructureState(Rotation2d.fromRadians(1.03), 41.2,
                 0, 0);
-        public static final SuperstructureState L4_STATE = new SuperstructureState(Rotation2d.fromRadians(0.2), 130, 0,
+        public static final SuperstructureState L4_STATE = new SuperstructureState(Rotation2d.fromRadians(0.1), 130, 0,
                 0);
         public static final SuperstructureState L2_ALGAE_STATE = new SuperstructureState(Rotation2d.fromRadians(-0.91),
-                22, 0, 0);
+                25, 0, 0);
         public static final SuperstructureState L3_ALGAE_STATE = new SuperstructureState(Rotation2d.fromRadians(-0.2),
-                41.2, 0, 0);
+                45, 0, 0);
         public static final SuperstructureState BARGE_STATE = new SuperstructureState(Rotation2d.fromRadians(0.824),
                 136, 0, 0);
         public static final SuperstructureState PROCESSOR_STATE = new SuperstructureState(Rotation2d.fromRadians(-2),
@@ -486,7 +486,7 @@ public final class Constants {
 
         public static final double INTAKE_VELOCITY_THRESHOLD = 0.2;
         // TODO CHANGE!!!!
-        public static final double ALIGNED_DISTANCE = Units.inchesToMeters(1.5); // Meters, I think
+        public static final double ALIGNED_DISTANCE = 0.03; // Meters, I think
         public static final double ALIGNED_ANGLE = 2; // Degrees
     }
 }
