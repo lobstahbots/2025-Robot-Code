@@ -108,12 +108,11 @@ public class LEDs extends SubsystemBase {
                                                 : disabledStandby() //Standby
                                         : null,
                                 robotMode == RobotMode.AUTONOMOUS ? autonomous() : null, //Auto
-                                aligned ? LobstahLEDBuffer.solid(LengthConstants.TOTAL, Color.kGreen) : null,
-                                aligning ? LobstahLEDBuffer.solid(LengthConstants.TOTAL, Color.kBlue) : null,
+                                aligning ? LobstahLEDBuffer.solid(LengthConstants.TOTAL, Color.kBlue).opacity(.5) : null,
+                                aligned ? LobstahLEDBuffer.solid(LengthConstants.TOTAL, Color.kLime) : null,
                                 readyForIntake ? prideFlagCycle(LengthConstants.TOTAL, 8) : null,
-                                hasCoral ? LobstahLEDBuffer.solid(LengthConstants.TOTAL, Color.kPurple) : null,
+                                // hasCoral ? LobstahLEDBuffer.solid(LengthConstants.TOTAL, Color.kPurple) : null,
                                 userSignal ? LobstahLEDBuffer.solid(LengthConstants.TOTAL, Color.kWhite) : null,
-                                // LobstahLEDBuffer.solid(LengthConstants.TOTAL, Color.kYellow))
                                 debugColor == null ? null : LobstahLEDBuffer.solid(LengthConstants.TOTAL, debugColor), //for testing
                                 LobstahLEDBuffer.solid((int)debugLength.get(), Color.kWhite)
                               ).toAdressableLEDBuffer());
