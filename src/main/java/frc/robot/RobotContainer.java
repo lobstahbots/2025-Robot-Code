@@ -277,8 +277,8 @@ public class RobotContainer {
         operatorYButton.onTrue(superstructure.getSetpointCommand(RobotConstants.L3_STATE));
         operatorBButton.onTrue(superstructure.getSetpointCommand(RobotConstants.L4_STATE));
 
-        operatorLeftPaddle.whileTrue(new AlgaeCommand(algae, 1));
-        operatorRightPaddle.whileTrue(new AlgaeCommand(algae, -1));
+        operatorLeftPaddle.whileTrue(new AlgaeCommand(algae, -1));
+        operatorRightPaddle.whileTrue(new AlgaeCommand(algae, 1));
 
         operatorDpadDown.onTrue(superstructure.getSetpointCommand(RobotConstants.L2_ALGAE_STATE));
         operatorDpadDown.whileTrue(new AlgaeCommand(algae, -1));
