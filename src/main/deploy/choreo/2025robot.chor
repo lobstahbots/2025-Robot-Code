@@ -53,6 +53,13 @@
      "val":2.0943951023931953
     }
    },
+   "BARGE_SCORING":{
+    "dimension":"Length",
+    "var":{
+     "exp":"FIELD_LENGTH / 2 - 1 ft - 11 in",
+     "val":8.189912499999998
+    }
+   },
    "BUMPER_THICKNESS":{
     "dimension":"Length",
     "var":{
@@ -163,6 +170,13 @@
     "var":{
      "exp":"(1 ft + 1 in) / 2",
      "val":0.1651
+    }
+   },
+   "TO_PROCESSOR":{
+    "dimension":"Length",
+    "var":{
+     "exp":"61.76 in",
+     "val":1.568704
     }
    },
    "TO_STATION":{
@@ -361,6 +375,20 @@
     "heading":{
      "exp":"306 deg",
      "val":5.340707511102648
+    }
+   },
+   "PROCESSOR":{
+    "x":{
+     "exp":"REEF_DISTANCE + REEF_WIDTH + 88 in - TO_PROCESSOR",
+     "val":5.987796000000001
+    },
+    "y":{
+     "exp":"ROBOT_HALF_WIDTH",
+     "val":0.460375
+    },
+    "heading":{
+     "exp":"-90 deg",
+     "val":-1.5707963267948966
     }
    },
    "REEF_CENTER":{

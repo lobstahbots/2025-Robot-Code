@@ -332,7 +332,7 @@ public final class Constants {
             public static final Pose2d K = ChoreoVariables.getPose("K");
             public static final Pose2d L = ChoreoVariables.getPose("L");
 
-            public static final double BARGE_TRANSLATION_DEPTH_SETPOINT = 0; //idk if this actually belongs here or if theres a way to get this from choreo since this isn't techncially an actual pose
+            public static final double BARGE_TRANSLATION_DEPTH_SETPOINT = ChoreoVariables.get("BARGE_SCORING"); //idk if this actually belongs here or if theres a way to get this from choreo since this isn't techncially an actual pose
 
             public static final Pose2d REEF_CENTER = ChoreoVariables.getPose("REEF_CENTER");
 
@@ -342,6 +342,8 @@ public final class Constants {
             public static final Pose2d FIELD_CENTER = new Pose2d(FIELD_LENGTH / 2, FIELD_WIDTH / 2, new Rotation2d());
 
             public static final Pose2d[] REEF_POSES = { A, B, C, D, E, F, G, H, I, J, K, L };
+
+            public static final Pose2d PROCESSOR = ChoreoVariables.getPose("PROCESSOR");
         }
     }
 
