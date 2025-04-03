@@ -110,7 +110,7 @@ public class LEDs extends SubsystemBase {
                                 robotMode == RobotMode.AUTONOMOUS ? autonomous() : null, //Auto
                                 aligned ? LobstahLEDBuffer.solid(LengthConstants.TOTAL, Color.kGreen) : null,
                                 aligning ? LobstahLEDBuffer.solid(LengthConstants.TOTAL, Color.kBlue) : null,
-                                readyForIntake ? LobstahLEDBuffer.solid(LengthConstants.TOTAL, Color.kRed) : null,
+                                readyForIntake ? prideFlagCycle(LengthConstants.TOTAL, 8) : null,
                                 hasCoral ? LobstahLEDBuffer.solid(LengthConstants.TOTAL, Color.kPurple) : null,
                                 userSignal ? LobstahLEDBuffer.solid(LengthConstants.TOTAL, Color.kWhite) : null,
                                 // LobstahLEDBuffer.solid(LengthConstants.TOTAL, Color.kYellow))
