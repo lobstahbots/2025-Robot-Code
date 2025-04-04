@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.subsystems.drive.DriveBase;
+import frc.robot.util.led.LEDs;
 import frc.robot.util.math.LobstahMath;
 
 /*
@@ -54,6 +55,7 @@ public class AlignToReefCommand extends Command {
         xController.setSetpoint(targetPose.getX());
         yController.setSetpoint(targetPose.getY());
         thetaController.setSetpoint(targetPose.getRotation().getRadians());
+        LEDs.getInstance().setAligning(true);
     }
 
     // Called every time the scheduler runs while the command is scheduled.
@@ -69,7 +71,7 @@ public class AlignToReefCommand extends Command {
     @Override
     public void end(boolean interrupted) {
         driveBase.stopMotors();
-        // LEDs.getInstance().setAligning(false);
+        LEDs.getInstance().setAligning(false);
     }
 
     // Returns true when the command should end.

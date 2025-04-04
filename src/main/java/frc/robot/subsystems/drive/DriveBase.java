@@ -278,8 +278,7 @@ public class DriveBase extends CharacterizableSubsystem {
                     && (hasSeenTag == false
                             || LobstahMath.getDistBetweenPoses(estimatedPose.pose().get().toPose2d(), getPose()) <= 8)
                     && Math.abs(estimatedPose.pose().get().getZ()) < 0.1
-                    && (LobstahMath.getDistBetweenPoses(estimatedPose.pose().get(),
-                            FieldConstants.Poses.REEF_CENTER) > 1.5 || camera.getName().startsWith("front"))) {
+                    && (camera.getName().startsWith("front"))) {
                 if (hasSeenTag == false) {
                     resetPose(new Pose2d(estimatedPose.pose().get().getX(), estimatedPose.pose().get().getY(),
                             getGyroAngle()));

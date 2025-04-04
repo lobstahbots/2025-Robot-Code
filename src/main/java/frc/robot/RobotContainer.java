@@ -18,6 +18,7 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -247,7 +248,8 @@ public class RobotContainer {
 
         driverLBButton.whileTrue(Commands.select(Map.of(1,
                 new AlignToBargeCommand(driveBase,
-                        () -> -driverJoystick.getRawAxis(ControllerIOConstants.LEFT_STICK_HORIZONTAL)).alongWith(superstructure.getSetpointCommand(RobotConstants.BARGE_STATE)),
+                        () -> -driverJoystick.getRawAxis(ControllerIOConstants.LEFT_STICK_HORIZONTAL))
+                                .alongWith(superstructure.getSetpointCommand(RobotConstants.BARGE_STATE)),
                 2, new AlignToProcessorCommand(driveBase)), () -> {
                     if (AlliancePoseMirror.mirrorPose2d(driveBase.getPose()).getY() > FieldConstants.FIELD_WIDTH / 2)
                         return 1;
@@ -257,13 +259,13 @@ public class RobotContainer {
         driverRBButton.onTrue(superstructure.getSetpointCommand(RobotConstants.INTAKE_STATE));
         driverRBButton.whileTrue(new CoralCommand(coral, 0.5));
         driverRBButton.whileTrue(new InstantCommand(() -> leds.setUserSignal(true)).ignoringDisable(true))
-            .onFalse(new InstantCommand(() -> leds.setUserSignal(false)).ignoringDisable(true));
+                .onFalse(new InstantCommand(() -> leds.setUserSignal(false)).ignoringDisable(true));
         driverRTButton.whileTrue(new AlgaeCommand(algae, 1));
         // driverLBButton.onTrue(new AlignToBargeCommand(driveBase)
         //     .alongWith(superstructure.getSetpointCommand(RobotConstants.BARGE_STATE))
         //     .andThen(new AlgaeCommand(algae, 1)).withTimeout(0.5)
         //     .andThen(superstructure.getSetpointCommand(RobotConstants.INTAKE_STATE))); //DON'T UNCOMMENT THIS UNTIL AFTER YOUVE TESTED LINE 246
-        
+
         driverLeftPaddle.whileTrue(new AlignToReefCommand(driveBase, true));
         driverRightPaddle.whileTrue(new AlignToReefCommand(driveBase, false));
 
@@ -366,7 +368,7 @@ public class RobotContainer {
         }
 
         LEDs.getInstance().setAligned(aligned);
-        driverJoystick.setRumble(RumbleType.kBothRumble, aligned ? 0.5 : 0);
+        if (DriverStation.isEnabled()) driverJoystick.setRumble(RumbleType.kBothRumble, aligned ? 0.5 : 0);
 
         coralSpeed = superstructure.getPivotRotation().getRadians() < 1.5 ? -0.4 : -0.75;
     }
