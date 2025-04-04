@@ -268,23 +268,18 @@ public class DriveBase extends CharacterizableSubsystem {
             needGyroReset = false;
         }
 
-        if (Robot.isSimulation()) {
-            var twist = DriveConstants.KINEMATICS.toTwist2d(getPositions());
-            simRotation = gyroInputs.yawPosition.plus(Rotation2d.fromDegrees(twist.dtheta));
-            SmartDashboard.putNumber("Twist Theta", twist.dtheta);
-            swerveOdometry.update(simRotation, getPositions());
-            visionLessOdometry.update(simRotation, getPositions());
-        } else {
-            swerveOdometry.updateWithTime(Timer.getFPGATimestamp(), gyroInputs.yawPosition, getPositions());
-            visionLessOdometry.updateWithTime(Timer.getFPGATimestamp(), gyroInputs.yawPosition, getPositions());
-        }
+        swerveOdometry.updateWithTime(Timer.getFPGATimestamp(), gyroInputs.yawPosition, getPositions());
+        visionLessOdometry.updateWithTime(Timer.getFPGATimestamp(), gyroInputs.yawPosition, getPositions());
         SmartDashboard.putBoolean("Has seen tag", hasSeenTag);
         for (Camera camera : cameras) {
             camera.periodic();
-            if (camera.getName().startsWith("back")) continue;
             Pose estimatedPose = camera.getEstimatedPose(getPose());
-            if (estimatedPose.pose().isPresent() && (hasSeenTag == false
-                    || LobstahMath.getDistBetweenPoses(estimatedPose.pose().get().toPose2d(), getPose()) <= 8) && Math.abs(estimatedPose.pose().get().getZ()) < 0.1) {
+            if (estimatedPose.pose().isPresent()
+                    && (hasSeenTag == false
+                            || LobstahMath.getDistBetweenPoses(estimatedPose.pose().get().toPose2d(), getPose()) <= 8)
+                    && Math.abs(estimatedPose.pose().get().getZ()) < 0.1
+                    && (LobstahMath.getDistBetweenPoses(estimatedPose.pose().get(),
+                            FieldConstants.Poses.REEF_CENTER) > 1.5 || camera.getName().startsWith("front"))) {
                 if (hasSeenTag == false) {
                     resetPose(new Pose2d(estimatedPose.pose().get().getX(), estimatedPose.pose().get().getY(),
                             getGyroAngle()));
@@ -293,8 +288,8 @@ public class DriveBase extends CharacterizableSubsystem {
                 swerveOdometry.addVisionMeasurement(estimatedPose.pose().get().toPose2d(),
                         estimatedPose.timestamp().get(), estimatedPose.stdev().get());
                 Logger.recordOutput("Vision/" + camera.getName() + "Used", true);
-            }
-            else Logger.recordOutput("Vision/" + camera.getName() + "Used", false);
+            } else
+                Logger.recordOutput("Vision/" + camera.getName() + "Used", false);
         }
         resetPose(new Pose2d(MathUtil.clamp(getPose().getX(), 0, FieldConstants.FIELD_LENGTH),
                 MathUtil.clamp(getPose().getY(), 0, FieldConstants.FIELD_WIDTH), getPose().getRotation()));
