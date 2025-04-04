@@ -19,6 +19,7 @@ import com.pathplanner.lib.path.PathConstraints;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.Vector;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Quaternion;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
@@ -281,8 +282,8 @@ public final class Constants {
                     new Rotation3d(Degrees.of(0), Degrees.of(-20), Degrees.of(-35))));
             CAMERA_TRANSFORMS.put("frontright", new Transform3d(Inches.of(11.2435), Inches.of(-13.42), Inches.of(7.164),
                     new Rotation3d(Degrees.of(0), Degrees.of(-20), Degrees.of(35))));
-            CAMERA_TRANSFORMS.put("backleft", new Transform3d(0.067, 0.274, 0.94,
-                    new Rotation3d(Degrees.of(0), Degrees.of(-20), Degrees.of(215))));
+            CAMERA_TRANSFORMS.put("backleft",
+                    new Transform3d(0.067, 0.274, 0.94, new Rotation3d(new Quaternion(0.04, 0.27, 0.047, 0.96))));
             CAMERA_TRANSFORMS.put("backright", new Transform3d(0.067, -0.274, 0.94,
                     new Rotation3d(Degrees.of(0), Degrees.of(-20), Degrees.of(145))));
         }

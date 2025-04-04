@@ -213,7 +213,7 @@ public class RobotContainer {
 
         SmartDashboard.putData("thing", superstructure);
         coral.setDefaultCommand(new CoralCommand(coral, 0.1));
-        algae.setDefaultCommand(new StopAlgaeCommand(algae));
+        algae.setDefaultCommand(new AlgaeCommand(algae, -0.1));
         superstructure
                 .setDefaultCommand(
                         Commands.run(
