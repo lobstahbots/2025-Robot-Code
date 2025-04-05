@@ -214,8 +214,8 @@ public class AutoFactory {
                                                 PathConstants.CONSTRAINTS.maxAngularVelocityRadPerSec(),
                                                 PathConstants.CONSTRAINTS.maxAngularAccelerationRadPerSecSq()),
                                         0.0 // Goal end velocity in meters/sec
-                                ).andThen(new AlignToReefCommand(driveBase, true))
-                                .alongWith(new CoralCommand(coral, 0.2)).withTimeout(9)
+                                ).andThen(new AlignToReefCommand(driveBase, true).withTimeout(3))
+                                .deadlineFor(new CoralCommand(coral, 0.2))
                                 .andThen(new CoralCommand(coral, () -> -0.5).withTimeout(1))
                                 .deadlineFor(superstructure.getSetpointCommand(RobotConstants.L4_STATE))
                                 .andThen(new SwerveDriveCommand(driveBase, -0.2, 0, 0, false, false).withTimeout(2))
@@ -232,22 +232,23 @@ public class AutoFactory {
                                                 PathConstants.CONSTRAINTS.maxAngularAccelerationRadPerSecSq()),
                                         0.0 // Goal end velocity in meters/sec
                                 ).andThen(new AlignToReefCommand(driveBase, true).withTimeout(0.5))
-                                .alongWith(new CoralCommand(coral, 0.2))
+                                .deadlineFor(new CoralCommand(coral, 0.2))
                                 .andThen(new CoralCommand(coral, () -> -0.5).withTimeout(0.5))
                                 .deadlineFor(superstructure.getSetpointCommand(RobotConstants.L4_STATE))
                                 .andThen(new SwerveDriveCommand(driveBase, -0.6, 0, 0, false, false).withTimeout(0.5)))
-                .andThen(superstructure.getSetpointCommand(RobotConstants.L3_ALGAE_STATE)
-                        .deadlineFor(new AlgaeCommand(algae, -1))
+                .andThen(superstructure.getSetpointCommand(RobotConstants.L2_ALGAE_STATE)
                         .alongWith(AutoBuilder.pathfindToPoseFlipped(ChoreoVariables.getPose("SIDE_GH"),
                                 new PathConstraints(3, 0.8, PathConstants.CONSTRAINTS.maxAngularVelocityRadPerSec(),
                                         PathConstants.CONSTRAINTS.maxAngularAccelerationRadPerSecSq()),
                                 0.0 // Goal end velocity in meters/sec
-                        )))
-                .andThen(AutoBuilder.pathfindToPoseFlipped(Poses.H,
+                        )).deadlineFor(new AlgaeCommand(algae, -1)))
+                .andThen(AutoBuilder.pathfindToPoseFlipped(ChoreoVariables.getPose("START_LR"),
                         new PathConstraints(3, 0.8, PathConstants.CONSTRAINTS.maxAngularVelocityRadPerSec(),
                                 PathConstants.CONSTRAINTS.maxAngularAccelerationRadPerSecSq()),
                         0.0 // Goal end velocity in meters/sec
                 ).deadlineFor(superstructure.getSetpointCommand(RobotConstants.BARGE_STATE)))
+                .andThen(new SwerveDriveCommand(driveBase, 0.5, 0, 0, true, false).withTimeout(2)
+                        .deadlineFor(new AlgaeCommand(algae, -0.2)))
                 .andThen(new AlgaeCommand(algae, 1));
     }
 

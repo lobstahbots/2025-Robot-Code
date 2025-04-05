@@ -335,6 +335,8 @@ public class RobotContainer {
         autoChooser.addRoutine("hard-coded 2 piece", List.of(), autoFactory::getTwoPieceHardCodedAuto);
 
         autoChooser.addRoutine("zero", List.of(), superstructure::getZeroCommand);
+
+        autoChooser.addRoutine("barge", List.of(), autoFactory::getCenterBarge);
     }
 
     public void displaySimField() {
@@ -370,6 +372,6 @@ public class RobotContainer {
         LEDs.getInstance().setAligned(aligned);
         if (DriverStation.isEnabled()) driverJoystick.setRumble(RumbleType.kBothRumble, aligned ? 0.5 : 0);
 
-        coralSpeed = superstructure.getPivotRotation().getRadians() < 1.5 ? -0.4 : -0.75;
+        coralSpeed = superstructure.getPivotRotation().getRadians() < 1.5 ? -1 : -0.75;
     }
 }
