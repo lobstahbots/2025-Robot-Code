@@ -194,7 +194,7 @@ public final class Constants {
         public static final double AUTO_ALIGN_TRANSLATION_kD = 0.25;
 
         public static final DriveTrainSimulationConfig MAPLE_SIM_CONFIG = DriveTrainSimulationConfig.Default()
-                .withCustomModuleTranslations(MODULE_LOCATIONS).withGyro(COTS.ofNav2X()).withRobotMass(Pounds.of(40))
+                .withCustomModuleTranslations(MODULE_LOCATIONS).withGyro(COTS.ofNav2X()).withRobotMass(Pounds.of(125))
                 .withSwerveModule(COTS.ofMAXSwerve(DCMotor.getNEO(1), DCMotor.getNeo550(1), WHEEL_COF, 1));
 
         public static class FrontLeftModuleConstants {

@@ -39,14 +39,12 @@ public class CameraIOSim implements CameraIO {
     private final LobstahPoseEstimator poseEstimator;
     private LobstahEstimatedRobotPose estimatedPose = new LobstahEstimatedRobotPose(null, null, 0, 0, 0, 0,
             new ArrayList<>(), VisionConstants.POSE_STRATEGY);
-    // save robot-to-camera over time (Pose3d is easily interpolatable)
-    private final TimeInterpolatableBuffer<Pose3d> camTrf = TimeInterpolatableBuffer
-            .createBuffer(VisionConstants.SIM_BUFFER_LENGTH);
     private static final TimeInterpolatableBuffer<Pose3d> robotPoseBuffer = TimeInterpolatableBuffer
             .createBuffer(VisionConstants.SIM_BUFFER_LENGTH);
     private static final Map<String, Set<VisionTargetSim>> targetSets = new HashMap<>();
     private static final Field2d dbgField = new Field2d();
     private final String cameraName;
+    private final Transform3d cameraToRobot;
 
     /**
      * Adds targets on the field which your vision system is designed to detect. The
@@ -96,6 +94,7 @@ public class CameraIOSim implements CameraIO {
      */
     public CameraIOSim(String cameraName) {
         this.cameraName = cameraName;
+        cameraToRobot = VisionConstants.CAMERA_TRANSFORMS.get(cameraName);
         camera = new PhotonCamera(cameraName);
         cameraProp.setCalibration(VisionConstants.CAMERA_RES_WIDTH, VisionConstants.CAMERA_RES_HEIGHT,
                 Rotation2d.fromDegrees(VisionConstants.CAMERA_FOV_DEG));
@@ -104,24 +103,14 @@ public class CameraIOSim implements CameraIO {
         cameraProp.setAvgLatencyMs(VisionConstants.CAMERA_AVG_LATENCY_MS);
         cameraProp.setLatencyStdDevMs(VisionConstants.CAMERA_LATENCY_STDEV_MS);
         cameraSim = new PhotonCameraSim(camera, cameraProp);
-        poseEstimator = new LobstahPoseEstimator(aprilTagFieldLayout, VisionConstants.POSE_STRATEGY,
-                VisionConstants.CAMERA_TRANSFORMS.get(cameraName));
-        camTrf.addSample(Timer.getFPGATimestamp(),
-                new Pose3d().plus(VisionConstants.CAMERA_TRANSFORMS.get(cameraName)));
+        poseEstimator = new LobstahPoseEstimator(aprilTagFieldLayout, VisionConstants.POSE_STRATEGY, cameraToRobot);
     }
 
     public String getCameraName() {
         return cameraName;
     }
 
-    public void updateInputs(CameraIOInputs inputs, Pose3d robotPoseMeters) {
-        if (robotPoseMeters == null) return;
-
-        // save "real" robot poses over time
-        double now = Timer.getFPGATimestamp();
-        robotPoseBuffer.addSample(now, robotPoseMeters);
-        dbgField.setRobotPose(robotPoseMeters.toPose2d());
-
+    public void updateInputs(CameraIOInputs inputs) {
         var allTargets = targetSets.entrySet().stream().flatMap(entry -> entry.getValue().stream()).toList();
 
         // check if this camera is ready to process and get latency
@@ -137,8 +126,7 @@ public class CameraIOSim implements CameraIO {
 
         // use camera pose from the image capture timestamp
         Pose3d lateRobotPose = getRobotPose(timestampCapture);
-        Pose3d lateCameraPose = lateRobotPose
-                .plus(camTrf.getSample(timestampCapture).orElse(new Pose3d()).minus(new Pose3d()));
+        Pose3d lateCameraPose = lateRobotPose.plus(cameraToRobot);
         dbgField.getObject(cameraName).setPose(lateCameraPose.toPose2d());
 
         // process a PhotonPipelineResult with visible targets
@@ -164,7 +152,8 @@ public class CameraIOSim implements CameraIO {
             estimatedPose = poseOptional.get();
             inputs.updateFrom(estimatedPose);
             inputs.pipelineResult = camResult;
-        } else inputs.clearInputs();
+        } else
+            inputs.clearInputs();
     }
 
     public List<PhotonTrackedTarget> getTrackedTargets() {
@@ -190,5 +179,9 @@ public class CameraIOSim implements CameraIO {
     public static void periodic() {
         targetSets.entrySet().forEach(entry -> dbgField.getObject(entry.getKey())
                 .setPoses(entry.getValue().stream().map(t -> t.getPose().toPose2d()).collect(Collectors.toList())));
+    }
+
+    public static void addSimPose(Pose3d robotPose) {
+        robotPoseBuffer.addSample(Timer.getFPGATimestamp(), robotPose);
     }
 }

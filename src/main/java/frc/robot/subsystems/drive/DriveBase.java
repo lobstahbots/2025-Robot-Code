@@ -49,7 +49,6 @@ public class DriveBase extends CharacterizableSubsystem {
     private final GyroIO gyro;
     private final GyroIOInputsAutoLogged gyroInputs = new GyroIOInputsAutoLogged();
     private boolean isOpenLoop;
-    private Rotation2d simRotation = new Rotation2d();
     private final List<Camera> cameras;
     private boolean hasSeenTag = false;
     private boolean needGyroReset = true;
@@ -189,12 +188,7 @@ public class DriveBase extends CharacterizableSubsystem {
      * @return The field relative ChassisSpeeds.
      */
     public ChassisSpeeds getFieldRelativeChassisSpeeds(ChassisSpeeds robotRelativeSpeeds) {
-        Rotation2d angle = new Rotation2d();
-        if (Robot.isSimulation()) {
-            angle = simRotation;
-        } else {
-            angle = getPose().getRotation();
-        }
+        Rotation2d angle = getPose().getRotation();
         return new ChassisSpeeds(
                 robotRelativeSpeeds.vxMetersPerSecond * angle.getCos()
                         - robotRelativeSpeeds.vyMetersPerSecond * angle.getSin(),
@@ -243,7 +237,6 @@ public class DriveBase extends CharacterizableSubsystem {
      * @return The angle of the gyro as a {@link Rotation2d}.
      */
     public Rotation2d getGyroAngle() {
-        if (Robot.isSimulation()) return simRotation;
         return gyroInputs.yawPosition;
     }
 

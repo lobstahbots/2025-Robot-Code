@@ -88,7 +88,7 @@ public class Camera {
     }
 
     public void periodic() {
-        io.updateInputs(inputs, new Pose3d(robotPose));
+        io.updateInputs(inputs);
         Logger.processInputs("Vision/" + cameraName, inputs);
     }
 

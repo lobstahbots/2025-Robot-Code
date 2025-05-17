@@ -90,7 +90,7 @@ public interface CameraIO {
      */
     public List<PhotonTrackedTarget> getTrackedTargets();
 
-    public void updateInputs(CameraIOInputs inputs, Pose3d robotPose);
+    public void updateInputs(CameraIOInputs inputs);
 
     /**
      * Get the name of this camera

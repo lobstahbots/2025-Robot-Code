@@ -18,5 +18,6 @@ public class GyroIOSim implements GyroIO {
     public void updateInputs(GyroIOInputs inputs) {
         inputs.connected = true;
         inputs.yawPosition = gyroSimulation.getGyroReading();
+        inputs.isCalibrating = false;
     }
 }

@@ -35,7 +35,7 @@ public class CameraIOPhoton implements CameraIO {
         disconnectedAlert.set(false);
     }
 
-    public void updateInputs(CameraIOInputs inputs, Pose3d robotPoseMeters) {
+    public void updateInputs(CameraIOInputs inputs) {
         List<PhotonPipelineResult> poseResults = camera.getAllUnreadResults();
         if (poseResults.size() > 0) {
             PhotonPipelineResult latestResult = poseResults.get(poseResults.size() - 1);
