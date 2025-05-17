@@ -30,6 +30,7 @@ import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.Feet;
 import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.KilogramSquareMeters;
 import static edu.wpi.first.units.Units.Pounds;
@@ -360,8 +361,8 @@ public final class Constants {
     }
 
     public static class PivotConstants {
-        public static final double kP = 8;
-        public static final double kI = 0.35;
+        public static final double kP = Robot.isReal() ? 8 : 5;
+        public static final double kI = Robot.isReal() ? 0.35 : 0;
         public static final double kD = 0;
         public static final double kS = 0;
         public static final double kG = 0.4; //NOTE: 1.0129
@@ -369,18 +370,18 @@ public final class Constants {
         public static final double kA = 0; //NOTE: 0.50095
         public static final TrapezoidProfile.Constraints CONSTRAINTS = new TrapezoidProfile.Constraints(20, 30);
 
-        public static final double VELOCITY_kP = 0.025;
-        public static final double VELOCITY_kI = 0.002;
+        public static final double VELOCITY_kP = Robot.isReal() ? 0.025 : 0;
+        public static final double VELOCITY_kI = Robot.isReal() ? 0.002 : 0;
         public static final double VELOCITY_kD = 0;
 
-        public static final Rotation2d COG_OFFSET = Rotation2d.fromRadians(-0.382);
+        public static final Rotation2d COG_OFFSET = Robot.isReal() ? Rotation2d.fromRadians(-0.382) : Rotation2d.kZero;
 
         public static final int CURRENT_LIMIT = 40;
         public static final int STATOR_CURRENT_LIMIT = 100;
 
         public static final double PIVOT_GEARING = 12;
         public static final double ARM_LENGTH = Units.inchesToMeters(12);
-        public static final double PIVOT_MASS = Units.lbsToKilograms(15);
+        public static final double PIVOT_MASS = Units.lbsToKilograms(5);
         public static final Rotation2d MIN_ANGLE = new Rotation2d(4 - 2 * Math.PI);
         public static final Rotation2d MAX_ANGLE = new Rotation2d(Math.PI / 4);
 
@@ -395,11 +396,11 @@ public final class Constants {
         public static final double GEAR_RATIO = 3.5;
         public static final double PITCH_DIAMETER = Units.inchesToMeters(1.273);
 
-        public static final double kP = 0.5; // TODO: Find actual value NOTE: was 3.596
+        public static final double kP = Robot.isReal() ? 0.5 : 2; // TODO: Find actual value NOTE: was 3.596
         public static final double kI = 0; // TODO: Find actual value
-        public static final double kD = 0.005; //TODO: Find actual value
+        public static final double kD = Robot.isReal() ? 0.005 : 0; //TODO: Find actual value
 
-        public static final double VELOCITY_kP = 0.002;
+        public static final double VELOCITY_kP = Robot.isReal() ? 0.002 : 0;
         public static final double VELOCITY_kI = 0;
         public static final double VELOCITY_kD = 0;
 
@@ -429,6 +430,8 @@ public final class Constants {
         public static final double TOP_HEIGHT = 2;
 
         public static final double ELEVATOR_MASS = 4;
+
+        public static final double ELEVATOR_SIM_RATIO = RobotConstants.L4_STATE.elevatorHeight / Feet.of(4.7).baseUnitMagnitude();
     }
 
     public static class RampConstants {
