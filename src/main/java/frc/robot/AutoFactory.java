@@ -12,6 +12,7 @@ import com.pathplanner.lib.path.GoalEndState;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.path.Waypoint;
+import com.pathplanner.lib.trajectory.PathPlannerTrajectory;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -222,9 +223,10 @@ public class AutoFactory {
      * @return the constructed command
      */
     public Command getPathSetpointDelay(PathPlannerPath path, SuperstructureState state, double beforeEnd) {
-        return AutoBuilder.followPath(path)
-                .alongWith(Commands.waitSeconds(Math.max(path.numPoints() * 0.05 - beforeEnd, 0))
-                        .andThen(superstructure.getSetpointCommand(state)));
+        return AutoBuilder.followPath(path).andThen(driveBase.runOnce(driveBase::stopMotors))
+                .alongWith(Commands.waitSeconds(Math.max(
+                        path.getIdealTrajectory(DriveConstants.ROBOT_CONFIG).get().getTotalTimeSeconds() - beforeEnd,
+                        0)).andThen(superstructure.getSetpointCommand(state)));
     }
 
     /**
@@ -474,8 +476,8 @@ public class AutoFactory {
     public Command getStartCommand(StartingPosition startingPosition, char pipe) {
         return Commands.runOnce(() -> poseReset.accept(AlliancePoseMirror.mirrorPose2d(startingPosition.pose)))
                 .andThen(getPathFindToPathCommand(startingPosition.name() + "_" + pipe, PathType.CHOREO))
-                .andThen(driveBase.runOnce(driveBase::stopMotors)).deadlineFor(new CoralCommand(coral, 0.2))
-                .andThen(new CoralCommand(coral, -0.5).withTimeout(0.5))
+                .andThen(new AlignToReefCommand(driveBase, (pipe - 'A') % 2 == 1).withTimeout(0.5))
+                .deadlineFor(new CoralCommand(coral, 0.2)).andThen(new CoralCommand(coral, -0.5).withTimeout(0.5))
                 .deadlineFor(superstructure.getSetpointCommand(RobotConstants.L4_STATE));
         // .andThen(driveBase.run(driveBase::stopMotors));
         // .alongWith(superstructure.getSetpointCommand(RobotConstants.L4_STATE))
@@ -505,9 +507,9 @@ public class AutoFactory {
      * @return the constructed command
      */
     public Command getScoreCommand(CoralStation coralStation, char pipe) {
-        return getPathFindToPathCommand(coralStation.name() + "_" + pipe, PathType.CHOREO, 0)
-                .andThen(new CoralCommand(coral, -0.5).withTimeout(0.5))
-                .deadlineFor(superstructure.getSetpointCommand(RobotConstants.L4_STATE));
+        return getPathSetpointDelay(getChoreoPath(coralStation.name() + "_" + pipe, 0), RobotConstants.L4_STATE, 2)
+                .andThen(new AlignToReefCommand(driveBase, (pipe - 'A') % 2 == 1).withTimeout(0.5))
+                .andThen(new CoralCommand(coral, -0.5).withTimeout(0.5));
     }
 
     /**
