@@ -36,6 +36,7 @@ import frc.robot.subsystems.drive.DriveBase;
 import frc.robot.subsystems.endEffector.algae.AlgaeEndEffector;
 import frc.robot.subsystems.endEffector.coral.CoralEndEffector;
 import frc.robot.subsystems.superstructure.Superstructure;
+import frc.robot.subsystems.superstructure.SuperstructureState;
 import frc.robot.util.choreo.ChoreoVariables;
 import frc.robot.util.sysId.CharacterizableSubsystem;
 import frc.robot.util.trajectory.AlliancePoseMirror;
@@ -181,6 +182,52 @@ public class AutoFactory {
     }
 
     /**
+     * Get a choreo trajectory.
+     * 
+     * @param pathname path name
+     * @return path
+     */
+    public PathPlannerPath getChoreoPath(String pathname) {
+        try {
+            return PathPlannerPath.fromChoreoTrajectory(pathname);
+        } catch (Exception exception) {
+            DriverStation.reportError("Could not load path " + pathname + ". Error: " + exception.getMessage(), false);
+            return new PathPlannerPath(null, null, null, null);
+        }
+    }
+
+    /**
+     * Get a choreo trajectory.
+     * 
+     * @param pathname   path name
+     * @param splitIndex split index
+     * @return path
+     */
+    public PathPlannerPath getChoreoPath(String pathname, int splitIndex) {
+        try {
+            return PathPlannerPath.fromChoreoTrajectory(pathname, splitIndex);
+        } catch (Exception exception) {
+            DriverStation.reportError("Could not load path " + pathname + ". Error: " + exception.getMessage(), false);
+            return new PathPlannerPath(null, null, null, null);
+        }
+    }
+
+    /**
+     * Get a command which goes to a superstructure state a specified amount of time
+     * before the path ends, or at the beginning of the path if it
+     * 
+     * @param path      The path to follow
+     * @param state     The superstructure state to go to
+     * @param beforeEnd The time before the end to go to the state
+     * @return the constructed command
+     */
+    public Command getPathSetpointDelay(PathPlannerPath path, SuperstructureState state, double beforeEnd) {
+        return AutoBuilder.followPath(path)
+                .alongWith(Commands.waitSeconds(Math.max(path.numPoints() * 0.05 - beforeEnd, 0))
+                        .andThen(superstructure.getSetpointCommand(state)));
+    }
+
+    /**
      * Constructs a path following command through a provided set of waypoints. Ends
      * with desired holonomic rotation.
      * 
@@ -267,6 +314,50 @@ public class AutoFactory {
                 .andThen(new SwerveDriveCommand(driveBase, 0.5, 0, 0, true, false).withTimeout(0.5)
                         .deadlineFor(new AlgaeCommand(algae, -0.2)))
                 .andThen(new AlgaeCommand(algae, 1));
+    }
+
+    public Command getAlgaeFromNet(String side) {
+        SuperstructureState state = (side.equals("CD") || side.equals("GH") || side.equals("KL"))
+                ? RobotConstants.L2_ALGAE_STATE
+                : RobotConstants.L3_ALGAE_STATE;
+        return superstructure.getSetpointCommand(state)
+                .alongWith(
+                        getPathFindToPathCommand("NET_" + side, PathType.CHOREO, 0).andThen(Commands.waitSeconds(0.5)))
+                .deadlineFor(new AlgaeCommand(algae, -1))
+                .andThen(getPathSetpointDelay(getChoreoPath("NET_" + side, 1), RobotConstants.BARGE_STATE, 3)
+                        .deadlineFor(new AlgaeCommand(algae, -0.2)))
+                .andThen(new AlgaeCommand(algae, 1).withTimeout(0.5));
+    }
+
+    public Command getAlgaeAuto(String side2, String side3) {
+        return superstructure.getZeroCommand()
+                .andThen(
+                        AutoBuilder
+                                .pathfindToPoseFlipped(Poses.H,
+                                        new PathConstraints(3, 0.8,
+                                                PathConstants.CONSTRAINTS.maxAngularVelocityRadPerSec(),
+                                                PathConstants.CONSTRAINTS.maxAngularAccelerationRadPerSecSq()),
+                                        0.0 // Goal end velocity in meters/sec
+                                ).andThen(new AlignToReefCommand(driveBase, true).withTimeout(0.5))
+                                .deadlineFor(new CoralCommand(coral, 0.2))
+                                .andThen(new CoralCommand(coral, () -> -0.5).withTimeout(0.5))
+                                .deadlineFor(superstructure.getSetpointCommand(RobotConstants.L4_STATE))
+                                .andThen(new SwerveDriveCommand(driveBase, -0.6, 0, 0, false, false).withTimeout(0.5)))
+                .andThen(
+                        superstructure.getSetpointCommand(RobotConstants.L2_ALGAE_STATE)
+                                .alongWith(AutoBuilder.pathfindToPoseFlipped(ChoreoVariables.getPose("SIDE_GH"),
+                                        new PathConstraints(3, 0.8,
+                                                PathConstants.CONSTRAINTS.maxAngularVelocityRadPerSec(),
+                                                PathConstants.CONSTRAINTS.maxAngularAccelerationRadPerSecSq()),
+                                        0.0 // Goal end velocity in meters/sec
+                                ).andThen(Commands.waitSeconds(0.5))).deadlineFor(new AlgaeCommand(algae, -1)))
+                .andThen(getPathSetpointDelay(getChoreoPath("NET_GH", 1), RobotConstants.BARGE_STATE, 3))
+                .andThen(new AlgaeCommand(algae, 1).withTimeout(0.5)).andThen(getAlgaeFromNet(side2))
+                .andThen(getAlgaeFromNet(side3));
+    }
+
+    public Command getAlgaeAutoSelected() {
+        return getAlgaeAuto((String) responses.get().get(0), (String) responses.get().get(1));
     }
 
     public Command getTwoPieceHardCodedAuto() {

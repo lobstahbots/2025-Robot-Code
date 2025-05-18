@@ -197,10 +197,11 @@ public class RobotContainer {
                 CoralEndEffectorConstants.BEAM_BREAK_ID));
         algae = new AlgaeEndEffector(new AlgaeEndEffectorIOSparkMax(AlgaeEndEffectorConstants.MOTOR_ID));
 
-        this.autoFactory = new AutoFactory(driveBase, coral, algae, superstructure, autoChooser::getResponses, (Pose2d newPose) -> {
-            if (Robot.isSimulation()) driveSimulation.setSimulationWorldPose(newPose);
-            driveBase.resetPose(newPose);
-        });
+        this.autoFactory = new AutoFactory(driveBase, coral, algae, superstructure, autoChooser::getResponses,
+                (Pose2d newPose) -> {
+                    if (Robot.isSimulation()) driveSimulation.setSimulationWorldPose(newPose);
+                    driveBase.resetPose(newPose);
+                });
 
         setDefaultCommands();
         smartDashSetup();
@@ -341,6 +342,11 @@ public class RobotContainer {
         autoChooser.addRoutine("zero", List.of(), superstructure::getZeroCommand);
 
         autoChooser.addRoutine("barge", List.of(), autoFactory::getCenterBarge);
+
+        autoChooser.addRoutine("Configurable Barge", List.of(
+                new AutoQuestion<>("Side 1", Map.of("AB", "AB", "CD", "CD", "EF", "EF", "IJ", "IJ", "KL", "KL")),
+                new AutoQuestion<>("Side 2", Map.of("AB", "AB", "CD", "CD", "EF", "EF", "IJ", "IJ", "KL", "KL"))),
+                autoFactory::getAlgaeAutoSelected);
     }
 
     public void displaySimField() {

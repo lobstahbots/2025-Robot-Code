@@ -377,6 +377,20 @@
      "val":5.340707511102648
     }
    },
+   "NET_SCORING":{
+    "x":{
+     "exp":"BARGE_SCORING",
+     "val":8.189912499999998
+    },
+    "y":{
+     "exp":"FIELD_WIDTH / 2 + CAGE_MIDDLE",
+     "val":6.1690249999999995
+    },
+    "heading":{
+     "exp":"pi rad",
+     "val":3.141592653589793
+    }
+   },
    "PROCESSOR":{
     "x":{
      "exp":"REEF_DISTANCE + REEF_WIDTH + 88 in - TO_PROCESSOR",
