@@ -4,21 +4,28 @@
 
 package frc.robot;
 
+import static edu.wpi.first.units.Units.Inches;
+import static edu.wpi.first.units.Units.Meters;
+import static edu.wpi.first.units.Units.MetersPerSecond;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import org.ironmaple.simulation.SimulatedArena;
 import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
+import org.ironmaple.simulation.seasonspecific.reefscape2025.ReefscapeCoralOnFly;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedNetworkString;
 
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
@@ -41,6 +48,7 @@ import frc.robot.Constants.DriveConstants.FrontLeftModuleConstants;
 import frc.robot.Constants.DriveConstants.FrontRightModuleConstants;
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.FieldConstants;
+import frc.robot.Constants.IOConstants;
 import frc.robot.Constants.FieldConstants.Poses;
 import frc.robot.Constants.IOConstants.ControllerIOConstants;
 import frc.robot.Constants.LEDConstants;
@@ -49,7 +57,6 @@ import frc.robot.Constants.RobotConstants;
 import frc.robot.Constants.SimConstants;
 import frc.robot.Constants.VisionConstants;
 import frc.robot.commands.algaeEndEffector.AlgaeCommand;
-import frc.robot.commands.algaeEndEffector.StopAlgaeCommand;
 import frc.robot.commands.coralEndEffectorCommands.CoralCommand;
 import frc.robot.commands.drivebase.AlignToBargeCommand;
 import frc.robot.commands.drivebase.AlignToProcessorCommand;
@@ -63,6 +70,7 @@ import frc.robot.subsystems.drive.SwerveModuleIOSparkMax;
 import frc.robot.subsystems.endEffector.algae.AlgaeEndEffector;
 import frc.robot.subsystems.endEffector.algae.AlgaeEndEffectorIOSparkMax;
 import frc.robot.subsystems.endEffector.coral.CoralEndEffector;
+import frc.robot.subsystems.endEffector.coral.CoralEndEffectorIOSim;
 import frc.robot.subsystems.endEffector.coral.CoralEndEffectorIOSparkMax;
 import frc.robot.subsystems.superstructure.ElevatorIOSim;
 import frc.robot.subsystems.superstructure.ElevatorIOTalonFX;
@@ -168,6 +176,8 @@ public class RobotContainer {
             superstructure = new Superstructure(
                     new ElevatorIOTalonFX(ElevatorConstants.LEFT_ELEVATOR_ID, ElevatorConstants.RIGHT_ELEVATOR_ID),
                     new PivotIOTalonFX(PivotConstants.MOTOR_ID, PivotConstants.ENCODER_ID));
+            coral = new CoralEndEffector(new CoralEndEffectorIOSparkMax(CoralEndEffectorConstants.LEFT_ID,
+                    CoralEndEffectorConstants.BEAM_BREAK_ID));
 
         } else {
             driveSimulation = new SwerveDriveSimulation(DriveConstants.MAPLE_SIM_CONFIG,
@@ -191,10 +201,23 @@ public class RobotContainer {
                     frontRight, backLeft, backRight, false);
 
             superstructure = new Superstructure(new ElevatorIOSim(), new PivotIOSim());
+
+            coral = new CoralEndEffector(new CoralEndEffectorIOSim((double speed) -> {
+                SimulatedArena.getInstance().addGamePieceProjectile(new ReefscapeCoralOnFly(
+                        driveSimulation.getSimulatedDriveTrainPose().getTranslation(),
+                        new Translation2d(
+                                Meters.of(0.1906)
+                                        .plus(Inches.of(12.54375).times(superstructure.getPivotRotation().getCos())),
+                                Meters.zero()),
+                        driveSimulation.getDriveTrainSimulatedChassisSpeedsFieldRelative(),
+                        driveSimulation.getSimulatedDriveTrainPose().getRotation(),
+                        Meters.of(0.614 + superstructure.getExtension() / ElevatorConstants.ELEVATOR_SIM_RATIO)
+                                .plus(Inches.of(12.54375).times(superstructure.getPivotRotation().getSin())),
+                        MetersPerSecond.of(-2 * speed),
+                        superstructure.getPivotRotation().plus(Rotation2d.kCW_90deg).getMeasure()));
+            }));
         }
 
-        coral = new CoralEndEffector(new CoralEndEffectorIOSparkMax(CoralEndEffectorConstants.LEFT_ID,
-                CoralEndEffectorConstants.BEAM_BREAK_ID));
         algae = new AlgaeEndEffector(new AlgaeEndEffectorIOSparkMax(AlgaeEndEffectorConstants.MOTOR_ID));
 
         this.autoFactory = new AutoFactory(driveBase, coral, algae, superstructure, autoChooser::getResponses,
@@ -223,13 +246,18 @@ public class RobotContainer {
         superstructure
                 .setDefaultCommand(
                         Commands.run(
-                                () -> superstructure.setState(new SuperstructureState(
-                                        superstructure.getGoal().pivotRotation
-                                                .minus(Rotation2d.fromRadians(0.1 * operatorJoystick
-                                                        .getRawAxis(ControllerIOConstants.LEFT_STICK_VERTICAL))),
-                                        superstructure.getGoal().elevatorHeight + operatorJoystick
-                                                .getRawAxis(ControllerIOConstants.RIGHT_STICK_VERTICAL) * -2,
-                                        0, 0)),
+                                () -> superstructure
+                                        .setState(new SuperstructureState(
+                                                superstructure.getGoal().pivotRotation
+                                                        .minus(Rotation2d.fromRadians(0.1 * MathUtil.applyDeadband(
+                                                                operatorJoystick.getRawAxis(
+                                                                        ControllerIOConstants.LEFT_STICK_VERTICAL),
+                                                                IOConstants.JOYSTICK_DEADBAND))),
+                                                superstructure.getGoal().elevatorHeight + MathUtil.applyDeadband(
+                                                        operatorJoystick
+                                                                .getRawAxis(ControllerIOConstants.RIGHT_STICK_VERTICAL),
+                                                        IOConstants.JOYSTICK_DEADBAND) * -2,
+                                                0, 0)),
                                 superstructure));
     }
 
@@ -239,7 +267,7 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
-        return autoChooser.getCommand();
+        return Commands.runOnce(SimulatedArena.getInstance()::resetFieldForAuto).andThen(autoChooser.getCommand());
     }
 
     public void configureButtonBindings() {
@@ -353,6 +381,8 @@ public class RobotContainer {
         if (Robot.isReal()) return;
 
         Logger.recordOutput("FieldSimulation/RobotPosition", driveSimulation.getSimulatedDriveTrainPose());
+        Logger.recordOutput("FieldSimulation/Algae", SimulatedArena.getInstance().getGamePiecesArrayByType("Algae"));
+        Logger.recordOutput("FieldSimulation/Coral", SimulatedArena.getInstance().getGamePiecesArrayByType("Coral"));
         CameraIOSim.addSimPose(new Pose3d(driveSimulation.getSimulatedDriveTrainPose()));
     }
 

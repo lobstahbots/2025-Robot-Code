@@ -58,7 +58,7 @@ public final class Constants {
     }
 
     public static class IOConstants {
-        public static final double JOYSTICK_DEADBAND = 0.05;
+        public static final double JOYSTICK_DEADBAND = Robot.isReal() ? 0.05 : 0.15;
 
         public static class ControllerIOConstants {
             public static final int DRIVER_CONTROLLER_PORT = 0;
