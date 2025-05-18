@@ -47,7 +47,7 @@ public class AutonSelector<V> extends SubsystemBase {
             publisher.set("N/A");
             questionPublishers.add(publisher);
             questionChoosers
-                    .add(new LoggedDashboardChooser<>(key + "/Question #" + Integer.toString(i + 1) + "Chooser"));
+                    .add(new LoggedDashboardChooser<>(key + "/Question #" + Integer.toString(i + 1) + " Chooser"));
             questionChoosers.get(i).addDefaultOption("N/A", "N/A");
         }
     }

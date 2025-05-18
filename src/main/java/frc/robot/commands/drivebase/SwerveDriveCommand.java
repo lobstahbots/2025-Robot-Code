@@ -104,7 +104,7 @@ public class SwerveDriveCommand extends Command {
                     linearVelocity.getY() * DriveConstants.MAX_DRIVE_SPEED, omega * DriveConstants.MAX_ANGULAR_SPEED);
 
             driveBase
-                    .driveRobotRelative(ChassisSpeeds.fromFieldRelativeSpeeds(chassisSpeeds, driveBase.getGyroAngle()));
+                    .driveRobotRelative(ChassisSpeeds.fromFieldRelativeSpeeds(chassisSpeeds, driveBase.getPose().getRotation()));
         } else {
             driveBase.driveRobotRelative(new ChassisSpeeds(strafeXSupplier.getAsDouble(), strafeYSupplier.getAsDouble(),
                     rotationSupplier.getAsDouble()));

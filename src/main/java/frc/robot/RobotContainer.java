@@ -197,7 +197,10 @@ public class RobotContainer {
                 CoralEndEffectorConstants.BEAM_BREAK_ID));
         algae = new AlgaeEndEffector(new AlgaeEndEffectorIOSparkMax(AlgaeEndEffectorConstants.MOTOR_ID));
 
-        this.autoFactory = new AutoFactory(driveBase, coral, algae, superstructure, autoChooser::getResponses);
+        this.autoFactory = new AutoFactory(driveBase, coral, algae, superstructure, autoChooser::getResponses, (Pose2d newPose) -> {
+            if (Robot.isSimulation()) driveSimulation.setSimulationWorldPose(newPose);
+            driveBase.resetPose(newPose);
+        });
 
         setDefaultCommands();
         smartDashSetup();

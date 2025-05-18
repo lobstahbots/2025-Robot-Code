@@ -1,6 +1,7 @@
 package frc.robot;
 
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import org.littletonrobotics.junction.Logger;
@@ -47,6 +48,7 @@ public class AutoFactory {
     private final AlgaeEndEffector algae;
     private final PPHolonomicDriveController driveController = new PPHolonomicDriveController(
             DriveConstants.TRANSLATION_PID_CONSTANTS, DriveConstants.ROTATION_PID_CONSTANTS);
+    private final Consumer<Pose2d> poseReset;
 
     /**
      * Create a new auto factory.
@@ -56,12 +58,13 @@ public class AutoFactory {
      * @see frc.robot.util.auto.AutonSelector
      */
     public AutoFactory(DriveBase driveBase, CoralEndEffector coral, AlgaeEndEffector algae,
-            Superstructure superstructure, Supplier<List<Object>> responsesSupplier) {
+            Superstructure superstructure, Supplier<List<Object>> responsesSupplier, Consumer<Pose2d> poseReset) {
         this.responses = responsesSupplier;
         this.driveBase = driveBase;
         this.coral = coral;
         this.algae = algae;
         this.superstructure = superstructure;
+        this.poseReset = poseReset;
 
         AutoBuilder.configure(driveBase::getPose, driveBase::resetPose, driveBase::getRobotRelativeSpeeds,
                 (chassisSpeeds, driveFeedforwards) -> driveBase.driveRobotRelative(chassisSpeeds), driveController,
@@ -137,7 +140,7 @@ public class AutoFactory {
                 default:
                     path = PathPlannerPath.fromChoreoTrajectory(pathname, segment);
             }
-            return AutoBuilder.pathfindThenFollowPath(path, PathConstants.CONSTRAINTS);
+            return AutoBuilder.followPath(path);
         } catch (Exception exception) {
             DriverStation.reportError("Could not load path " + pathname + ". Error: " + exception.getMessage(), false);
             return Commands.none();
@@ -247,7 +250,21 @@ public class AutoFactory {
                                 PathConstants.CONSTRAINTS.maxAngularAccelerationRadPerSecSq()),
                         0.0 // Goal end velocity in meters/sec
                 ).deadlineFor(superstructure.getSetpointCommand(RobotConstants.BARGE_STATE)))
-                .andThen(new SwerveDriveCommand(driveBase, 0.5, 0, 0, true, false).withTimeout(2)
+                .andThen(new SwerveDriveCommand(driveBase, 0.5, 0, 0, true, false)
+                        .withTimeout(0.5).deadlineFor(new AlgaeCommand(algae, -0.2)))
+                .andThen(new AlgaeCommand(algae, 1).withTimeout(1))
+                .andThen(superstructure.getSetpointCommand(RobotConstants.L3_ALGAE_STATE)
+                        .alongWith(AutoBuilder.pathfindToPoseFlipped(ChoreoVariables.getPose("SIDE_IJ"),
+                                new PathConstraints(3, 0.8, PathConstants.CONSTRAINTS.maxAngularVelocityRadPerSec(),
+                                        PathConstants.CONSTRAINTS.maxAngularAccelerationRadPerSecSq()),
+                                0.0 // Goal end velocity in meters/sec
+                        )).deadlineFor(new AlgaeCommand(algae, -1)))
+                .andThen(AutoBuilder.pathfindToPoseFlipped(ChoreoVariables.getPose("START_LR"),
+                        new PathConstraints(3, 0.8, PathConstants.CONSTRAINTS.maxAngularVelocityRadPerSec(),
+                                PathConstants.CONSTRAINTS.maxAngularAccelerationRadPerSecSq()),
+                        0.0 // Goal end velocity in meters/sec
+                ).deadlineFor(superstructure.getSetpointCommand(RobotConstants.BARGE_STATE)))
+                .andThen(new SwerveDriveCommand(driveBase, 0.5, 0, 0, true, false).withTimeout(0.5)
                         .deadlineFor(new AlgaeCommand(algae, -0.2)))
                 .andThen(new AlgaeCommand(algae, 1));
     }
@@ -364,8 +381,9 @@ public class AutoFactory {
      * @return The constructed command
      */
     public Command getStartCommand(StartingPosition startingPosition, char pipe) {
-        return getPathFindToPathCommand(startingPosition.name() + "_" + pipe, PathType.CHOREO)
-                .andThen(driveBase.run(driveBase::stopMotors)).deadlineFor(new CoralCommand(coral, 0.2))
+        return Commands.runOnce(() -> poseReset.accept(AlliancePoseMirror.mirrorPose2d(startingPosition.pose)))
+                .andThen(getPathFindToPathCommand(startingPosition.name() + "_" + pipe, PathType.CHOREO))
+                .andThen(driveBase.runOnce(driveBase::stopMotors)).deadlineFor(new CoralCommand(coral, 0.2))
                 .andThen(new CoralCommand(coral, -0.5).withTimeout(0.5))
                 .deadlineFor(superstructure.getSetpointCommand(RobotConstants.L4_STATE));
         // .andThen(driveBase.run(driveBase::stopMotors));
