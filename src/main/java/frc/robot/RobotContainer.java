@@ -56,8 +56,6 @@ import frc.robot.Constants.PivotConstants;
 import frc.robot.Constants.RobotConstants;
 import frc.robot.Constants.SimConstants;
 import frc.robot.Constants.VisionConstants;
-import frc.robot.commands.algaeEndEffector.AlgaeCommand;
-import frc.robot.commands.coralEndEffectorCommands.CoralCommand;
 import frc.robot.commands.drivebase.AlignToBargeCommand;
 import frc.robot.commands.drivebase.AlignToProcessorCommand;
 import frc.robot.commands.drivebase.AlignToReefCommand;
@@ -241,8 +239,8 @@ public class RobotContainer {
                 () -> 0 / RobotConstants.L4_STATE.elevatorHeight * superstructure.getExtension() + 1));
 
         SmartDashboard.putData("thing", superstructure);
-        coral.setDefaultCommand(new CoralCommand(coral, 0.1));
-        algae.setDefaultCommand(new AlgaeCommand(algae, -0.1));
+        coral.setDefaultCommand(coral.spin(0.1));
+        algae.setDefaultCommand(algae.spin(-0.1));
         superstructure
                 .setDefaultCommand(
                         Commands.run(
@@ -273,11 +271,11 @@ public class RobotContainer {
     public void configureButtonBindings() {
 
         //driver
-        driverLTButton.whileTrue(new CoralCommand(coral, () -> coralSpeed));
+        driverLTButton.whileTrue(coral.spin(coralSpeed));
         // driverRBButton.whileTrue(superstructure.getSetpointCommand(RobotConstants.INTAKE_STATE));
-        // driverRBButton.whileTrue(new CoralCommand(coral, 0.5));
+        // driverRBButton.whileTrue(coral.spin(0.5));
         // driverRBButton.onTrue(superstructure.getSetpointCommand(RobotConstants.INTAKE_STATE)
-        //         .alongWith(new CoralCommand(coral, 0.5)).until(() -> coral.getBeamBreak()));
+        //         .alongWith(coral.spin(0.5)).until(() -> coral.getBeamBreak()));
 
         driverLBButton.whileTrue(Commands.select(Map.of(1,
                 new AlignToBargeCommand(driveBase,
@@ -290,13 +288,13 @@ public class RobotContainer {
                 })); //TEST THIS VERSION FIRST
 
         driverRBButton.onTrue(superstructure.getSetpointCommand(RobotConstants.INTAKE_STATE));
-        driverRBButton.whileTrue(new CoralCommand(coral, 0.5));
+        driverRBButton.whileTrue(coral.spin(0.5));
         driverRBButton.whileTrue(new InstantCommand(() -> leds.setUserSignal(true)).ignoringDisable(true))
                 .onFalse(new InstantCommand(() -> leds.setUserSignal(false)).ignoringDisable(true));
-        driverRTButton.whileTrue(new AlgaeCommand(algae, 1));
+        driverRTButton.whileTrue(algae.spin(1));
         // driverLBButton.onTrue(new AlignToBargeCommand(driveBase)
         //     .alongWith(superstructure.getSetpointCommand(RobotConstants.BARGE_STATE))
-        //     .andThen(new AlgaeCommand(algae, 1)).withTimeout(0.5)
+        //     .andThen(algae.spin(1)).withTimeout(0.5)
         //     .andThen(superstructure.getSetpointCommand(RobotConstants.INTAKE_STATE))); //DON'T UNCOMMENT THIS UNTIL AFTER YOUVE TESTED LINE 246
 
         driverLeftPaddle.whileTrue(new AlignToReefCommand(driveBase, true));
@@ -310,22 +308,22 @@ public class RobotContainer {
         // driverDpadUp.whileTrue(new SuperstructureStateCommand(superstructure, RobotConstants.L3_ALGAE_STATE));
 
         //operator
-        operatorLTButton.whileTrue(new CoralCommand(coral, () -> coralSpeed));
-        operatorRTButton.whileTrue(new CoralCommand(coral, 0.5));
+        operatorLTButton.whileTrue(coral.spin(coralSpeed));
+        operatorRTButton.whileTrue(coral.spin(0.5));
         operatorRBButton.onTrue(superstructure.getSetpointCommand(RobotConstants.INTAKE_STATE));
-        operatorLBButton.whileTrue(new AlgaeCommand(algae, 1));
+        operatorLBButton.whileTrue(algae.spin(1));
 
         operatorXButton.onTrue(superstructure.getSetpointCommand(RobotConstants.L2_STATE));
         operatorYButton.onTrue(superstructure.getSetpointCommand(RobotConstants.L3_STATE));
         operatorBButton.onTrue(superstructure.getSetpointCommand(RobotConstants.L4_STATE));
 
-        //operatorLeftPaddle.whileTrue(new AlgaeCommand(algae, -1));
-        operatorRightPaddle.whileTrue(new AlgaeCommand(algae, -1));
+        //operatorLeftPaddle.whileTrue(algae.spin(-1));
+        operatorRightPaddle.whileTrue(algae.spin(-1));
 
         operatorDpadDown.onTrue(superstructure.getSetpointCommand(RobotConstants.L2_ALGAE_STATE));
-        operatorDpadDown.whileTrue(new AlgaeCommand(algae, -1));
+        operatorDpadDown.whileTrue(algae.spin(-1));
         operatorDpadUp.onTrue(superstructure.getSetpointCommand(RobotConstants.L3_ALGAE_STATE));
-        operatorDpadUp.whileTrue(new AlgaeCommand(algae, -1));
+        operatorDpadUp.whileTrue(algae.spin(-1));
         operatorDpadLeft.onTrue(superstructure.getSetpointCommand(RobotConstants.BARGE_STATE));
         operatorDpadRight.onTrue(superstructure.getSetpointCommand(RobotConstants.PROCESSOR_STATE));
     }

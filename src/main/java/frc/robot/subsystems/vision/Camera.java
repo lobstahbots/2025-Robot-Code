@@ -16,7 +16,6 @@ import frc.robot.Constants.VisionConstants;
 public class Camera {
     private final CameraIO io;
     private final CameraIOInputsAutoLogged inputs = new CameraIOInputsAutoLogged();
-    private static Pose2d robotPose = new Pose2d();
     public final String cameraName;
 
     public Camera(CameraIO io) {
@@ -32,7 +31,6 @@ public class Camera {
      *         deviation, and timestamp
      */
     public Pose getEstimatedPose(Pose2d odometryPose) {
-        robotPose = odometryPose;
         if (inputs.visibleFiducialIDs.length == 0) return Pose.empty();
         Pose3d resolvedPose = null;
         double resolvedReprojErr = 0;
