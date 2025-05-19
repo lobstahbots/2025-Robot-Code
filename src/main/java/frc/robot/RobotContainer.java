@@ -56,9 +56,6 @@ import frc.robot.Constants.PivotConstants;
 import frc.robot.Constants.RobotConstants;
 import frc.robot.Constants.SimConstants;
 import frc.robot.Constants.VisionConstants;
-import frc.robot.commands.drivebase.AlignToBargeCommand;
-import frc.robot.commands.drivebase.AlignToProcessorCommand;
-import frc.robot.commands.drivebase.AlignToReefCommand;
 import frc.robot.commands.drivebase.SwerveDriveCommand;
 import frc.robot.subsystems.drive.DriveBase;
 import frc.robot.subsystems.drive.GyroIONavX;
@@ -278,10 +275,9 @@ public class RobotContainer {
         //         .alongWith(coral.spin(0.5)).until(() -> coral.getBeamBreak()));
 
         driverLBButton.whileTrue(Commands.select(Map.of(1,
-                new AlignToBargeCommand(driveBase,
-                        () -> -driverJoystick.getRawAxis(ControllerIOConstants.LEFT_STICK_HORIZONTAL))
-                                .alongWith(superstructure.getSetpointCommand(RobotConstants.BARGE_STATE)),
-                2, new AlignToProcessorCommand(driveBase)), () -> {
+                driveBase.alignToBarge(() -> -driverJoystick.getRawAxis(ControllerIOConstants.LEFT_STICK_HORIZONTAL))
+                        .alongWith(superstructure.getSetpointCommand(RobotConstants.BARGE_STATE)),
+                2, driveBase.alignToProcessor()), () -> {
                     if (AlliancePoseMirror.mirrorPose2d(driveBase.getPose()).getY() > FieldConstants.FIELD_WIDTH / 2)
                         return 1;
                     return 2;
@@ -297,8 +293,8 @@ public class RobotContainer {
         //     .andThen(algae.spin(1)).withTimeout(0.5)
         //     .andThen(superstructure.getSetpointCommand(RobotConstants.INTAKE_STATE))); //DON'T UNCOMMENT THIS UNTIL AFTER YOUVE TESTED LINE 246
 
-        driverLeftPaddle.whileTrue(new AlignToReefCommand(driveBase, true));
-        driverRightPaddle.whileTrue(new AlignToReefCommand(driveBase, false));
+        driverLeftPaddle.whileTrue(driveBase.alignToReef(true));
+        driverRightPaddle.whileTrue(driveBase.alignToReef(false));
 
         // driverXButton.whileTrue(superstructure.getSetpointCommand(RobotConstants.L2_STATE));
         // driverYButton.whileTrue(superstructure.getSetpointCommand(RobotConstants.L3_STATE);

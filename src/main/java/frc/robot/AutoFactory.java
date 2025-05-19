@@ -12,7 +12,6 @@ import com.pathplanner.lib.path.GoalEndState;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.path.Waypoint;
-import com.pathplanner.lib.trajectory.PathPlannerTrajectory;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -27,10 +26,7 @@ import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.PathConstants;
 import frc.robot.Constants.RobotConstants;
 import frc.robot.Constants.FieldConstants.Poses;
-import frc.robot.commands.drivebase.AlignToReefCommand;
-import frc.robot.commands.drivebase.DriveToPoseCommand;
 import frc.robot.commands.drivebase.SwerveDriveCommand;
-import frc.robot.commands.drivebase.SwerveDriveStopCommand;
 import frc.robot.subsystems.drive.DriveBase;
 import frc.robot.subsystems.endEffector.algae.AlgaeEndEffector;
 import frc.robot.subsystems.endEffector.coral.CoralEndEffector;
@@ -94,7 +90,7 @@ public class AutoFactory {
                 new PathConstraints(4, 1.5, PathConstants.CONSTRAINTS.maxAngularVelocityRadPerSec(),
                         PathConstants.CONSTRAINTS.maxAngularAccelerationRadPerSecSq()),
                 0.0 // Goal end velocity in meters/sec
-        ).andThen(new SwerveDriveStopCommand(driveBase));
+        ).andThen(driveBase.stop());
 
         return pathfindingCommand;
     }
@@ -109,7 +105,7 @@ public class AutoFactory {
 
         // Since AutoBuilder is configured, we can use it to build pathfinding commands
         Command pathfindingCommand = AutoBuilder.pathfindToPoseFlipped(targetPose.get(), PathConstants.CONSTRAINTS, 0.0 // Goal end velocity in meters/sec
-        ).andThen(new SwerveDriveStopCommand(driveBase));
+        ).andThen(driveBase.stop());
 
         return pathfindingCommand;
     }
@@ -264,7 +260,7 @@ public class AutoFactory {
                                                 PathConstants.CONSTRAINTS.maxAngularVelocityRadPerSec(),
                                                 PathConstants.CONSTRAINTS.maxAngularAccelerationRadPerSecSq()),
                                         0.0 // Goal end velocity in meters/sec
-                                ).andThen(new AlignToReefCommand(driveBase, true).withTimeout(3))
+                                ).andThen(driveBase.alignToReef(true).withTimeout(3))
                                 .deadlineFor(coral.spin(0.2)).andThen(coral.spin(-0.5).withTimeout(1))
                                 .deadlineFor(superstructure.getSetpointCommand(RobotConstants.L4_STATE))
                                 .andThen(new SwerveDriveCommand(driveBase, -0.2, 0, 0, false, false).withTimeout(2))
@@ -280,7 +276,7 @@ public class AutoFactory {
                                                 PathConstants.CONSTRAINTS.maxAngularVelocityRadPerSec(),
                                                 PathConstants.CONSTRAINTS.maxAngularAccelerationRadPerSecSq()),
                                         0.0 // Goal end velocity in meters/sec
-                                ).andThen(new AlignToReefCommand(driveBase, true).withTimeout(0.5))
+                                ).andThen(driveBase.alignToReef(true).withTimeout(0.5))
                                 .deadlineFor(coral.spin(0.2)).andThen(coral.spin(-0.5).withTimeout(0.5))
                                 .deadlineFor(superstructure.getSetpointCommand(RobotConstants.L4_STATE))
                                 .andThen(new SwerveDriveCommand(driveBase, -0.6, 0, 0, false, false).withTimeout(0.5)))
@@ -336,7 +332,7 @@ public class AutoFactory {
                                                 PathConstants.CONSTRAINTS.maxAngularVelocityRadPerSec(),
                                                 PathConstants.CONSTRAINTS.maxAngularAccelerationRadPerSecSq()),
                                         0.0 // Goal end velocity in meters/sec
-                                ).andThen(new AlignToReefCommand(driveBase, true).withTimeout(0.5))
+                                ).andThen(driveBase.alignToReef(true).withTimeout(0.5))
                                 .deadlineFor(coral.spin(0.2)).andThen(coral.spin(-0.5).withTimeout(0.5))
                                 .deadlineFor(superstructure.getSetpointCommand(RobotConstants.L4_STATE))
                                 .andThen(new SwerveDriveCommand(driveBase, -0.6, 0, 0, false, false).withTimeout(0.5)))
@@ -359,7 +355,7 @@ public class AutoFactory {
 
     public Command getTwoPieceHardCodedAuto() {
         return superstructure.getZeroCommand().andThen(getPathFindToPoseCommand(Poses.E).deadlineFor(coral.spin(0.2))
-                .andThen(new AlignToReefCommand(driveBase, false).withTimeout(1))
+                .andThen(driveBase.alignToReef(false).withTimeout(1))
                 .andThen(coral.spin(-0.5).withTimeout(0.5))
                 .deadlineFor(superstructure.getSetpointCommand(RobotConstants.L4_STATE))
                 .andThen(new SwerveDriveCommand(driveBase, -0.4, 0, 0, false, false).withTimeout(0.8))
@@ -368,7 +364,7 @@ public class AutoFactory {
                 .andThen(coral.spin(1).alongWith(new SwerveDriveCommand(driveBase, -0.6, 0, 0, false, false))
                         .withTimeout(1.5))
                 .andThen(getPathFindToPoseCommand(Poses.D)
-                        .andThen(new AlignToReefCommand(driveBase, true).withTimeout(0.5)).deadlineFor(coral.spin(0.2))
+                        .andThen(driveBase.alignToReef(true).withTimeout(0.5)).deadlineFor(coral.spin(0.2))
                         .andThen(coral.spin(-0.5).withTimeout(0.5)
                                 .andThen(new SwerveDriveCommand(driveBase, -0.4, 0, 0, false, false).withTimeout(1)))
                         .deadlineFor(superstructure.getSetpointCommand(RobotConstants.L4_STATE))));
@@ -431,32 +427,6 @@ public class AutoFactory {
     }
 
     /**
-     * Get a command to auto align to a specified pipe. This is not for pathfinding;
-     * it utilizes {@link DriveToPoseCommand} to PID drive to the final pose. Use
-     * only after pathfinding to the general area of the pose.
-     * 
-     * @param pipe the character representing the pipe
-     * @return the constructed command
-     */
-    public Command getAutoAlignToPipeCommand(char pipe) {
-        return new DriveToPoseCommand(driveBase, AlliancePoseMirror.mirrorPose2d(switch (pipe) {
-            case 'A' -> Poses.A;
-            case 'B' -> Poses.B;
-            case 'C' -> Poses.C;
-            case 'D' -> Poses.D;
-            case 'E' -> Poses.E;
-            case 'F' -> Poses.F;
-            case 'G' -> Poses.G;
-            case 'H' -> Poses.H;
-            case 'I' -> Poses.I;
-            case 'J' -> Poses.J;
-            case 'K' -> Poses.K;
-            case 'L' -> Poses.L;
-            default -> driveBase.getPose();
-        }));
-    }
-
-    /**
      * Get the command to go and score the first coral in auto.
      * 
      * @param startingPosition the starting position the robot is in; odometry pose
@@ -469,7 +439,7 @@ public class AutoFactory {
     public Command getStartCommand(StartingPosition startingPosition, char pipe) {
         return Commands.runOnce(() -> poseReset.accept(AlliancePoseMirror.mirrorPose2d(startingPosition.pose)))
                 .andThen(getPathFindToPathCommand(startingPosition.name() + "_" + pipe, PathType.CHOREO))
-                .andThen(new AlignToReefCommand(driveBase, (pipe - 'A') % 2 == 1).withTimeout(0.5))
+                .andThen(driveBase.alignToReef((pipe - 'A') % 2 == 1).withTimeout(0.5))
                 .deadlineFor(coral.spin(0.2)).andThen(coral.spin(-0.5).withTimeout(0.5))
                 .deadlineFor(superstructure.getSetpointCommand(RobotConstants.L4_STATE));
         // .andThen(driveBase.run(driveBase::stopMotors));
@@ -501,7 +471,7 @@ public class AutoFactory {
      */
     public Command getScoreCommand(CoralStation coralStation, char pipe) {
         return getPathSetpointDelay(getChoreoPath(coralStation.name() + "_" + pipe, 0), RobotConstants.L4_STATE, 2)
-                .andThen(new AlignToReefCommand(driveBase, (pipe - 'A') % 2 == 1).withTimeout(0.5))
+                .andThen(driveBase.alignToReef((pipe - 'A') % 2 == 1).withTimeout(0.5))
                 .andThen(coral.spin(-0.5).withTimeout(0.5));
     }
 

@@ -5,12 +5,16 @@
 package frc.robot.subsystems.drive;
 
 import java.util.List;
+import java.util.function.BooleanSupplier;
+import java.util.function.DoubleSupplier;
+import java.util.function.Supplier;
 
 import org.littletonrobotics.junction.Logger;
 
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
@@ -24,6 +28,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.RobotConstants;
@@ -31,10 +36,13 @@ import frc.robot.Constants.DriveConstants.BackLeftModuleConstants;
 import frc.robot.Constants.DriveConstants.BackRightModuleConstants;
 import frc.robot.Constants.DriveConstants.FrontLeftModuleConstants;
 import frc.robot.Constants.DriveConstants.FrontRightModuleConstants;
+import frc.robot.Constants.FieldConstants.Poses;
 import frc.robot.subsystems.vision.Camera;
 import frc.robot.subsystems.vision.Camera.Pose;
+import frc.robot.util.led.LEDs;
 import frc.robot.util.math.LobstahMath;
 import frc.robot.util.sysId.CharacterizableSubsystem;
+import frc.robot.util.trajectory.AlliancePoseMirror;
 
 public class DriveBase extends CharacterizableSubsystem {
     /** Creates a new SwerveDriveBase. */
@@ -51,6 +59,13 @@ public class DriveBase extends CharacterizableSubsystem {
     private final List<Camera> cameras;
     private boolean hasSeenTag = false;
     private boolean needGyroReset = true;
+
+    private final PIDController xController = new PIDController(DriveConstants.AUTO_ALIGN_TRANSLATION_kP,
+            DriveConstants.AUTO_ALIGN_TRANSLATION_kI, DriveConstants.AUTO_ALIGN_TRANSLATION_kD);
+    private final PIDController yController = new PIDController(DriveConstants.AUTO_ALIGN_TRANSLATION_kP,
+            DriveConstants.AUTO_ALIGN_TRANSLATION_kI, DriveConstants.AUTO_ALIGN_TRANSLATION_kD);
+    private final PIDController thetaController = new PIDController(DriveConstants.ROTATION_PID_CONSTANTS.kP,
+            DriveConstants.ROTATION_PID_CONSTANTS.kI, DriveConstants.ROTATION_PID_CONSTANTS.kD);
 
     private Field2d field;
 
@@ -83,6 +98,10 @@ public class DriveBase extends CharacterizableSubsystem {
 
         field = new Field2d();
         SmartDashboard.putData("Field", field);
+
+        xController.setTolerance(0.02);
+        yController.setTolerance(0.02);
+        thetaController.enableContinuousInput(-Math.PI, Math.PI);
 
         this.isOpenLoop = isOpenLoop;
         this.resetPose(getPose());
@@ -269,8 +288,7 @@ public class DriveBase extends CharacterizableSubsystem {
             if (estimatedPose.pose().isPresent()
                     && (hasSeenTag == false
                             || LobstahMath.getDistBetweenPoses(estimatedPose.pose().get().toPose2d(), getPose()) <= 8)
-                    && Math.abs(estimatedPose.pose().get().getZ()) < 0.1
-                    && (camera.getName().startsWith("front"))) {
+                    && Math.abs(estimatedPose.pose().get().getZ()) < 0.1 && (camera.getName().startsWith("front"))) {
                 if (hasSeenTag == false) {
                     resetPose(new Pose2d(estimatedPose.pose().get().getX(), estimatedPose.pose().get().getY(),
                             getGyroAngle()));
@@ -316,5 +334,101 @@ public class DriveBase extends CharacterizableSubsystem {
 
         Logger.recordOutput("SwerveStates/Measured", getStates());
         SmartDashboard.putData("Drivebase subsystem", this);
+    }
+
+    /**
+     * Constructs a command which holds this in place.
+     * 
+     * @return the constructed command
+     */
+    public Command stop() {
+        return run(this::stopMotors);
+    }
+
+    /**
+     * Constructs a command to auto-align to a particular pose. It will also light
+     * the aligning LEDs at the beginning and turn them off at thend.
+     * 
+     * @param targetPoseSupplier a supplier which supplies the pose; the target pose
+     *                           will be obtained from this supplier every time the
+     *                           command is scheduled.
+     * @return the constructed command
+     */
+    public Command alignToPose(Supplier<Pose2d> targetPoseSupplier) {
+        return startRun(() -> {
+            xController.reset();
+            yController.reset();
+            thetaController.reset();
+            Pose2d targetPose = targetPoseSupplier.get();
+            Logger.recordOutput("AutoAlignTargetPose", targetPose);
+            xController.setSetpoint(targetPose.getX());
+            yController.setSetpoint(targetPose.getY());
+            thetaController.setSetpoint(targetPose.getRotation().getRadians());
+        }, () -> {
+            driveRobotRelative(ChassisSpeeds.fromFieldRelativeSpeeds(xController.calculate(getPose().getX()),
+                    yController.calculate(getPose().getY()),
+                    thetaController.calculate(getPose().getRotation().getRadians()), getPose().getRotation()));
+        }).until(() -> xController.atSetpoint() && yController.atSetpoint() && thetaController.atSetpoint())
+                .andThen(stop()).beforeStarting(() -> LEDs.getInstance().setAligning(true))
+                .andThen(() -> LEDs.getInstance().setAligning(false));
+    }
+
+    /**
+     * Constructs a command which aligns to the nearest scoring pose on the reef.
+     * 
+     * @param ccw Called every time the command is scheduled; If it returns true,
+     *            get the nearest counter-clockwise scoring pose (B, D, et cetera);
+     *            if false, get the nearest clockwise scoring pose (A, C, et
+     *            cetera).
+     * @return the constructed command
+     */
+    public Command alignToReef(BooleanSupplier ccw) {
+        return alignToPose(() -> LobstahMath.getNearestScoringPose(getPose(), ccw.getAsBoolean()));
+    }
+
+    /**
+     * Constructs a command which aligns to the nearest scoring pose on the reef.
+     * 
+     * @param ccw If true, get the nearest counter-clockwise scoring pose (B, D, et
+     *            cetera); if false, get the nearest clockwise scoring pose (A, C,
+     *            et cetera).
+     * @return the constructed command
+     */
+    public Command alignToReef(boolean ccw) {
+        return alignToReef(() -> ccw);
+    }
+
+    /**
+     * Constructs a command which aligns to the alliance processor.
+     * 
+     * @return the constructed command
+     */
+    public Command alignToProcessor() {
+        return alignToPose(() -> AlliancePoseMirror.mirrorPose2d(Poses.PROCESSOR));
+    }
+
+    /**
+     * Constructs a command which aligns to the alliance barge.
+     * 
+     * @param ySupplier the supplier for the side-to-side (y axis) motion provided
+     *                  by the user.
+     * @return the constructed command
+     */
+    public Command alignToBarge(DoubleSupplier ySupplier) {
+        return startRun(() -> {
+            xController.reset();
+            thetaController.reset();
+            xController.setSetpoint(AlliancePoseMirror.isRedAlliance()
+                    ? FieldConstants.FIELD_LENGTH - FieldConstants.Poses.BARGE_TRANSLATION_DEPTH_SETPOINT
+                    : FieldConstants.Poses.BARGE_TRANSLATION_DEPTH_SETPOINT);
+            thetaController.setSetpoint(AlliancePoseMirror.isRedAlliance() ? Rotation2d.kZero.getRadians()
+                    : Rotation2d.k180deg.getRadians());
+        }, () -> {
+            driveRobotRelative(ChassisSpeeds.fromFieldRelativeSpeeds(xController.calculate(getPose().getX()),
+                    AlliancePoseMirror.isRedAlliance() ? -ySupplier.getAsDouble() : ySupplier.getAsDouble(),
+                    thetaController.calculate(getPose().getRotation().getRadians()), getPose().getRotation()));
+        }).until(() -> xController.atSetpoint() && yController.atSetpoint() && thetaController.atSetpoint())
+                .andThen(stop()).beforeStarting(() -> LEDs.getInstance().setAligning(true))
+                .andThen(() -> LEDs.getInstance().setAligning(false));
     }
 }

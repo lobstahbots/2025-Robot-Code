@@ -387,8 +387,7 @@ public final class Constants {
 
         public static final int MOTOR_ID = 22;
         public static final int ENCODER_ID = 55;
-        public static final double JOYSTICK_SCALING = 0.25; //TODO: figure this out
-
+        public static final double JOYSTICK_SCALING = 0.25;
         public static final Rotation2d LOWER_DANGER_ZONE = Rotation2d.fromRadians(-1);
     }
 
@@ -396,18 +395,18 @@ public final class Constants {
         public static final double GEAR_RATIO = 3.5;
         public static final double PITCH_DIAMETER = Units.inchesToMeters(1.273);
 
-        public static final double kP = Robot.isReal() ? 0.5 : 2; // TODO: Find actual value NOTE: was 3.596
-        public static final double kI = 0; // TODO: Find actual value
-        public static final double kD = Robot.isReal() ? 0.005 : 0; //TODO: Find actual value
+        public static final double kP = Robot.isReal() ? 0.5 : 2; // NOTE: was 3.596
+        public static final double kI = 0;
+        public static final double kD = Robot.isReal() ? 0.005 : 0;
 
         public static final double VELOCITY_kP = Robot.isReal() ? 0.002 : 0;
         public static final double VELOCITY_kI = 0;
         public static final double VELOCITY_kD = 0;
 
-        public static final double kS = 0; // TODO: Find actual value NOTE: 1.2256
-        public static final double kV = 0; // TODO: Find actual value NOTE: 0.034454
-        public static final double kA = 0; // TODO: Find actual value NOTE: 0.2
-        public static final double kG = 0.35; // TODO: Find actual value NOTE: 0.28946
+        public static final double kS = 0; // NOTE: 1.2256
+        public static final double kV = 0; // NOTE: 0.034454
+        public static final double kA = 0; // NOTE: 0.2
+        public static final double kG = 0.35; // NOTE: 0.28946
         public static final TrapezoidProfile.Constraints CONSTRAINTS = new TrapezoidProfile.Constraints(200, 450);
 
         public static final double SUPPLY_CURRENT_LIMIT = 70;
@@ -416,15 +415,15 @@ public final class Constants {
         public static final double VOLTAGE_OUTPUT = 0;
 
         public static final double MOTION_MAGIC_POSITION_VOLTAGE = 12;
-        public static final double MOTION_MAGIC_ACCELERATION = 5; // TODO: Find actual acceleration
-        public static final double MOTION_MAGIC_CRUISE_VELOCITY = 15; // TODO: Find actual cruise velocity
+        public static final double MOTION_MAGIC_ACCELERATION = 5;
+        public static final double MOTION_MAGIC_CRUISE_VELOCITY = 15;
         public static final double HEIGHT_DEADBAND = 0.2;
 
         public static final double BASE_STATUS_SIGNAL_FREQUENCY = 50.0;
 
-        public static final int LEFT_ELEVATOR_ID = 33; // TODO: Find actual motor ID
-        public static final int RIGHT_ELEVATOR_ID = 34; // TODO: Find actual motor ID
-        public static final int LIMIT_SWITCH_CHANNEL = 9; // TODO: Find actual channel
+        public static final int LEFT_ELEVATOR_ID = 33;
+        public static final int RIGHT_ELEVATOR_ID = 34;
+        public static final int LIMIT_SWITCH_CHANNEL = 9;
 
         public static final double BOTTOM_HEIGHT = 0;
         public static final double TOP_HEIGHT = 2;
@@ -489,7 +488,6 @@ public final class Constants {
         }
 
         public static final double INTAKE_VELOCITY_THRESHOLD = 0.2;
-        // TODO CHANGE!!!!
         public static final double ALIGNED_DISTANCE = 0.03; // Meters, I think
         public static final double ALIGNED_ANGLE = 2; // Degrees
     }
