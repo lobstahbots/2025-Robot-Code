@@ -84,7 +84,9 @@ public class SwerveDriveCommand extends Command {
             double linearMagnitude = MathUtil.applyDeadband(
                     Math.hypot(strafeXSupplier.getAsDouble(), strafeYSupplier.getAsDouble()),
                     IOConstants.JOYSTICK_DEADBAND);
-            Rotation2d linearDirection = new Rotation2d(strafeXSupplier.getAsDouble(), strafeYSupplier.getAsDouble());
+            Rotation2d linearDirection = linearMagnitude > 0
+                    ? new Rotation2d(strafeXSupplier.getAsDouble(), strafeYSupplier.getAsDouble())
+                    : Rotation2d.kZero;
             if (AlliancePoseMirror.isRedAlliance()) linearDirection = linearDirection.plus(Rotation2d.k180deg);
             double omega = MathUtil.applyDeadband(rotationSupplier.getAsDouble(), IOConstants.JOYSTICK_DEADBAND);
 
@@ -103,8 +105,8 @@ public class SwerveDriveCommand extends Command {
             ChassisSpeeds chassisSpeeds = new ChassisSpeeds(linearVelocity.getX() * DriveConstants.MAX_DRIVE_SPEED,
                     linearVelocity.getY() * DriveConstants.MAX_DRIVE_SPEED, omega * DriveConstants.MAX_ANGULAR_SPEED);
 
-            driveBase
-                    .driveRobotRelative(ChassisSpeeds.fromFieldRelativeSpeeds(chassisSpeeds, driveBase.getPose().getRotation()));
+            driveBase.driveRobotRelative(
+                    ChassisSpeeds.fromFieldRelativeSpeeds(chassisSpeeds, driveBase.getPose().getRotation()));
         } else {
             driveBase.driveRobotRelative(new ChassisSpeeds(strafeXSupplier.getAsDouble(), strafeYSupplier.getAsDouble(),
                     rotationSupplier.getAsDouble()));
