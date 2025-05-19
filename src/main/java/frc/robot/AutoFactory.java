@@ -26,7 +26,6 @@ import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.PathConstants;
 import frc.robot.Constants.RobotConstants;
 import frc.robot.Constants.FieldConstants.Poses;
-import frc.robot.commands.drivebase.SwerveDriveCommand;
 import frc.robot.subsystems.drive.DriveBase;
 import frc.robot.subsystems.endEffector.algae.AlgaeEndEffector;
 import frc.robot.subsystems.endEffector.coral.CoralEndEffector;
@@ -248,7 +247,7 @@ public class AutoFactory {
     }
 
     public Command getLeaveAuto() {
-        return new SwerveDriveCommand(driveBase, 0.2, 0, 0, false, false).withTimeout(3);
+        return driveBase.relativeDrive(0.2, 0, 0).withTimeout(3);
     }
 
     public Command getSimpleTimedAuto() {
@@ -263,7 +262,7 @@ public class AutoFactory {
                                 ).andThen(driveBase.alignToReef(true).withTimeout(3))
                                 .deadlineFor(coral.spin(0.2)).andThen(coral.spin(-0.5).withTimeout(1))
                                 .deadlineFor(superstructure.getSetpointCommand(RobotConstants.L4_STATE))
-                                .andThen(new SwerveDriveCommand(driveBase, -0.2, 0, 0, false, false).withTimeout(2))
+                                .andThen(driveBase.relativeDrive(-0.2, 0, 0).withTimeout(2))
                                 .andThen(superstructure.getSetpointCommand(RobotConstants.INTAKE_STATE)));
     }
 
@@ -279,7 +278,7 @@ public class AutoFactory {
                                 ).andThen(driveBase.alignToReef(true).withTimeout(0.5))
                                 .deadlineFor(coral.spin(0.2)).andThen(coral.spin(-0.5).withTimeout(0.5))
                                 .deadlineFor(superstructure.getSetpointCommand(RobotConstants.L4_STATE))
-                                .andThen(new SwerveDriveCommand(driveBase, -0.6, 0, 0, false, false).withTimeout(0.5)))
+                                .andThen(driveBase.relativeDrive(-0.6, 0, 0).withTimeout(0.5)))
                 .andThen(superstructure.getSetpointCommand(RobotConstants.L2_ALGAE_STATE)
                         .alongWith(AutoBuilder.pathfindToPoseFlipped(ChoreoVariables.getPose("SIDE_GH"),
                                 new PathConstraints(3, 0.8, PathConstants.CONSTRAINTS.maxAngularVelocityRadPerSec(),
@@ -291,7 +290,7 @@ public class AutoFactory {
                                 PathConstants.CONSTRAINTS.maxAngularAccelerationRadPerSecSq()),
                         0.0 // Goal end velocity in meters/sec
                 ).deadlineFor(superstructure.getSetpointCommand(RobotConstants.BARGE_STATE)))
-                .andThen(new SwerveDriveCommand(driveBase, 0.5, 0, 0, true, false).withTimeout(0.5)
+                .andThen(driveBase.relativeDrive(-5, 0, 0).withTimeout(0.5)
                         .deadlineFor(algae.spin(-0.2)))
                 .andThen(algae.spin(1).withTimeout(1))
                 .andThen(superstructure.getSetpointCommand(RobotConstants.L3_ALGAE_STATE)
@@ -305,7 +304,7 @@ public class AutoFactory {
                                 PathConstants.CONSTRAINTS.maxAngularAccelerationRadPerSecSq()),
                         0.0 // Goal end velocity in meters/sec
                 ).deadlineFor(superstructure.getSetpointCommand(RobotConstants.BARGE_STATE)))
-                .andThen(new SwerveDriveCommand(driveBase, 0.5, 0, 0, true, false).withTimeout(0.5)
+                .andThen(driveBase.relativeDrive(-5, 0, 0).withTimeout(0.5)
                         .deadlineFor(algae.spin(-0.2)))
                 .andThen(algae.spin(1));
     }
@@ -335,7 +334,7 @@ public class AutoFactory {
                                 ).andThen(driveBase.alignToReef(true).withTimeout(0.5))
                                 .deadlineFor(coral.spin(0.2)).andThen(coral.spin(-0.5).withTimeout(0.5))
                                 .deadlineFor(superstructure.getSetpointCommand(RobotConstants.L4_STATE))
-                                .andThen(new SwerveDriveCommand(driveBase, -0.6, 0, 0, false, false).withTimeout(0.5)))
+                                .andThen(driveBase.relativeDrive(-0.6, 0, 0).withTimeout(0.5)))
                 .andThen(
                         superstructure.getSetpointCommand(RobotConstants.L2_ALGAE_STATE)
                                 .alongWith(AutoBuilder.pathfindToPoseFlipped(ChoreoVariables.getPose("SIDE_GH"),
@@ -358,15 +357,15 @@ public class AutoFactory {
                 .andThen(driveBase.alignToReef(false).withTimeout(1))
                 .andThen(coral.spin(-0.5).withTimeout(0.5))
                 .deadlineFor(superstructure.getSetpointCommand(RobotConstants.L4_STATE))
-                .andThen(new SwerveDriveCommand(driveBase, -0.4, 0, 0, false, false).withTimeout(0.8))
+                .andThen(driveBase.relativeDrive(-0.4, 0, 0).withTimeout(0.8))
                 .andThen(getPathFindToPoseCommand(Poses.RIGHT_STATION)
                         .deadlineFor(superstructure.getSetpointCommand(RobotConstants.INTAKE_STATE)))
-                .andThen(coral.spin(1).alongWith(new SwerveDriveCommand(driveBase, -0.6, 0, 0, false, false))
+                .andThen(coral.spin(1).alongWith(driveBase.relativeDrive(-0.6, 0, 0))
                         .withTimeout(1.5))
                 .andThen(getPathFindToPoseCommand(Poses.D)
                         .andThen(driveBase.alignToReef(true).withTimeout(0.5)).deadlineFor(coral.spin(0.2))
                         .andThen(coral.spin(-0.5).withTimeout(0.5)
-                                .andThen(new SwerveDriveCommand(driveBase, -0.4, 0, 0, false, false).withTimeout(1)))
+                                .andThen(driveBase.relativeDrive(-0.4, 0, 0).withTimeout(1)))
                         .deadlineFor(superstructure.getSetpointCommand(RobotConstants.L4_STATE))));
     }
 
@@ -458,7 +457,7 @@ public class AutoFactory {
         return getPathFindToPathCommand(coralStation.name() + "_" + pipe, PathType.CHOREO, 1)
                 .deadlineFor(Commands.waitSeconds(0.5)
                         .andThen(superstructure.getSetpointCommand(RobotConstants.INTAKE_STATE)))
-                .andThen(coral.spin(1).alongWith(new SwerveDriveCommand(driveBase, -0.6, 0, 0, false, false))
+                .andThen(coral.spin(1).alongWith(driveBase.relativeDrive(-0.6, 0, 0))
                         .withTimeout(1));
     }
 

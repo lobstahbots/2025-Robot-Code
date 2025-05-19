@@ -56,7 +56,6 @@ import frc.robot.Constants.PivotConstants;
 import frc.robot.Constants.RobotConstants;
 import frc.robot.Constants.SimConstants;
 import frc.robot.Constants.VisionConstants;
-import frc.robot.commands.drivebase.SwerveDriveCommand;
 import frc.robot.subsystems.drive.DriveBase;
 import frc.robot.subsystems.drive.GyroIONavX;
 import frc.robot.subsystems.drive.GyroIOSim;
@@ -228,12 +227,10 @@ public class RobotContainer {
     }
 
     private void setDefaultCommands() {
-        driveBase.setDefaultCommand(new SwerveDriveCommand(driveBase,
-                () -> -driverJoystick.getRawAxis(ControllerIOConstants.LEFT_STICK_VERTICAL),
-                () -> -driverJoystick.getRawAxis(ControllerIOConstants.LEFT_STICK_HORIZONTAL),
-                () -> -driverJoystick.getRawAxis(ControllerIOConstants.RIGHT_STICK_HORIZONTAL),
-                () -> DriveConstants.FIELD_CENTRIC, ControllerIOConstants.SQUARE_INPUTS,
-                () -> 0 / RobotConstants.L4_STATE.elevatorHeight * superstructure.getExtension() + 1));
+        driveBase.setDefaultCommand(
+                driveBase.joystickDrive(() -> -driverJoystick.getRawAxis(ControllerIOConstants.LEFT_STICK_VERTICAL),
+                        () -> -driverJoystick.getRawAxis(ControllerIOConstants.LEFT_STICK_HORIZONTAL),
+                        () -> -driverJoystick.getRawAxis(ControllerIOConstants.RIGHT_STICK_HORIZONTAL)));
 
         SmartDashboard.putData("thing", superstructure);
         coral.setDefaultCommand(coral.spin(0.1));

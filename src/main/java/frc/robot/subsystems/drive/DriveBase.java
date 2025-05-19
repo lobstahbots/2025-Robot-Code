@@ -19,6 +19,8 @@ import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Twist3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -37,6 +39,8 @@ import frc.robot.Constants.DriveConstants.BackRightModuleConstants;
 import frc.robot.Constants.DriveConstants.FrontLeftModuleConstants;
 import frc.robot.Constants.DriveConstants.FrontRightModuleConstants;
 import frc.robot.Constants.FieldConstants.Poses;
+import frc.robot.Constants.IOConstants.ControllerIOConstants;
+import frc.robot.Constants.IOConstants;
 import frc.robot.subsystems.vision.Camera;
 import frc.robot.subsystems.vision.Camera.Pose;
 import frc.robot.util.led.LEDs;
@@ -370,7 +374,7 @@ public class DriveBase extends CharacterizableSubsystem {
                     thetaController.calculate(getPose().getRotation().getRadians()), getPose().getRotation()));
         }).until(() -> xController.atSetpoint() && yController.atSetpoint() && thetaController.atSetpoint())
                 .andThen(stop()).beforeStarting(() -> LEDs.getInstance().setAligning(true))
-                .andThen(() -> LEDs.getInstance().setAligning(false));
+                .finallyDo(() -> LEDs.getInstance().setAligning(false));
     }
 
     /**
@@ -429,6 +433,60 @@ public class DriveBase extends CharacterizableSubsystem {
                     thetaController.calculate(getPose().getRotation().getRadians()), getPose().getRotation()));
         }).until(() -> xController.atSetpoint() && yController.atSetpoint() && thetaController.atSetpoint())
                 .andThen(stop()).beforeStarting(() -> LEDs.getInstance().setAligning(true))
-                .andThen(() -> LEDs.getInstance().setAligning(false));
+                .finallyDo(() -> LEDs.getInstance().setAligning(false));
+    }
+
+    /**
+     * Create a new command to drive field-relative.
+     * 
+     * @param strafeXSupplier  Supplier for strafe in X direction, e.g. from a
+     *                         joystick.
+     * @param strafeYSupplier  Supplier for strafe in Y direction, e.g. from a
+     *                         joystick.
+     * @param rotationSupplier Supplier for rotation, e.g. from a joystick.
+     * @return constructed command
+     */
+    public Command joystickDrive(DoubleSupplier strafeXSupplier, DoubleSupplier strafeYSupplier,
+            DoubleSupplier rotationSupplier) {
+        return run(() -> {
+            double linearMagnitude = MathUtil.applyDeadband(
+                    Math.hypot(strafeXSupplier.getAsDouble(), strafeYSupplier.getAsDouble()),
+                    IOConstants.JOYSTICK_DEADBAND);
+            Rotation2d linearDirection = linearMagnitude > 0
+                    ? new Rotation2d(strafeXSupplier.getAsDouble(), strafeYSupplier.getAsDouble())
+                    : Rotation2d.kZero;
+            if (AlliancePoseMirror.isRedAlliance()) linearDirection = linearDirection.plus(Rotation2d.k180deg);
+            double omega = MathUtil.applyDeadband(rotationSupplier.getAsDouble(), IOConstants.JOYSTICK_DEADBAND);
+
+            // Square values
+            if (ControllerIOConstants.SQUARE_INPUTS) {
+                linearMagnitude = linearMagnitude * linearMagnitude;
+                omega = Math.copySign(omega * omega, omega);
+            }
+
+            // Calculate new linear velocity
+            Translation2d linearVelocity = new Pose2d(new Translation2d(), linearDirection)
+                    .transformBy(new Transform2d(linearMagnitude, 0.0, new Rotation2d())).getTranslation();
+
+            ChassisSpeeds chassisSpeeds = new ChassisSpeeds(linearVelocity.getX() * DriveConstants.MAX_DRIVE_SPEED,
+                    linearVelocity.getY() * DriveConstants.MAX_DRIVE_SPEED, omega * DriveConstants.MAX_ANGULAR_SPEED);
+
+            driveRobotRelative(ChassisSpeeds.fromFieldRelativeSpeeds(chassisSpeeds, getPose().getRotation()));
+        }).finallyDo(this::stopMotors);
+    }
+
+    /**
+     * Drive the robot robot-relative.
+     * 
+     * @param strafeX  constant strafe in X (m/s)
+     * @param strafeY  constant strafe in Y (m/s)
+     * @param rotation constant rotation (rad/s)
+     * @return constructed command
+     */
+    public Command relativeDrive(double strafeX, double strafeY, double rotation) {
+        ChassisSpeeds speeds = new ChassisSpeeds(strafeX, strafeY, rotation);
+        return run(() -> {
+            driveRobotRelative(speeds);
+        }).finallyDo(this::stopMotors);
     }
 }
