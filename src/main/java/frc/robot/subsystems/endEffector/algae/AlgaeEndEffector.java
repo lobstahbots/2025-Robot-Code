@@ -50,6 +50,7 @@ public class AlgaeEndEffector extends SubsystemBase {
     public Command spin(double speed) {
         return run(() -> setSpeed(speed));
     }
+
     private void setSpeed(double speed) {
         io.setSpeed(speed);
     }

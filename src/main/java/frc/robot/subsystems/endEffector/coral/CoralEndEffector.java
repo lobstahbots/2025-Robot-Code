@@ -62,10 +62,6 @@ public class CoralEndEffector extends SubsystemBase {
         return inputs.velocity;
     }
 
-    public void setVoltage(double voltage) {
-        io.setVoltage(voltage);
-    }
-
     public double getCurrent() {
         return inputs.currentAmps;
     }

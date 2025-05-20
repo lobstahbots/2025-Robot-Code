@@ -1,6 +1,8 @@
 package frc.robot.subsystems.superstructure;
 
 import java.util.List;
+import java.util.function.DoubleSupplier;
+import java.util.function.Supplier;
 
 import org.littletonrobotics.junction.Logger;
 
@@ -71,13 +73,13 @@ public class Superstructure extends CharacterizableSubsystem {
         setState(RobotConstants.INTAKE_STATE);
     }
 
-    public void setState(SuperstructureState state) {
+    private void setState(SuperstructureState state) {
         closedLoop = true;
         currentSetpoint = state;
         goal = null;
     }
 
-    public void stopMotion() {
+    private void stopMotion() {
         setState(getState());
         elevatorIO.stop();
         pivotIO.stop();
@@ -183,6 +185,18 @@ public class Superstructure extends CharacterizableSubsystem {
             setState(RobotConstants.INTAKE_STATE);
             elevatorIO.resetEncoder(0);
         }).until(() -> elevatorInputs.leftStatorCurrent > 40);
+    }
+
+    public Command stop() {
+        return runOnce(this::stopMotion).andThen(() -> {
+        });
+    }
+
+    public Command manual(Supplier<Rotation2d> armRotation, DoubleSupplier elevatorMovement) {
+        return run(() -> {
+            setState(new SuperstructureState(getGoal().pivotRotation.plus(armRotation.get()),
+                    getExtension() + elevatorMovement.getAsDouble(), 0, 0));
+        });
     }
 
     public Rotation2d getPivotRotation() {

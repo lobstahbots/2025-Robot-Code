@@ -54,7 +54,7 @@ public class DriveBase extends CharacterizableSubsystem {
 
     private SwerveDrivePoseEstimator swerveOdometry;
     private SwerveDrivePoseEstimator visionLessOdometry;
-    private SwerveSetpointGenerator setpointGenerator;
+    // private SwerveSetpointGenerator setpointGenerator;
     private SwerveSetpoint swerveSetpoint = new SwerveSetpoint(new ChassisSpeeds(), new SwerveModuleState[] {
             new SwerveModuleState(), new SwerveModuleState(), new SwerveModuleState(), new SwerveModuleState() });
     private final GyroIO gyro;
@@ -98,7 +98,7 @@ public class DriveBase extends CharacterizableSubsystem {
                 new Pose2d());
         visionLessOdometry = new SwerveDrivePoseEstimator(DriveConstants.KINEMATICS, gyroInputs.yawPosition,
                 getPositions(), new Pose2d());
-        setpointGenerator = new SwerveSetpointGenerator(DriveConstants.KINEMATICS, DriveConstants.MODULE_LOCATIONS);
+        // setpointGenerator = new SwerveSetpointGenerator(DriveConstants.KINEMATICS, DriveConstants.MODULE_LOCATIONS);
 
         field = new Field2d();
         SmartDashboard.putData("Field", field);
@@ -188,7 +188,7 @@ public class DriveBase extends CharacterizableSubsystem {
      * @param desiredStates The states to set for each module.
      * @return The optimized SwerveModuleStates, now desired states.
      */
-    public SwerveModuleState[] setModuleStates(SwerveModuleState[] desiredStates) {
+    private SwerveModuleState[] setModuleStates(SwerveModuleState[] desiredStates) {
         SwerveModuleState[] optimizedStates = new SwerveModuleState[4];
         // SwerveDriveKinematics.desaturateWheelSpeeds(
         // desiredStates, DriveConstants.MAX_DRIVE_SPEED);
@@ -231,7 +231,7 @@ public class DriveBase extends CharacterizableSubsystem {
     }
 
     /** Stops all of the modules' motors. */
-    public void stopMotors() {
+    private void stopMotors() {
         for (SwerveModule module : modules) {
             module.stop();
         }
@@ -347,6 +347,15 @@ public class DriveBase extends CharacterizableSubsystem {
      */
     public Command stop() {
         return run(this::stopMotors);
+    }
+
+    /**
+     * Constructs a command which stops this and immediately returns.
+     * 
+     * @return the constructed command
+     */
+    public Command stopOnce() {
+        return runOnce(this::stopMotors);
     }
 
     /**

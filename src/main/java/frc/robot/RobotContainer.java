@@ -71,7 +71,6 @@ import frc.robot.subsystems.superstructure.ElevatorIOTalonFX;
 import frc.robot.subsystems.superstructure.PivotIOSim;
 import frc.robot.subsystems.superstructure.PivotIOTalonFX;
 import frc.robot.subsystems.superstructure.Superstructure;
-import frc.robot.subsystems.superstructure.SuperstructureState;
 import frc.robot.subsystems.vision.Camera;
 import frc.robot.subsystems.vision.CameraIOPhoton;
 import frc.robot.subsystems.vision.CameraIOSim;
@@ -235,22 +234,13 @@ public class RobotContainer {
         SmartDashboard.putData("thing", superstructure);
         coral.setDefaultCommand(coral.spin(0.1));
         algae.setDefaultCommand(algae.spin(-0.1));
-        superstructure
-                .setDefaultCommand(
-                        Commands.run(
-                                () -> superstructure
-                                        .setState(new SuperstructureState(
-                                                superstructure.getGoal().pivotRotation
-                                                        .minus(Rotation2d.fromRadians(0.1 * MathUtil.applyDeadband(
-                                                                operatorJoystick.getRawAxis(
-                                                                        ControllerIOConstants.LEFT_STICK_VERTICAL),
-                                                                IOConstants.JOYSTICK_DEADBAND))),
-                                                superstructure.getGoal().elevatorHeight + MathUtil.applyDeadband(
-                                                        operatorJoystick
-                                                                .getRawAxis(ControllerIOConstants.RIGHT_STICK_VERTICAL),
-                                                        IOConstants.JOYSTICK_DEADBAND) * -2,
-                                                0, 0)),
-                                superstructure));
+        superstructure.setDefaultCommand(superstructure.manual(
+                () -> Rotation2d.fromRadians(0.1
+                        * MathUtil.applyDeadband(operatorJoystick.getRawAxis(ControllerIOConstants.LEFT_STICK_VERTICAL),
+                                IOConstants.JOYSTICK_DEADBAND))
+                        .unaryMinus(),
+                () -> MathUtil.applyDeadband(operatorJoystick.getRawAxis(ControllerIOConstants.RIGHT_STICK_VERTICAL),
+                        IOConstants.JOYSTICK_DEADBAND) * -2));
     }
 
     /**

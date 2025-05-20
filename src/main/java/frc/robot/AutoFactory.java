@@ -216,7 +216,7 @@ public class AutoFactory {
      * @return the constructed command
      */
     public Command getPathSetpointDelay(PathPlannerPath path, SuperstructureState state, double beforeEnd) {
-        return AutoBuilder.followPath(path).andThen(driveBase.runOnce(driveBase::stopMotors))
+        return AutoBuilder.followPath(path).andThen(driveBase.stopOnce())
                 .alongWith(Commands.waitSeconds(Math.max(
                         path.getIdealTrajectory(DriveConstants.ROBOT_CONFIG).get().getTotalTimeSeconds() - beforeEnd,
                         0)).andThen(superstructure.getSetpointCommand(state)));
@@ -259,8 +259,8 @@ public class AutoFactory {
                                                 PathConstants.CONSTRAINTS.maxAngularVelocityRadPerSec(),
                                                 PathConstants.CONSTRAINTS.maxAngularAccelerationRadPerSecSq()),
                                         0.0 // Goal end velocity in meters/sec
-                                ).andThen(driveBase.alignToReef(true).withTimeout(3))
-                                .deadlineFor(coral.spin(0.2)).andThen(coral.spin(-0.5).withTimeout(1))
+                                ).andThen(driveBase.alignToReef(true).withTimeout(3)).deadlineFor(coral.spin(0.2))
+                                .andThen(coral.spin(-0.5).withTimeout(1))
                                 .deadlineFor(superstructure.getSetpointCommand(RobotConstants.L4_STATE))
                                 .andThen(driveBase.relativeDrive(-0.2, 0, 0).withTimeout(2))
                                 .andThen(superstructure.getSetpointCommand(RobotConstants.INTAKE_STATE)));
@@ -275,8 +275,8 @@ public class AutoFactory {
                                                 PathConstants.CONSTRAINTS.maxAngularVelocityRadPerSec(),
                                                 PathConstants.CONSTRAINTS.maxAngularAccelerationRadPerSecSq()),
                                         0.0 // Goal end velocity in meters/sec
-                                ).andThen(driveBase.alignToReef(true).withTimeout(0.5))
-                                .deadlineFor(coral.spin(0.2)).andThen(coral.spin(-0.5).withTimeout(0.5))
+                                ).andThen(driveBase.alignToReef(true).withTimeout(0.5)).deadlineFor(coral.spin(0.2))
+                                .andThen(coral.spin(-0.5).withTimeout(0.5))
                                 .deadlineFor(superstructure.getSetpointCommand(RobotConstants.L4_STATE))
                                 .andThen(driveBase.relativeDrive(-0.6, 0, 0).withTimeout(0.5)))
                 .andThen(superstructure.getSetpointCommand(RobotConstants.L2_ALGAE_STATE)
@@ -290,8 +290,7 @@ public class AutoFactory {
                                 PathConstants.CONSTRAINTS.maxAngularAccelerationRadPerSecSq()),
                         0.0 // Goal end velocity in meters/sec
                 ).deadlineFor(superstructure.getSetpointCommand(RobotConstants.BARGE_STATE)))
-                .andThen(driveBase.relativeDrive(-5, 0, 0).withTimeout(0.5)
-                        .deadlineFor(algae.spin(-0.2)))
+                .andThen(driveBase.relativeDrive(-5, 0, 0).withTimeout(0.5).deadlineFor(algae.spin(-0.2)))
                 .andThen(algae.spin(1).withTimeout(1))
                 .andThen(superstructure.getSetpointCommand(RobotConstants.L3_ALGAE_STATE)
                         .alongWith(AutoBuilder.pathfindToPoseFlipped(ChoreoVariables.getPose("SIDE_IJ"),
@@ -304,8 +303,7 @@ public class AutoFactory {
                                 PathConstants.CONSTRAINTS.maxAngularAccelerationRadPerSecSq()),
                         0.0 // Goal end velocity in meters/sec
                 ).deadlineFor(superstructure.getSetpointCommand(RobotConstants.BARGE_STATE)))
-                .andThen(driveBase.relativeDrive(-5, 0, 0).withTimeout(0.5)
-                        .deadlineFor(algae.spin(-0.2)))
+                .andThen(driveBase.relativeDrive(-5, 0, 0).withTimeout(0.5).deadlineFor(algae.spin(-0.2)))
                 .andThen(algae.spin(1));
     }
 
@@ -331,8 +329,8 @@ public class AutoFactory {
                                                 PathConstants.CONSTRAINTS.maxAngularVelocityRadPerSec(),
                                                 PathConstants.CONSTRAINTS.maxAngularAccelerationRadPerSecSq()),
                                         0.0 // Goal end velocity in meters/sec
-                                ).andThen(driveBase.alignToReef(true).withTimeout(0.5))
-                                .deadlineFor(coral.spin(0.2)).andThen(coral.spin(-0.5).withTimeout(0.5))
+                                ).andThen(driveBase.alignToReef(true).withTimeout(0.5)).deadlineFor(coral.spin(0.2))
+                                .andThen(coral.spin(-0.5).withTimeout(0.5))
                                 .deadlineFor(superstructure.getSetpointCommand(RobotConstants.L4_STATE))
                                 .andThen(driveBase.relativeDrive(-0.6, 0, 0).withTimeout(0.5)))
                 .andThen(
@@ -353,20 +351,19 @@ public class AutoFactory {
     }
 
     public Command getTwoPieceHardCodedAuto() {
-        return superstructure.getZeroCommand().andThen(getPathFindToPoseCommand(Poses.E).deadlineFor(coral.spin(0.2))
-                .andThen(driveBase.alignToReef(false).withTimeout(1))
-                .andThen(coral.spin(-0.5).withTimeout(0.5))
-                .deadlineFor(superstructure.getSetpointCommand(RobotConstants.L4_STATE))
-                .andThen(driveBase.relativeDrive(-0.4, 0, 0).withTimeout(0.8))
-                .andThen(getPathFindToPoseCommand(Poses.RIGHT_STATION)
-                        .deadlineFor(superstructure.getSetpointCommand(RobotConstants.INTAKE_STATE)))
-                .andThen(coral.spin(1).alongWith(driveBase.relativeDrive(-0.6, 0, 0))
-                        .withTimeout(1.5))
-                .andThen(getPathFindToPoseCommand(Poses.D)
-                        .andThen(driveBase.alignToReef(true).withTimeout(0.5)).deadlineFor(coral.spin(0.2))
-                        .andThen(coral.spin(-0.5).withTimeout(0.5)
-                                .andThen(driveBase.relativeDrive(-0.4, 0, 0).withTimeout(1)))
-                        .deadlineFor(superstructure.getSetpointCommand(RobotConstants.L4_STATE))));
+        return superstructure.getZeroCommand()
+                .andThen(getPathFindToPoseCommand(Poses.E).deadlineFor(coral.spin(0.2))
+                        .andThen(driveBase.alignToReef(false).withTimeout(1)).andThen(coral.spin(-0.5).withTimeout(0.5))
+                        .deadlineFor(superstructure.getSetpointCommand(RobotConstants.L4_STATE))
+                        .andThen(driveBase.relativeDrive(-0.4, 0, 0).withTimeout(0.8))
+                        .andThen(getPathFindToPoseCommand(Poses.RIGHT_STATION)
+                                .deadlineFor(superstructure.getSetpointCommand(RobotConstants.INTAKE_STATE)))
+                        .andThen(coral.spin(1).alongWith(driveBase.relativeDrive(-0.6, 0, 0)).withTimeout(1.5))
+                        .andThen(getPathFindToPoseCommand(Poses.D).andThen(driveBase.alignToReef(true).withTimeout(0.5))
+                                .deadlineFor(coral.spin(0.2))
+                                .andThen(coral.spin(-0.5).withTimeout(0.5)
+                                        .andThen(driveBase.relativeDrive(-0.4, 0, 0).withTimeout(1)))
+                                .deadlineFor(superstructure.getSetpointCommand(RobotConstants.L4_STATE))));
     }
 
     /**
@@ -438,8 +435,8 @@ public class AutoFactory {
     public Command getStartCommand(StartingPosition startingPosition, char pipe) {
         return Commands.runOnce(() -> poseReset.accept(AlliancePoseMirror.mirrorPose2d(startingPosition.pose)))
                 .andThen(getPathFindToPathCommand(startingPosition.name() + "_" + pipe, PathType.CHOREO))
-                .andThen(driveBase.alignToReef((pipe - 'A') % 2 == 1).withTimeout(0.5))
-                .deadlineFor(coral.spin(0.2)).andThen(coral.spin(-0.5).withTimeout(0.5))
+                .andThen(driveBase.alignToReef((pipe - 'A') % 2 == 1).withTimeout(0.5)).deadlineFor(coral.spin(0.2))
+                .andThen(coral.spin(-0.5).withTimeout(0.5))
                 .deadlineFor(superstructure.getSetpointCommand(RobotConstants.L4_STATE));
         // .andThen(driveBase.run(driveBase::stopMotors));
         // .alongWith(superstructure.getSetpointCommand(RobotConstants.L4_STATE))
@@ -457,8 +454,7 @@ public class AutoFactory {
         return getPathFindToPathCommand(coralStation.name() + "_" + pipe, PathType.CHOREO, 1)
                 .deadlineFor(Commands.waitSeconds(0.5)
                         .andThen(superstructure.getSetpointCommand(RobotConstants.INTAKE_STATE)))
-                .andThen(coral.spin(1).alongWith(driveBase.relativeDrive(-0.6, 0, 0))
-                        .withTimeout(1));
+                .andThen(coral.spin(1).alongWith(driveBase.relativeDrive(-0.6, 0, 0)).withTimeout(1));
     }
 
     /**
