@@ -27,13 +27,13 @@ public interface SwerveModuleIO {
         public Rotation2d angularOffset = new Rotation2d();
     }
 
-    public abstract void updateInputs(ModuleIOInputs inputs);
+    public default void updateInputs(ModuleIOInputs inputs) {};
 
     /** Run the drive motor at the specified voltage. */
-    public abstract void setDriveVoltage(double volts);
+    public default void setDriveVoltage(double volts) {};
 
     /** Run the turn motor at the specified voltage. */
-    public abstract void setTurnVoltage(double volts);
+    public default void setTurnVoltage(double volts) {};
 
     /** Set the angle to the angle specified in the module state. */
     public default void setAngle(SwerveModuleState optimizedDesiredState) {}

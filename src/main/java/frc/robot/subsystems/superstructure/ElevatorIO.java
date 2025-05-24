@@ -71,27 +71,27 @@ public interface ElevatorIO {
         public boolean atSetpoint = false;
     }
 
-    public void updateInputs(ElevatorIOInputs inputs);
+    public default void updateInputs(ElevatorIOInputs inputs) {};
 
     /**
      * Set the voltage of the elevator motors for SysId.
      * 
      * @param voltage the voltage to set
      */
-    public void setVoltage(double voltage);
+    public default void setVoltage(double voltage) {};
 
     /**
      * Stop all elevator motion
      */
-    public void stop();
+    public default void stop() {};
 
     /**
      * Reset the internal encoder to a specified position
      * 
      * @param position the position to reset to
      */
-    public void resetEncoder(double position);
+    public default void resetEncoder(double position) {};
 
     /** Enable or disable brake mode on the motors. */
-    public void setIdleMode(boolean isBrake);
+    public default void setIdleMode(boolean isBrake) {};
 }

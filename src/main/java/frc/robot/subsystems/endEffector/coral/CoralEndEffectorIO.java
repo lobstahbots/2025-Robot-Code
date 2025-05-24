@@ -27,24 +27,24 @@ public interface CoralEndEffectorIO {
         public boolean beamBreakTriggered = false;
     }
 
-    public void updateInputs(CoralEndEffectorIOInputs inputs);
+    public default void updateInputs(CoralEndEffectorIOInputs inputs) {};
 
     /**
      * Halt motion of this end effector
      */
-    public void stopMotor();
+    public default void stopMotor() {};
 
-    public void setVoltage(double voltage);
+    public default void setVoltage(double voltage) {};
 
     /**
      * Set the speed of the end effector
      * 
      * @param speed speed to set
      */
-    public void setSpeed(double speed);
+    public default void setSpeed(double speed) {};
 
     /** Enable or disable brake mode on the motors. */
-    public void setIdleMode(boolean isBrake);
+    public default void setIdleMode(boolean isBrake) {};
 
     public default void periodic() {};
 }

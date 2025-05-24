@@ -57,17 +57,22 @@ import frc.robot.Constants.RobotConstants;
 import frc.robot.Constants.SimConstants;
 import frc.robot.Constants.VisionConstants;
 import frc.robot.subsystems.drive.DriveBase;
+import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIONavX;
 import frc.robot.subsystems.drive.GyroIOSim;
+import frc.robot.subsystems.drive.SwerveModuleIO;
 import frc.robot.subsystems.drive.SwerveModuleIOSim;
 import frc.robot.subsystems.drive.SwerveModuleIOSparkMax;
 import frc.robot.subsystems.endEffector.algae.AlgaeEndEffector;
 import frc.robot.subsystems.endEffector.algae.AlgaeEndEffectorIOSparkMax;
 import frc.robot.subsystems.endEffector.coral.CoralEndEffector;
+import frc.robot.subsystems.endEffector.coral.CoralEndEffectorIO;
 import frc.robot.subsystems.endEffector.coral.CoralEndEffectorIOSim;
 import frc.robot.subsystems.endEffector.coral.CoralEndEffectorIOSparkMax;
+import frc.robot.subsystems.superstructure.ElevatorIO;
 import frc.robot.subsystems.superstructure.ElevatorIOSim;
 import frc.robot.subsystems.superstructure.ElevatorIOTalonFX;
+import frc.robot.subsystems.superstructure.PivotIO;
 import frc.robot.subsystems.superstructure.PivotIOSim;
 import frc.robot.subsystems.superstructure.PivotIOTalonFX;
 import frc.robot.subsystems.superstructure.Superstructure;
@@ -172,7 +177,7 @@ public class RobotContainer {
             coral = new CoralEndEffector(new CoralEndEffectorIOSparkMax(CoralEndEffectorConstants.LEFT_ID,
                     CoralEndEffectorConstants.BEAM_BREAK_ID));
 
-        } else {
+        } else if (!SimConstants.REPLAY) {
             driveSimulation = new SwerveDriveSimulation(DriveConstants.MAPLE_SIM_CONFIG,
                     new Pose2d(3, 3, new Rotation2d()));
             SimulatedArena.getInstance().addDriveTrainSimulation(driveSimulation);
@@ -209,6 +214,11 @@ public class RobotContainer {
                         MetersPerSecond.of(-2 * speed),
                         superstructure.getPivotRotation().plus(Rotation2d.kCW_90deg).getMeasure()));
             }));
+        } else {
+            driveBase = new DriveBase(new GyroIO() {}, List.of(), new SwerveModuleIO() {}, new SwerveModuleIO() {},
+                    new SwerveModuleIO() {}, new SwerveModuleIO() {}, false);
+            superstructure = new Superstructure(new ElevatorIO() {}, new PivotIO() {});
+            coral = new CoralEndEffector(new CoralEndEffectorIO() {});
         }
 
         algae = new AlgaeEndEffector(new AlgaeEndEffectorIOSparkMax(AlgaeEndEffectorConstants.MOTOR_ID));
@@ -359,7 +369,7 @@ public class RobotContainer {
     }
 
     public void displaySimField() {
-        if (Robot.isReal()) return;
+        if (Robot.isReal() || SimConstants.REPLAY) return;
 
         Logger.recordOutput("FieldSimulation/RobotPosition", driveSimulation.getSimulatedDriveTrainPose());
         Logger.recordOutput("FieldSimulation/Algae", SimulatedArena.getInstance().getGamePiecesArrayByType("Algae"));

@@ -37,19 +37,19 @@ public interface PivotIO {
         public double appliedVoltage = 0.0;
     }
 
-    public void updateInputs(PivotIOInputs inputs);
+    public default void updateInputs(PivotIOInputs inputs) {};
 
     /**
      * Set the voltage of the motors
      * @param voltage the voltage to set
      */
-    public void setVoltage(double voltage);
+    public default void setVoltage(double voltage) {};
 
     /**
      * Halt all pivot motion
      */
-    public void stop();
+    public default void stop() {};
 
     /** Enable or disable brake mode on the motors. */
-    public void setIdleMode(boolean isBrake);
+    public default void setIdleMode(boolean isBrake) {};
 }
