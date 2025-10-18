@@ -290,7 +290,7 @@ public class AutoFactory {
                                 PathConstants.CONSTRAINTS.maxAngularAccelerationRadPerSecSq()),
                         0.0 // Goal end velocity in meters/sec
                 ).deadlineFor(superstructure.getSetpointCommand(RobotConstants.BARGE_STATE)))
-                .andThen(driveBase.relativeDrive(-5, 0, 0).withTimeout(0.5).deadlineFor(algae.spin(-0.2)))
+                .andThen(driveBase.relativeDrive(-2, 0, 0).withTimeout(1).deadlineFor(algae.spin(-0.2)))
                 .andThen(algae.spin(1).withTimeout(1))
                 .andThen(superstructure.getSetpointCommand(RobotConstants.L3_ALGAE_STATE)
                         .alongWith(AutoBuilder.pathfindToPoseFlipped(ChoreoVariables.getPose("SIDE_IJ"),
@@ -303,7 +303,7 @@ public class AutoFactory {
                                 PathConstants.CONSTRAINTS.maxAngularAccelerationRadPerSecSq()),
                         0.0 // Goal end velocity in meters/sec
                 ).deadlineFor(superstructure.getSetpointCommand(RobotConstants.BARGE_STATE)))
-                .andThen(driveBase.relativeDrive(-5, 0, 0).withTimeout(0.5).deadlineFor(algae.spin(-0.2)))
+                .andThen(driveBase.relativeDrive(-2, 0, 0).withTimeout(1).deadlineFor(algae.spin(-0.2)))
                 .andThen(algae.spin(1));
     }
 
@@ -329,7 +329,7 @@ public class AutoFactory {
                                                 PathConstants.CONSTRAINTS.maxAngularVelocityRadPerSec(),
                                                 PathConstants.CONSTRAINTS.maxAngularAccelerationRadPerSecSq()),
                                         0.0 // Goal end velocity in meters/sec
-                                ).andThen(driveBase.alignToReef(true).withTimeout(0.5)).deadlineFor(coral.spin(0.2))
+                                ).andThen(driveBase.alignToReef(true).withTimeout(1.0)).deadlineFor(coral.spin(0.2))
                                 .andThen(coral.spin(-0.5).withTimeout(0.5))
                                 .deadlineFor(superstructure.getSetpointCommand(RobotConstants.L4_STATE))
                                 .andThen(driveBase.relativeDrive(-0.6, 0, 0).withTimeout(0.5)))
@@ -340,7 +340,9 @@ public class AutoFactory {
                                                 PathConstants.CONSTRAINTS.maxAngularVelocityRadPerSec(),
                                                 PathConstants.CONSTRAINTS.maxAngularAccelerationRadPerSecSq()),
                                         0.0 // Goal end velocity in meters/sec
-                                ).andThen(Commands.waitSeconds(0.5))).deadlineFor(algae.spin(-1)))
+                                ).andThen(Commands.waitSeconds(1).deadlineFor(
+                                    driveBase.relativeDrive(0.2, 0, 0)
+                                ))).deadlineFor(algae.spin(-1)))    
                 .andThen(getPathSetpointDelay(getChoreoPath("NET_GH", 1), RobotConstants.BARGE_STATE, 3))
                 .andThen(algae.spin(1).withTimeout(0.5)).andThen(getAlgaeFromNet(side2))
                 .andThen(getAlgaeFromNet(side3));
